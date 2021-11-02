@@ -17,8 +17,8 @@ RUN pip install requests
 
 COPY . . 
 
-EXPOSE 3001
-
 ENV ENV "development"
+
+EXPOSE 3001
 
 CMD ["sh", "-c", "python run.py --ENV ${ENV}"]
