@@ -1,0 +1,32 @@
+{
+    "extends": [
+        "tslint:all"
+    ],
+    "rules": {
+        "array-type": false,
+        "arrow-parens": [true, "ban-single-arg-parens"],
+        "completed-docs": false,
+        "no-console": [true, "log"],
+        "interface-name": [true, "never-prefix"],
+        "member-ordering": false,
+        "newline-per-chained-call": false,
+        "no-import-side-effect": false,
+        "no-implicit-dependencies": [true, "dev"],
+        "no-magic-numbers": [true, 0, 1, 200, 400, 500],
+        "no-unbound-method": [true, "ignore-static"],
+        "no-unsafe-any": false,
+        "no-void-expression": [true, "ignore-arrow-function-shorthand"],
+        "object-literal-sort-keys": false,
+        "only-arrow-functions": [true, "allow-declarations"],
+        "promise-function-async": false,
+        "strict-boolean-expressions": false,
+        "switch-final-break": [true, "always"],
+        "trailing-comma": [true, "never"],
+        "typedef": [true, {"variable-declaration": false}],
+        "quotemark": [true, "single"],
+        "variable-name": [true, "check-format", "allow-pascal-case"],
+        "whitespace": [true, "check-branch", "check-decl", "check-operator", "check-separator",
+            "check-rest-spread", "check-type", "check-typecast", "check-type-operator", "check-preblock"]
+    },
+    "rulesDirectory": []
+}
