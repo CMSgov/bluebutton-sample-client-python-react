@@ -11,7 +11,7 @@ COPY ["./src/prestart/env/sandbox.sample.env","./src/prestart/env/development.en
 COPY . . 
 
 RUN pip install pipenv
-RUN pipenv install
+RUN pipenv install --system --deploy --ignore-pipfile
 
 ENV ENV "development"
 
