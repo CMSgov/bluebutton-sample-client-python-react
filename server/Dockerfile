@@ -11,8 +11,7 @@ COPY ["./src/prestart/env/sandbox.sample.env","./src/prestart/env/development.en
 COPY . . 
 
 RUN pip install pipenv
-RUN pipenv lock --keep-outdated --requirements > requirements.txt
-RUN pip install -r requirements.txt
+RUN pipenv install
 
 ENV ENV "development"
 
