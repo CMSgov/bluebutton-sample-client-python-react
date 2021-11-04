@@ -37,6 +37,12 @@ Running the Back-end & Front-end
 
     This single command will create the docker container with all the necessary packages, configuration, and code to 
     run both the front and back ends of this sample application.
+
+    To see the application in action open your browser and enter the following URL:
+    
+    http://localhost:3000
+
+    To see the process of authenticating with Blue Button via Medicare.gov and retrieve EoB data just click on the 'Authorize' button.
     
 BB2 Sandbox User
 -----------
