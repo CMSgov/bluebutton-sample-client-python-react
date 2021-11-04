@@ -16,7 +16,7 @@ ConfigType = {
         'bb2BaseUrl' : 'https://sandbox.bluebutton.cms.gov',
         'bb2ClientId' : '<client-id>',
         'bb2ClientSecret' : '<client-secret>',
-        'bb2CallbackUrl' : 'http://server:3001/api/bluebutton/callback/',
+        'bb2CallbackUrl' : 'http://localhost:3001/api/bluebutton/callback/',
         'port' : 3001,
         'host' : 'server'
     },
@@ -24,7 +24,7 @@ ConfigType = {
         'bb2BaseUrl' : 'https://sandbox.bluebutton.cms.gov',
         'bb2ClientId' : '<client-id>',
         'bb2ClientSecret' : '<client-secret>',
-        'bb2CallbackUrl' : 'http://server:3001/api/bluebutton/callback/',
+        'bb2CallbackUrl' : 'http://localhost:3001/api/bluebutton/callback/',
         'port' : 3001,
         'host' : 'server'
     }
