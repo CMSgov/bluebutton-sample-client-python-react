@@ -46,14 +46,18 @@ def getAuthUrl():
 
     configSettings = getConfigSettings(myEnv)
     authUrl = generateAuthorizeUrl(settings, configSettings)
+    print('HERE AUTHURL'+authUrl)
     return authUrl
 
 @app.route('/api/authorize/currentAuthToken',methods=['GET'])
 def getCurrentAuthToken():
+    print('HERE get TOKEN:')
+    print(loggedInUser.get('authToken'))
     return loggedInUser.get('authToken')
 
 @app.route('/api/bluebutton/callback/',methods=['GET'])
 def authorizationCallback():
+    print('HERE callback:')
     try:
         requestQuery = request.args
         
@@ -72,6 +76,14 @@ def authorizationCallback():
         configSettings = getConfigSettings(myEnv)
 
         # this gets the token from Medicare.gov once the 'user' authenticates their Medicare.gov account
+        print('code')
+        print(requestQuery.get('code'))
+        print('state')
+        print(requestQuery.get('state'))
+        print('configsettings')
+        print(configSettings)
+        print('settings')
+        print(settings)
         response = getAccessToken(requestQuery.get('code'),requestQuery.get('state'),configSettings=configSettings,settings=settings)
         """DEVELOPER NOTES:
         * This is where you would most likely place some type of
@@ -82,12 +94,17 @@ def authorizationCallback():
         * back into our mocked DB, normally you would want to do this
         """
         authToken = json.loads(response.text)
+        print('authtoken:')
+        print(authToken)
 
         #Here we are grabbing the mocked 'user' for our application
         # to be able to store the access token for that user
         # thereby linking the 'user' of our sample applicaiton with their Medicare.gov account
         # providing access to their Medicare data to our sample application        
         loggedInUser.update({'authToken':authToken})
+        print('logged User AuthTOken')
+        print(loggedInUser.get('authToken'))
+
         
 
         """ DEVELOPER NOTES:
@@ -98,13 +115,25 @@ def authorizationCallback():
         * using similar functionality
         """
         eobData = getBenefitData(settings=settings,configsSettings=configSettings,query=requestQuery,loggedInUser=loggedInUser)
-        loggedInUser.update({'eobData':json.dumps(eobData)})
+        print('LU BEFORE Store')
+        print(loggedInUser.get('eobData'))
+
+        if (eobData != None and eobData != ''):
+            loggedInUser.update({'eobData':json.dumps(eobData)})
+        else:
+            loggedInUser.update({'eobData':json.dumps('Unable to load EOB Data!')})
+        
+        print('LU AFTER Store')
+        print(loggedInUser.get('eobData'))
+
 
     except BaseException as err:
         """DEVELOPER NOTES:
         * This is where you could also use a data service or other exception handling
         * to display or store the error
         """
+        print('ERROR:')
+        print(err)
         myLogger.error(err)
     """DEVELOPER NOTE:
     * This is a hardcoded redirect, but this should be used from settings stored in a conf file
@@ -125,4 +154,9 @@ def authorizationCallback():
 """
 @app.route('/api/data/benefit',methods=['GET'])
 def getPatientEOB():
-    return json.loads(loggedInUser.get('eobData'))
+    if (loggedInUser != None 
+        and loggedInUser.get('eobData') != None
+        and loggedInUser.get('eobData') != ''):
+        return json.loads(loggedInUser.get('eobData'))
+    else:
+        return ''

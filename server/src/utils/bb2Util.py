@@ -60,8 +60,14 @@ def getBenefitData(settings, configsSettings, query, loggedInUser):
         'code':query.get('code'),
         'state':query.get('state')
     }
+    print('AuthToken Access Token')
+    print(loggedInUser.get('authToken').get('access_token'))
     BB2_BENEFIT_URL = configsSettings.get('bb2BaseUrl') + '/' + settings.version + '/fhir/ExplanationOfBenefit/'
+    print('BB2 BENEFIT URL')
+    print(BB2_BENEFIT_URL)
     myHeader = {'Authorization' : 'Bearer '+loggedInUser.get('authToken').get('access_token')}
     beneResponse = requests.get(url=BB2_BENEFIT_URL,params=PARAMS,headers=myHeader)    
+    print('EOB RESPONSE:')
+    print(beneResponse.text)
     return beneResponse.text
 
