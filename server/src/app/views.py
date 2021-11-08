@@ -125,7 +125,4 @@ def authorizationCallback():
 """
 @app.route('/api/data/benefit',methods=['GET'])
 def getPatientEOB():
-    if (loggedInUser.get('eobData') == ''):
-        return ''
-    else:
-        return json.loads(loggedInUser.get('eobData'))
+    return json.loads(loggedInUser.get('eobData'))
