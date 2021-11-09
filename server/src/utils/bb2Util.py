@@ -39,23 +39,28 @@ def generateAuthorizeUrl(settings, configSettings):
 # once they have been authenticated via medicare.gov and have allowed
 # access to their medicare data to the appllcation
 def getAccessToken(code, state, configSettings, settings):
-    
+    print('HERE getAccessToken in BBUtil')
     BB2_ACCESS_TOKEN_URL = configSettings.get('bb2BaseUrl')+'/'+settings.version+'/o/token/'
-    
+    print('Base URL')
+    print(BB2_ACCESS_TOKEN_URL)
     PARAMS = {'client_id':configSettings.get('bb2ClientId'),
                 'client_secret':configSettings.get('bb2ClientSecret'),
                 'code':code,
                 'grant_type':'authorization_code',
-                'redirect_url':configSettings.get('bb2CallbackUrl')
+                'redirect_url':urllib.parse.quote(configSettings.get('bb2CallbackUrl'), safe='')
             }
     if (settings.pkce and state is not None):
         codeChall = DBcodeChallenges[state]
         PARAMS['code_verifier'] = codeChall.get('verifier')
         PARAMS['code_challenge'] = codeChall.get('codeChallenge')
     
+    print('PARAMS:')
+    print(PARAMS)
     # ensure that you store the clientid, secret, and all pcke data within the data
     # and provide a header with the content type including the boundary or this call will fail
-    mp_encoder = MultipartEncoder(urllib.parse.urlencode(PARAMS, quote_via=urllib.parse.quote))
+    mp_encoder = MultipartEncoder(PARAMS)
+    print(mp_encoder)
+    print(mp_encoder.content_type)
     myResponse = requests.post(url=BB2_ACCESS_TOKEN_URL,data=mp_encoder,headers={'content-type':mp_encoder.content_type})
     return myResponse
 
