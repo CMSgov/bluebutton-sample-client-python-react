@@ -55,7 +55,7 @@ def getAccessToken(code, state, configSettings, settings):
     
     # ensure that you store the clientid, secret, and all pcke data within the data
     # and provide a header with the content type including the boundary or this call will fail
-    mp_encoder = MultipartEncoder(PARAMS)
+    mp_encoder = MultipartEncoder(urllib.parse.urlencode(PARAMS, quote_via=urllib.parse.quote))
     myResponse = requests.post(url=BB2_ACCESS_TOKEN_URL,data=mp_encoder,headers={'content-type':mp_encoder.content_type})
     return myResponse
 
