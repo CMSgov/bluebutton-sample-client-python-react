@@ -31,6 +31,10 @@ def generateAuthorizeUrl(settings, configSettings):
     resultUrl = BB2_AUTH_URL+'?'+urllib.parse.urlencode(PARAMS, quote_via=urllib.parse.quote)
     print('Gen Auth URL - URL:')
     print(resultUrl)
+    
+    
+    
+    
     #+'?client_id=' + configSettings.get('bb2ClientId') +'&redirect_uri=' + configSettings.get('bb2CallbackUrl') +'&state=' + state +'&response_type=code' +pkceParams
     return resultUrl
 
@@ -47,7 +51,8 @@ def getAccessToken(code, state, configSettings, settings):
                 'client_secret':configSettings.get('bb2ClientSecret'),
                 'code':code,
                 'grant_type':'authorization_code',
-                'redirect_url':urllib.parse.quote(configSettings.get('bb2CallbackUrl'), safe='')
+                'redirect_uri':configSettings.get('bb2CallbackUrl')
+                    #urllib.parse.quote(configSettings.get('bb2CallbackUrl'), safe='')
             }
     if (settings.pkce and state is not None):
         codeChall = DBcodeChallenges[state]
