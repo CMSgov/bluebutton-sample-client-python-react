@@ -13,8 +13,8 @@ This is the starting point of the server side of the application.  This file is 
 
 # here we must initiliaze our global variables that are acting like a Mocked up Database 
 # from Database.py (using the initDB() funciton)
-
 initDB()
+
 # set the path base for later use
 main_base = os.path.dirname(__file__)
 # initialize the logger object
@@ -30,11 +30,9 @@ if __name__ == "__main__":
     # Load the configs    
     if len(sys.argv)>2 and sys.argv[1] == "--ENV":
         dotenv_path = os.path.join(main_base,'src','prestart','env',sys.argv[2]+'.env')     
-        print('DOTENV1: '+dotenv_path)  
         os.environ['FLASK_ENV'] = sys.argv[2]        
     elif len(sys.argv) <= 2:
         dotenv_path = os.path.join(main_base,'src','prestart','env','development.env')
-        print('DOTENV2: '+dotenv_path)  
         os.environ['FLASK_ENV'] = 'development'
     try:
         setEnvVariables(dotenv_path=dotenv_path)    
