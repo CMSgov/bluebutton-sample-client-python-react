@@ -1,5 +1,5 @@
 """ 
-DEVELOPER NOTE:
+* DEVELOPER NOTE:
 * to utilize the latest security features/best practices
 * it is recommended to utilize pkce
 * 

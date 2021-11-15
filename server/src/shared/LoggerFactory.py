@@ -15,15 +15,18 @@ class LoggerFactory(object):
         A private method that interacts with the python logging module
         """
         main_base = os.path.dirname(os.path.dirname(__file__))
-        #logging.getLogger('LoggerFactory').error('MAIN:'+main_base)
         config_file = os.path.join(main_base,'configs','logging.conf')
-        #logging.getLogger('LoggerFactory').error('CONFIG:'+config_file)
 
         if not os.path.exists(config_file):
             msg = 'configuartion file does not exist!', config_file
             logging.getLogger('LoggerFactory').error(msg)
             raise ValueError(msg)
 
+        """
+        * DEVELOPER NOTES:
+        *  Here we are using a log config file - you can modify this config file 
+        * to make the logging perform/format the way that you would like
+        """
         # set the logging format and a few other settings
         logging.config.fileConfig(config_file)
         

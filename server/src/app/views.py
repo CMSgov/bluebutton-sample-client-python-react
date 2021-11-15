@@ -73,6 +73,7 @@ def authorizationCallback():
 
         # this gets the token from Medicare.gov once the 'user' authenticates their Medicare.gov account
         response = getAccessToken(requestQuery.get('code'),requestQuery.get('state'),configSettings=configSettings,settings=settings)
+        
         """DEVELOPER NOTES:
         * This is where you would most likely place some type of
         * persistence service/functionality to store the token along with
@@ -82,14 +83,13 @@ def authorizationCallback():
         * back into our mocked DB, normally you would want to do this
         """
         authToken = json.loads(response.text)
-
+        
         #Here we are grabbing the mocked 'user' for our application
         # to be able to store the access token for that user
         # thereby linking the 'user' of our sample applicaiton with their Medicare.gov account
         # providing access to their Medicare data to our sample application        
         loggedInUser.update({'authToken':authToken})
         
-
         """ DEVELOPER NOTES:
         * Here we will use the token to get the EoB data for the mocked 'user' of the sample application
         * then to save trips to the BB2 API we will store it in the mocked db with the mocked 'user'
@@ -98,7 +98,11 @@ def authorizationCallback():
         * using similar functionality
         """
         eobData = getBenefitData(settings=settings,configsSettings=configSettings,query=requestQuery,loggedInUser=loggedInUser)
-        loggedInUser.update({'eobData':json.dumps(eobData)})
+        
+        if (eobData != None and eobData != ''):
+            loggedInUser.update({'eobData':json.dumps(eobData)})
+        else:
+            loggedInUser.update({'eobData':json.dumps('Unable to load EOB Data!')})
 
     except BaseException as err:
         """DEVELOPER NOTES:
@@ -125,7 +129,9 @@ def authorizationCallback():
 """
 @app.route('/api/data/benefit',methods=['GET'])
 def getPatientEOB():
-    if (loggedInUser.get('eobData') == ''):
-        return ''
-    else:
+    if (loggedInUser != None 
+        and loggedInUser.get('eobData') != None
+        and loggedInUser.get('eobData') != ''):
         return json.loads(loggedInUser.get('eobData'))
+    else:
+        return ''

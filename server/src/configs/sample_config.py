@@ -18,7 +18,7 @@ ConfigType = {
         'bb2ClientSecret' : '<client-secret>',
         'bb2CallbackUrl' : 'http://localhost:3001/api/bluebutton/callback/',
         'port' : 3001,
-        'host' : 'localhost'
+        'host' : 'server'
     },
     'local' : {
         'bb2BaseUrl' : 'https://sandbox.bluebutton.cms.gov',
@@ -26,7 +26,7 @@ ConfigType = {
         'bb2ClientSecret' : '<client-secret>',
         'bb2CallbackUrl' : 'http://localhost:3001/api/bluebutton/callback/',
         'port' : 3001,
-        'host' : 'localhost'
+        'host' : 'server'
     }
 }
 

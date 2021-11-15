@@ -5,6 +5,7 @@ from .userUtil import *
 from ..data.Database import *
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import urllib
 
 """ DEVELOPER NOTES:
 * This is our mocked Data Service layer for both the BB2 API
@@ -18,29 +19,30 @@ from requests_toolbelt.multipart.encoder import MultipartEncoder
 def generateAuthorizeUrl(settings, configSettings):
 
     BB2_AUTH_URL = configSettings.get('bb2BaseUrl') + '/' + settings.version + '/o/authorize'
-
-    pkceParams = ''
     state = generateRandomState(32)
-
+    
+    PARAMS = {'client_id' : configSettings.get('bb2ClientId'), 'redirect_uri' : configSettings.get('bb2CallbackUrl'), 'state' : state, 'response_type' : 'code'}
+    
     if (settings.pkce):
         codeChallenge = generateCodeChallenge()
-        pkceParams = '&code_challenge_method=S256' + '&code_challenge=' + codeChallenge.get('codeChallenge')
+        PARAMS['code_challenge_method'] = 'S256'
+        PARAMS['code_challenge'] = codeChallenge.get('codeChallenge')
         DBcodeChallenges[state] = codeChallenge
-    return BB2_AUTH_URL +'?client_id=' + configSettings.get('bb2ClientId') +'&redirect_uri=' + configSettings.get('bb2CallbackUrl') +'&state=' + state +'&response_type=code' +pkceParams
+    resultUrl = BB2_AUTH_URL+'?'+urllib.parse.urlencode(PARAMS, quote_via=urllib.parse.quote)
+    
+    return resultUrl
 
 # This function is where the application makes a call
 # to Blue Button to get an authorization token for the user
 # once they have been authenticated via medicare.gov and have allowed
 # access to their medicare data to the appllcation
 def getAccessToken(code, state, configSettings, settings):
-    
     BB2_ACCESS_TOKEN_URL = configSettings.get('bb2BaseUrl')+'/'+settings.version+'/o/token/'
-    
     PARAMS = {'client_id':configSettings.get('bb2ClientId'),
                 'client_secret':configSettings.get('bb2ClientSecret'),
                 'code':code,
                 'grant_type':'authorization_code',
-                'redirect_url':configSettings.get('bb2CallbackUrl')
+                'redirect_uri':configSettings.get('bb2CallbackUrl')
             }
     if (settings.pkce and state is not None):
         codeChall = DBcodeChallenges[state]

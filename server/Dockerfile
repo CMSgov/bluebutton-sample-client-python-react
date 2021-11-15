@@ -1,4 +1,4 @@
-FROM python:3.9.6 AS builder
+FROM python:3.9.6
 
 LABEL version="1.0"
 LABEL description="Demo of a Medicare claims data sample app"
@@ -8,17 +8,13 @@ WORKDIR /server
 COPY ["./src/configs/sample_config.py", "./src/configs/config.py"]
 COPY ["./src/prestart/env/sandbox.sample.env","./src/prestart/env/development.env"]
 
-RUN pip install pipenv
-RUN pip install python-dotenv
-RUN pip install requests_toolbelt
-RUN pip install flask
-RUN pip install argparse
-RUN pip install requests
-
 COPY . . 
 
-EXPOSE 3001
+RUN pip install pipenv
+RUN pipenv install --system --deploy --ignore-pipfile
 
 ENV ENV "development"
+
+EXPOSE 3001
 
 CMD ["sh", "-c", "python run.py --ENV ${ENV}"]
