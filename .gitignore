@@ -21,11 +21,6 @@ production.env
 sandbox.env
 
 config.py
-server/src/app/__pycache__/views.cpython-39.pyc
-server/src/entities/__pycache__/Settings.cpython-39.pyc
-server/src/prestart/__pycache__/setenv.cpython-39.pyc
-server/src/shared/__pycache__/LoggerFactory.cpython-39.pyc
-server/src/utils/__pycache__/generatePKCE.cpython-39.pyc
 
 # Generic
 *.pyc
