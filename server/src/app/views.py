@@ -7,7 +7,7 @@ from . import app
 from ..entities.Settings import Settings
 from ..utils.configUtil import getConfigSettings
 from ..utils.bb2Util import generateAuthorizeUrl, getAccessToken, getBenefitData
-from ..utils.userUtil import getLoggedInUser
+from ..utils.userUtil import clearBB2Data, getLoggedInUser
 from ..shared.LoggerFactory import LoggerFactory
 import json
 
@@ -15,6 +15,8 @@ import json
 This is the location of all the routes, via the port specified in the config, that allows the 
 front-end to communicate with the server to retrieve data from Blue Button and Medicare.gov
 """
+
+BENE_DENIED_ACCESS = 'access_denied'
 
 # initialize the logger object
 myLogger = LoggerFactory.get_logger(log_file=__name__,log_level='DEBUG')
@@ -56,7 +58,13 @@ def getCurrentAuthToken():
 def authorizationCallback():
     try:
         requestQuery = request.args
-        
+
+        if (requestQuery.get('error') == BENE_DENIED_ACCESS):
+            # clear all saved claims data since the bene has denied access for the application
+            clearBB2Data()
+            myLogger.error('Beneficiary denied application access to their data')
+            return redirect('http://localhost:3000')
+
         if (requestQuery.get('code') == ''):
             myLogger.error('Response was missing access code!')
         if (DBsettings.pkce and requestQuery.get('state')):
