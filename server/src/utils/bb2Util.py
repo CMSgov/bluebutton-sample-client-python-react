@@ -6,6 +6,7 @@ from ..data.Database import *
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 import urllib
+import datetime
 
 """ DEVELOPER NOTES:
 * This is our mocked Data Service layer for both the BB2 API
@@ -53,11 +54,30 @@ def getAccessToken(code, state, configSettings, settings):
     # and provide a header with the content type including the boundary or this call will fail
     mp_encoder = MultipartEncoder(PARAMS)
     myResponse = requests.post(url=BB2_ACCESS_TOKEN_URL,data=mp_encoder,headers={'content-type':mp_encoder.content_type})
-    return myResponse
+    response_json = myResponse.json()
+    response_json['expires_at'] = datetime.datetime.now() + datetime.timedelta(seconds=response_json['expires_in'])
+    return response_json
+
+def refreshAccessToken(refresh_token, configSettings, settings):
+    BB2_ACCESS_TOKEN_URL = configSettings.get('bb2BaseUrl')+'/'+settings.version+'/o/token/'
+    params = {
+        'client_id':configSettings.get('bb2ClientId'),
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token
+    }
+
+    myResponse = requests.post(url=BB2_ACCESS_TOKEN_URL, params=params, auth=(configSettings.get('bb2ClientId'), configSettings.get('bb2ClientSecret')))
+    response_json = myResponse.json()
+    response_json['expires_at'] = datetime.datetime.now() + datetime.timedelta(seconds=response_json['expires_in'])
+    return response_json
 
 # this function is used to query eob data for the authenticated Medicare.gov
 #  user and returned - we are then storing in a mocked DB
 def getBenefitData(settings, configsSettings, query, loggedInUser):
+    if (datetime.datetime.now() > loggedInUser.get('authToken').get('expires_at')):
+        updated_auth_token = refreshAccessToken(loggedInUser.get('authToken').get('refresh_token'), configsSettings, settings)
+        loggedInUser.update({'authToken':updated_auth_token})
+
     PARAMS = {
         'code':query.get('code'),
         'state':query.get('state')
