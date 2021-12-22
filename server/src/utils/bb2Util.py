@@ -1,11 +1,13 @@
-#bb2Util.py
+import logging
+import requests
+import urllib
 
 from .generatePKCE import generateCodeChallenge, generateRandomState
 from .userUtil import *
 from ..data.Database import *
-import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
-import urllib
+
+logger = logging.getLogger("sample.app.response.error.log")
 
 """ DEVELOPER NOTES:
 * This is our mocked Data Service layer for both the BB2 API
@@ -53,6 +55,7 @@ def getAccessToken(code, state, configSettings, settings):
     # and provide a header with the content type including the boundary or this call will fail
     mp_encoder = MultipartEncoder(PARAMS)
     myResponse = requests.post(url=BB2_ACCESS_TOKEN_URL,data=mp_encoder,headers={'content-type':mp_encoder.content_type})
+    logger.error(myResponse)   
     return myResponse
 
 # this function is used to query eob data for the authenticated Medicare.gov
@@ -64,6 +67,7 @@ def getBenefitData(settings, configsSettings, query, loggedInUser):
     }
     BB2_BENEFIT_URL = configsSettings.get('bb2BaseUrl') + '/' + settings.version + '/fhir/ExplanationOfBenefit/'
     myHeader = {'Authorization' : 'Bearer '+loggedInUser.get('authToken').get('access_token')}
-    beneResponse = requests.get(url=BB2_BENEFIT_URL,params=PARAMS,headers=myHeader)    
+    beneResponse = requests.get(url=BB2_BENEFIT_URL,params=PARAMS,headers=myHeader)
+    logger.error(beneResponse)    
     return beneResponse.text
 

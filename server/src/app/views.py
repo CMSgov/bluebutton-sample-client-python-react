@@ -1,7 +1,7 @@
 # views.py
+import json
 
 from flask import redirect, request
-import requests
 from ..data.Database import *
 from . import app
 from ..entities.Settings import Settings
@@ -9,7 +9,6 @@ from ..utils.configUtil import getConfigSettings
 from ..utils.bb2Util import generateAuthorizeUrl, getAccessToken, getBenefitData
 from ..utils.userUtil import getLoggedInUser
 from ..shared.LoggerFactory import LoggerFactory
-import json
 
 """
 This is the location of all the routes, via the port specified in the config, that allows the 
