@@ -1,4 +1,3 @@
-import logging
 import re
 import requests
 import time
@@ -8,8 +7,6 @@ from .generatePKCE import generateCodeChallenge, generateRandomState
 from .userUtil import *
 from ..data.Database import *
 from requests_toolbelt.multipart.encoder import MultipartEncoder
-
-logger = logging.getLogger("sample.app.response.error.log")
 
 """ DEVELOPER NOTES:
 * This is our mocked Data Service layer for both the BB2 API
@@ -78,12 +75,8 @@ def get_benefit_data(settings, configs_settings, query, logged_in_user):
 
 def check_and_report_error(response):
     if response.status_code != 200:
-        code = "Response status code: {}".format(response.status_code)
-        msg = "Response text: {}".format(response.text)
-        _print_console(code)
-        _print_console(msg)
-        logger.error(code)
-        logger.error(msg)
+        _print_console("Response status code: {}".format(response.status_code))
+        _print_console("Response text: {}".format(response.text))
 
 def retry_and_report_on_error(response, url, params, header):
     retry_result = None
@@ -108,9 +101,8 @@ def do_retry(url, params, headers):
         try:
             response = requests.get(url=url, params=params, headers=headers)
             if response.status_code == 200:
+                # developer notes: the response can be persisted associated with the bene
                 _print_console("retry successful:")
-                _print_console("Response status_code: {}".format(response.status_code))
-                _print_console("Response stext: {}".format(response.text))
                 break
             elif is_retryable(response):
                 response = None

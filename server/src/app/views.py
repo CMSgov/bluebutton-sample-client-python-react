@@ -91,12 +91,23 @@ def authorization_callback():
         * You could also request data for the Patient endpoint and/or the Coverage endpoint here
         * using similar functionality
         """
+
         eob_data = get_benefit_data(settings=settings,configs_settings=config_settings, query=request_query, logged_in_user=loggedInUser)
         
-        if (eob_data != None and eob_data != ''):
-            loggedInUser.update({'eobData':json.dumps(eob_data)})
+        eob_dict = {}
+        
+        if not eob_data:
+            eob_dict.update({"eobData": json.dumps({"message": "Unable to load EOB Data."})})
         else:
-            loggedInUser.update({'eobData':json.dumps('Unable to load EOB Data!')})
+            eob_json = json.loads(eob_data)
+            if eob_json.get("entry") is not None:
+                # fhir bundle
+                eob_dict.update({"eobData": json.dumps(eob_json)})
+            else:
+                # other response
+                eob_dict.update({"eobData": json.dumps({"message": eob_data})})
+        
+        loggedInUser.update(eob_dict)
 
     except BaseException as err:
         """DEVELOPER NOTES:
