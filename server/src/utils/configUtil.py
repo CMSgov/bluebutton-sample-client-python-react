@@ -2,19 +2,13 @@ from typing import Dict
 from ..configs.config import ConfigType
 
 
-    # based upon the environment variable for ENV set
-    # we can determine what the settings should be 
-
-def getConfigSettings(env) -> Dict :
-    if (env == 'local'):
-        configType = 'local'
-    elif (env in ('sandbox','development')):
-        configType = 'sandbox'
+# based upon the environment variable for ENV set
+# we can determine what the settings should be 
+def get_config_settings(env) -> Dict :
+    config_type = 'local'
+    if (env in ('sandbox','development')):
+        config_type = 'sandbox'
     elif (env == 'production'):
-        configType = 'production'
-    else:
-        configType = 'local'
+        config_type = 'production'
 
-    configDict = ConfigType.get(configType)
-
-    return configDict
+    return ConfigType.get(config_type)
