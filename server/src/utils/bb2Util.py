@@ -71,7 +71,7 @@ def get_benefit_data(settings, configs_settings, query, logged_in_user):
     my_header = {'Authorization' : 'Bearer '+logged_in_user.get('authToken').get('access_token')}
     bene_response = requests.get(url=BB2_BENEFIT_URL,params=PARAMS,headers=my_header)
     result = retry_and_report_on_error(bene_response, BB2_BENEFIT_URL, PARAMS, my_header)
-    return result.text
+    return result.text if result.status_code == 200 else None
 
 def check_and_report_error(response):
     if response.status_code != 200:
