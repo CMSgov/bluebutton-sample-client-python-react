@@ -11,3 +11,16 @@ DEVELOPER NOTES:
 
 def getLoggedInUser():
     return DBusers[0]
+
+def clearBB2Data():
+    logged_in_user = getLoggedInUser()
+    logged_in_user.update({'authToken': {
+        'access_token' : '',
+        'expires_in' : 0,
+        'expires_at' : 0,
+        'token_type' : '',
+        'scope' : '',
+        'refresh_token' : '',
+        'patient' : ''
+    }})
+    logged_in_user.update({'eobData': ''})
