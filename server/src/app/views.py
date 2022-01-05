@@ -72,7 +72,7 @@ def authorizationCallback():
         configSettings = getConfigSettings(myEnv)
 
         # this gets the token from Medicare.gov once the 'user' authenticates their Medicare.gov account
-        response = getAccessToken(requestQuery.get('code'),requestQuery.get('state'),configSettings=configSettings,settings=settings)
+        authToken = getAccessToken(requestQuery.get('code'),requestQuery.get('state'),configSettings=configSettings,settings=settings)
         
         """DEVELOPER NOTES:
         * This is where you would most likely place some type of
@@ -82,7 +82,6 @@ def authorizationCallback():
         * Here we are however, just updating the loggedInUser we pulled from our MockDb, but we aren't persisting that change
         * back into our mocked DB, normally you would want to do this
         """
-        authToken = json.loads(response.text)
         
         #Here we are grabbing the mocked 'user' for our application
         # to be able to store the access token for that user
