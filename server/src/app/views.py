@@ -1,15 +1,13 @@
-# views.py
+import json
 
 from flask import redirect, request
-import requests
 from ..data.Database import *
 from . import app
 from ..entities.Settings import Settings
-from ..utils.configUtil import getConfigSettings
-from ..utils.bb2Util import generateAuthorizeUrl, getAccessToken, getBenefitData
-from ..utils.userUtil import clearBB2Data, getLoggedInUser
+from ..utils.configUtil import get_config_settings
+from ..utils.bb2Util import generate_authorize_url, get_access_token, get_benefit_data
+from ..utils.userUtil import clear_bb2_data, get_loggedin_user
 from ..shared.LoggerFactory import LoggerFactory
-import json
 
 """
 This is the location of all the routes, via the port specified in the config, that allows the 
@@ -20,13 +18,13 @@ BENE_DENIED_ACCESS = 'access_denied'
 
 # initialize the logger object
 myLogger = LoggerFactory.get_logger(log_file=__name__,log_level='DEBUG')
-loggedInUser = getLoggedInUser()
+loggedInUser = get_loggedin_user()
 
 #########################################################################################
 # Test route
 #########################################################################################
 @app.route('/',methods=['GET'])
-def verifyPortListening():
+def verify_port_listening():
     return 'Listening on Port 3001 for the Server!'
 
 #########################################################################################
@@ -34,53 +32,48 @@ def verifyPortListening():
 #########################################################################################
 
 @app.route('/api/authorize/authurl',methods=['GET'])
-def getAuthUrl():
+def get_auth_url():
     """ DEVELOPER NOTE:
     * to utilize the latest security features/best practices
     * it is recommended to utilize pkce
     """
     # get configuration and settings
-    myEnv = request.args.get('env') or 'development'
-    myVersion = request.args.get('version') or 'v2'
+    my_env = request.args.get('env') or 'development'
+    my_version = request.args.get('version') or 'v2'
     PKCE = request.args.get('pkce') or True
-
-    settings = Settings(myEnv,myVersion,PKCE)
-
-    configSettings = getConfigSettings(myEnv)
-    authUrl = generateAuthorizeUrl(settings, configSettings)
-    return authUrl
+    return generate_authorize_url(Settings(my_env, my_version, PKCE), get_config_settings(my_env))
 
 @app.route('/api/authorize/currentAuthToken',methods=['GET'])
-def getCurrentAuthToken():
+def get_current_auth_token():
     return loggedInUser.get('authToken')
 
 @app.route('/api/bluebutton/callback/',methods=['GET'])
-def authorizationCallback():
+def authorization_callback():
     try:
-        requestQuery = request.args
+        request_query = request.args
 
-        if (requestQuery.get('error') == BENE_DENIED_ACCESS):
+        if (request_query.get('error') == BENE_DENIED_ACCESS):
             # clear all saved claims data since the bene has denied access for the application
-            clearBB2Data()
+            clear_bb2_data()
             myLogger.error('Beneficiary denied application access to their data')
             return redirect('http://localhost:3000')
 
-        if (requestQuery.get('code') == ''):
+        if (request_query.get('code') == ''):
             myLogger.error('Response was missing access code!')
-        if (DBsettings.pkce and requestQuery.get('state')):
+        if (DBsettings.pkce and request_query.get('state')):
             myLogger.error('State is required when using PKCE')
         
         # get configuration and settings
-        myEnv = requestQuery.get('env') or 'development'
-        myVersion = requestQuery.get('version') or 'v2'
-        PKCE = requestQuery.get('pkce') or True
+        my_env = request_query.get('env') or 'development'
+        my_version = request_query.get('version') or 'v2'
+        PKCE = request_query.get('pkce') or True
 
-        settings = Settings(myEnv,myVersion,PKCE)
+        settings = Settings(my_env, my_version, PKCE)
 
-        configSettings = getConfigSettings(myEnv)
+        config_settings = get_config_settings(my_env)
 
         # this gets the token from Medicare.gov once the 'user' authenticates their Medicare.gov account
-        authToken = getAccessToken(requestQuery.get('code'),requestQuery.get('state'),configSettings=configSettings,settings=settings)
+        auth_token = get_access_token(request_query.get('code'), request_query.get('state'), config_settings=config_settings, settings=settings)
         
         """DEVELOPER NOTES:
         * This is where you would most likely place some type of
@@ -90,26 +83,34 @@ def authorizationCallback():
         * Here we are however, just updating the loggedInUser we pulled from our MockDb, but we aren't persisting that change
         * back into our mocked DB, normally you would want to do this
         """
-        
-        #Here we are grabbing the mocked 'user' for our application
+
+        # Here we are grabbing the mocked 'user' for our application
         # to be able to store the access token for that user
         # thereby linking the 'user' of our sample applicaiton with their Medicare.gov account
         # providing access to their Medicare data to our sample application        
-        loggedInUser.update({'authToken':authToken})
-        
-        """ DEVELOPER NOTES:
-        * Here we will use the token to get the EoB data for the mocked 'user' of the sample application
-        * then to save trips to the BB2 API we will store it in the mocked db with the mocked 'user'
-        *
-        * You could also request data for the Patient endpoint and/or the Coverage endpoint here
-        * using similar functionality
-        """
-        eobData = getBenefitData(settings=settings,configsSettings=configSettings,query=requestQuery,loggedInUser=loggedInUser)
-        
-        if (eobData != None and eobData != ''):
-            loggedInUser.update({'eobData':json.dumps(eobData)})
+        if auth_token and auth_token.get('expires_at') is not None:
+            loggedInUser.update({'authToken': auth_token})
+            
+            """ DEVELOPER NOTES:
+            * Here we will use the token to get the EoB data for the mocked 'user' of the sample application
+            * then to save trips to the BB2 API we will store it in the mocked db with the mocked 'user'
+            *
+            * You could also request data for the Patient endpoint and/or the Coverage endpoint here
+            * using similar functionality
+            """
+
+            eob_data = get_benefit_data(settings=settings,configs_settings=config_settings, query=request_query, logged_in_user=loggedInUser)
+            
+            if eob_data:
+                if eob_data.get('entry', None) is not None:
+                    loggedInUser['eobData'] = eob_data
+                else:
+                    # error or malformed bundle, send generic error message to client
+                    loggedInUser.update({'eobData': {'message': 'Unable to load EOB Data - fetch FHIR resource error.'}})
         else:
-            loggedInUser.update({'eobData':json.dumps('Unable to load EOB Data!')})
+            clear_bb2_data()
+            # send generic error message to FE
+            loggedInUser.update({'eobData': {'message': 'Unable to load EOB Data - authorization failed.'}})
 
     except BaseException as err:
         """DEVELOPER NOTES:
@@ -135,10 +136,8 @@ def authorizationCallback():
 *  DB you would choose to use
 """
 @app.route('/api/data/benefit',methods=['GET'])
-def getPatientEOB():
-    if (loggedInUser != None 
-        and loggedInUser.get('eobData') != None
-        and loggedInUser.get('eobData') != ''):
-        return json.loads(loggedInUser.get('eobData'))
+def get_patient_eob():
+    if loggedInUser and loggedInUser.get('eobData'):
+        return loggedInUser.get('eobData')
     else:
-        return ''
+        return {}

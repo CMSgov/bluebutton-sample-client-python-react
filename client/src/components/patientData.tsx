@@ -4,7 +4,7 @@ import chart from '../images/who-charted.png'
 import { SettingsType } from '../types/settings';
 import { useState } from 'react';
 
-export default function PatientData({ }) {
+export default function PatientData() {
     const [header] = useState('Add your Medicare Prescription Drug data');
     const [settingsState] = useState<SettingsType>({
         pkce: true,
