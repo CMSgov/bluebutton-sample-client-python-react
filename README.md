@@ -55,3 +55,10 @@ Read the DEVELOPER NOTES found in the code to understand the application
 and where you will need to make adjustments/changes as well as some 
 suggestions for best practices.
 
+Debugging server component
+--------------------------
+debugpy remote debugging enabled on port 5678 for server in docker compose, developer can attach to server from IDE e.g. vscode.
+
+Error Responses and handling:
+-----------------------------
+[See ErrorResponses.md](./ErrorResponses.md)

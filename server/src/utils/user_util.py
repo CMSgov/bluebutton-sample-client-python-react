@@ -9,11 +9,11 @@ DEVELOPER NOTES:
 * the other services/portions of the application
 """
 
-def getLoggedInUser():
+def get_loggedin_user():
     return DBusers[0]
 
-def clearBB2Data():
-    logged_in_user = getLoggedInUser()
+def clear_bb2_data():
+    logged_in_user = get_loggedin_user()
     logged_in_user.update({'authToken': {
         'access_token' : '',
         'expires_in' : 0,
@@ -23,4 +23,4 @@ def clearBB2Data():
         'refresh_token' : '',
         'patient' : ''
     }})
-    logged_in_user.update({'eobData': ''})
+    logged_in_user.update({'eobData': {}})

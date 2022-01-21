@@ -22,7 +22,7 @@ basicUser = {
         'userName' : '',
         'pcp' : '',
         'primaryFacility' : '',
-        'eobData' : ''
+        'eobData' : {}
 }
 
 DBusers = [basicUser]

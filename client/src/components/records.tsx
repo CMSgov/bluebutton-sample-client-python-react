@@ -8,8 +8,14 @@ export type EOBRecord = {
     amount: number
 }
 
-export default function Records({ }) {
+export type ErrorResponse = {
+    type: string,
+    content: string,
+}
+
+export default function Records() {
     const [records, setRecords] = useState<EOBRecord[]>([]);
+    const [message, setMessage] = useState<ErrorResponse>();
     /*
     * DEVELOPER NOTES:
     *  Here we are parsing through the different PDE Claim records
@@ -31,49 +37,81 @@ export default function Records({ }) {
             .then(res => {
                 return res.json();
             }).then(eobData => {
-                const records: EOBRecord[] = eobData.entry.map((resourceData: any) => {
-                    const resource = resourceData.resource;
-                    return {
-                        id: resource.id,
-                        code: resource.item[0]?.productOrService?.coding[0]?.code || 'Unknown',
-                        display: resource.item[0]?.productOrService?.coding[0]?.display || 'Unknown Prescription Drug',
-                        amount: resource.item[0]?.adjudication[7]?.amount?.value || '0'
+                if (eobData.entry) {
+                    const records: EOBRecord[] = eobData.entry.map((resourceData: any) => {
+                        const resource = resourceData.resource;
+                        return {
+                            id: resource.id,
+                            code: resource.item[0]?.productOrService?.coding[0]?.code || 'Unknown',
+                            display: resource.item[0]?.productOrService?.coding[0]?.display || 'Unknown Prescription Drug',
+                            amount: resource.item[0]?.adjudication[7]?.amount?.value || '0'
+                        }
+                    });
+                    setRecords(records);
+                }
+                else {
+                    if (eobData.message) {
+                        setMessage({"type": "error", "content": eobData.message || "Unknown"})
                     }
-                });
-                setRecords(records);
+                }
             });
     }, [])
 
-    return (
-        <div className='full-width-card'>
-            <Table className="ds-u-margin-top--2" stackable stackableBreakpoint="md">
-                <TableCaption>Medicare Prescription Drug Claims Data</TableCaption>
-                <TableHead>
-                    <TableRow>
-                        <TableCell id="column_1">NDC Code</TableCell>
-                        <TableCell id="column_2">Prescription Drug Name</TableCell>
-                        <TableCell id="column_3">Cost</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-
-                    {records.map(record => {
-                        return (
-                            <TableRow key={record.id}>
-                                <TableCell stackedTitle="NDC Code" headers="column_1">
-                                    {record.code}
-                                </TableCell>
-                                <TableCell stackedTitle="Prescription Drug Name" headers="column_2">
-                                    {record.display}
-                                </TableCell>
-                                <TableCell stackedTitle="Cost" headers="column_3">
-                                    ${record.amount}.00
-                                </TableCell>
-                            </TableRow>
-                        )
-                    })}
-                </TableBody>
-            </Table>
-        </div>
-    );
+    if (message) {
+        return (
+            <div className='full-width-card'>
+                <Table className="ds-u-margin-top--2" stackable stackableBreakpoint="md">
+                    <TableCaption>Error Response</TableCaption>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell id="column_1">Type</TableCell>
+                            <TableCell id="column_2">Content</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell stackedTitle="Type" headers="column_1">
+                                {message.type}
+                            </TableCell>
+                            <TableCell stackedTitle="Content" headers="column_2">
+                                {message.content}
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
+        );
+    } else {
+        return (
+            <div className='full-width-card'>
+                <Table className="ds-u-margin-top--2" stackable stackableBreakpoint="md">
+                    <TableCaption>Medicare Prescription Drug Claims Data</TableCaption>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell id="column_1">NDC Code</TableCell>
+                            <TableCell id="column_2">Prescription Drug Name</TableCell>
+                            <TableCell id="column_3">Cost</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {records.map(record => {
+                            return (
+                                <TableRow key={record.id}>
+                                    <TableCell stackedTitle="NDC Code" headers="column_1">
+                                        {record.code}
+                                    </TableCell>
+                                    <TableCell stackedTitle="Prescription Drug Name" headers="column_2">
+                                        {record.display}
+                                    </TableCell>
+                                    <TableCell stackedTitle="Cost" headers="column_3">
+                                        ${record.amount}.00
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })}
+                    </TableBody>
+                </Table>
+            </div>
+        );
+    }
 };
