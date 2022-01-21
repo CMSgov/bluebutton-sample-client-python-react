@@ -4,9 +4,9 @@ from flask import redirect, request
 from ..data.Database import *
 from . import app
 from ..entities.Settings import Settings
-from ..utils.configUtil import get_config_settings
-from ..utils.bb2Util import generate_authorize_url, get_access_token, get_benefit_data
-from ..utils.userUtil import clear_bb2_data, get_loggedin_user
+from ..utils.config_util import get_config_settings
+from ..utils.bb2_util import generate_authorize_url, get_access_token, get_benefit_data
+from ..utils.user_util import clear_bb2_data, get_loggedin_user
 from ..shared.LoggerFactory import LoggerFactory
 
 """

@@ -5,7 +5,7 @@ import time
 import urllib
 
 from .generatePKCE import generateCodeChallenge, generateRandomState
-from .userUtil import *
+from .user_util import *
 from ..data.Database import *
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
