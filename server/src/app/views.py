@@ -1,6 +1,9 @@
 import json
 
 from flask import redirect, request
+
+from cms_bluebutton import BlueButton, AuthorizationToken
+
 from ..data.Database import *
 from . import app
 from ..entities.Settings import Settings
@@ -8,6 +11,7 @@ from ..utils.config_util import get_config_settings
 from ..utils.bb2_util import generate_authorize_url, get_access_token, get_benefit_data
 from ..utils.user_util import clear_bb2_data, get_loggedin_user
 from ..shared.LoggerFactory import LoggerFactory
+
 
 """
 This is the location of all the routes, via the port specified in the config, that allows the 
@@ -33,15 +37,29 @@ def verify_port_listening():
 
 @app.route('/api/authorize/authurl',methods=['GET'])
 def get_auth_url():
-    """ DEVELOPER NOTE:
-    * to utilize the latest security features/best practices
-    * it is recommended to utilize pkce
-    """
     # get configuration and settings
     my_env = request.args.get('env') or 'development'
     my_version = request.args.get('version') or 'v2'
-    PKCE = request.args.get('pkce') or True
-    return generate_authorize_url(Settings(my_env, my_version, PKCE), get_config_settings(my_env))
+    config_settings = get_config_settings(my_env)
+   
+    bb_sdk_config = {
+        "base_url": config_settings["bb2BaseUrl"],
+        "client_id": config_settings["bb2ClientId"],
+        "client_secret": config_settings["bb2ClientSecret"],
+        "callback_url": config_settings["bb2CallbackUrl"],
+        "version": "1" if my_version == "v1" else "2",
+        "environment":  "PRODUCTION" if my_env == "production" else "SANDBOX",
+    } 
+    bb = BlueButton(bb_sdk_config)
+    auth_data = bb.generate_auth_data()
+    
+    # Save auth data in application user DB later use
+    DBcodeChallenges[auth_data["state"]] = {
+        "codeChallenge": auth_data["code_challenge"],
+        "verifier": auth_data["verifier"]
+    }
+    
+    return bb.generate_authorize_url(auth_data)
 
 @app.route('/api/authorize/currentAuthToken',methods=['GET'])
 def get_current_auth_token():
