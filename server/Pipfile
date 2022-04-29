@@ -9,6 +9,7 @@ requests = "*"
 argparse = "*"
 requests-toolbelt = "*"
 python-dotenv = "*"
+cms-bluebutton = "*"
 
 [dev-packages]
 

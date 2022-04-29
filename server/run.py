@@ -34,13 +34,6 @@ if __name__ == "__main__":
     elif len(sys.argv) <= 2:
         dotenv_path = os.path.join(main_base,'src','prestart','env','development.env')
         os.environ['FLASK_ENV'] = 'development'
-    try:
-        setEnvVariables(dotenv_path=dotenv_path)    
-        app.run(host=os.getenv('HOST'),port=os.getenv('PORT'))    
-    except BaseException as err:
-        """DEVELOPER NOTES:
-        * This is where you could also use a data service or other exception handling
-        * to display or store the error
-        """
-        myLogger.error(err)
-   
+
+    setEnvVariables(dotenv_path=dotenv_path)    
+    app.run(host=os.getenv('HOST'),port=os.getenv('PORT'))

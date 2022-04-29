@@ -12,6 +12,11 @@ COPY . .
 
 RUN pip install pipenv
 RUN pip install debugpy
+
+# Install CMS Blue Button 2.0 SDK from package file in server/ dir
+RUN pip install cms_bluebutton-0.1.0-py3-none-any.whl # wheel
+#RUN pip install cms_bluebutton-0.1.0.tar.gz # bdist
+
 RUN pipenv install --system --deploy --ignore-pipfile
 
 ENV ENV "development"
