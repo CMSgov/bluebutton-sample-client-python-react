@@ -81,8 +81,11 @@ def authorization_callback():
         if request_query.get("error") == BENE_DENIED_ACCESS:
             # clear all saved claims data since the bene denied access
             clear_bb2_data()
-            myLogger.error("Beneficiary denied application"
-                           " access to their data")
+            mesg = "Beneficiary denied application access to their data"
+
+            # error or malformed bundle,generic error message to client
+            loggedInUser.update({"eobData": {"message": mesg}})
+            myLogger.error(mesg)
             return redirect("http://localhost:3000")
 
         # Configure cms_bluebutton class instance
@@ -178,7 +181,7 @@ def authorization_callback():
                 {
                     "eobData": {
                         "message": "Unable to load EOB Data"
-                        " - authorization failed."
+                                   " - authorization failed."
                     }
                 }
             )
