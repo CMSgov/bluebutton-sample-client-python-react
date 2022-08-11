@@ -49,6 +49,15 @@ To ensure data displays properly in the sample application please use a
 Blue Button Sandbox user that has PDE (Part-D Events) EoBs (Explanation of Benefits).  An example of a user with this
 data would be:  BBUser29999 (PWD: PW29999!) or BBUser29998 (PWD: PW29998!)
 
+## Python SDK
+
+The current implementation of our sample app utilizes the python SDK.
+If you would like to view the source code for the SDK you can find it here:
+
+   https://github.com/CMSgov/cms-bb2-python-sdk
+
+Any calls utilizing the SDK are demarcated in the comments with #SDK call.
+
 Development
 -----------
 Read the DEVELOPER NOTES found in the code to understand the application

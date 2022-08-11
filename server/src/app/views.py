@@ -60,11 +60,13 @@ def get_bluebutton_sdk_config_from_request(request):
 def get_auth_url():
     bb_sdk_config = get_bluebutton_sdk_config_from_request(request)
     bb = BlueButton(bb_sdk_config)
+    # SDK call
     auth_data = bb.generate_auth_data()
 
     # Save auth data in user DB for later use (using state as the key)
     DBcodeChallenges[auth_data["state"]] = auth_data
 
+    # SDK call
     return bb.generate_authorize_url(auth_data)
 
 
@@ -96,6 +98,7 @@ def authorization_callback():
         auth_data = DBcodeChallenges[request_query.get("state")]
 
         # this gets the token from Medicare.gov once the 'user' authenticates
+        # SDK call
         auth_token = bb.get_authorization_token(
             auth_data, request_query.get("code", None),
             request_query.get("state", None)
@@ -136,6 +139,7 @@ def authorization_callback():
             auth_token = AuthorizationToken(auth_token_dict)
 
             # Get EOB FHIR resource data
+            # SDK call
             eob_ret = bb.get_explaination_of_benefit_data(
                 {"params": "", "auth_token": auth_token}
             )
