@@ -40,6 +40,7 @@ def get_bluebutton_sdk_config_from_request(request):
     my_env = request.args.get("env") or "development"
     my_version = request.args.get("version") or "v2"
     config_settings = get_config_settings(my_env)
+    myLogger.info(config_settings)
 
     return {
         "base_url": config_settings["bb2BaseUrl"],

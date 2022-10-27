@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile
+    environment:
+      - SELENIUM_TESTS=true
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
+    ports:
+      - "3001:3001"
+      - "5678:5678"
+  client:
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile
+    environment:
+      - SELENIUM_TESTS=true
+      - DANGEROUSLY_DISABLE_HOST_CHECK=true
+    ports:
+      - "3000:3000"
+  selenium-tests:
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile.selenium
+    command: pytest ./src/selenium_tests/selenium_tests.py
+    depends_on:
+      - chrome
+      - server
+      - client
+  chrome:
+    image: selenium/standalone-chrome-debug
+    hostname: chrome
+    ports:
+      - "4444:4444"
+      - "5900:5900"
