@@ -7,28 +7,28 @@ from ..entities.Settings import Settings
 """
 
 basicAuthToken = {
-        'access_token' : '',
-        'expires_in' : 0,
-        'expires_at' : 0,
-        'token_type' : '',
-        'scope' : '',
-        'refresh_token' : '',
-        'patient' : ''
+        'access_token': '',
+        'expires_in': 0,
+        'expires_at': 0,
+        'token_type': '',
+        'scope': '',
+        'refresh_token': '',
+        'patient': ''
 }
 
 basicUser = {
-        'authToken' : basicAuthToken,
-        'name' : '',
-        'userName' : '',
-        'pcp' : '',
-        'primaryFacility' : '',
-        'eobData' : {}
+        'authToken': basicAuthToken,
+        'name': '',
+        'userName': '',
+        'pcp': '',
+        'primaryFacility': '',
+        'eobData': {}
 }
 
 DBusers = [basicUser]
-DBsettings = Settings('','','')
-DBcodeChallenge = dict['codeChallenge' : '','verifier' : '']
-DBcodeChallenges = {'' : DBcodeChallenge}
+DBsettings = Settings('', '', '')
+DBcodeChallenge = dict['codeChallenge': '','verifier': '']
+DBcodeChallenges = {'': DBcodeChallenge}
 DBid = 1
 
 """
@@ -46,11 +46,13 @@ DBid = 1
 * we are expecting this user to be linked to the 
 * BB2 Sandbox User BBUser29999 or BBUser29998
 """
+
+
 def initDB():
         
     sampleUser = basicUser
-    sampleUser.update({'name':'John Doe'})
-    sampleUser.update({'username':'jdoe29999'})
-    sampleUser.update({'pcp':'Dr. Hibbert'})
-    sampleUser.update({'primaryFacility':'Springfield General Hospital'})
+    sampleUser.update({'name': 'John Doe'})
+    sampleUser.update({'username': 'jdoe29999'})
+    sampleUser.update({'pcp': 'Dr. Hibbert'})
+    sampleUser.update({'primaryFacility': 'Springfield General Hospital'})
     DBusers.append(sampleUser)
