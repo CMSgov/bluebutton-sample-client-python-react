@@ -1,5 +1,5 @@
 import { Table, TableCaption, TableRow, TableCell, TableHead, TableBody } from '@cmsgov/design-system';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export type EOBRecord = {
     id: string,
@@ -114,4 +114,4 @@ export default function Records() {
             </div>
         );
     }
-};
+}

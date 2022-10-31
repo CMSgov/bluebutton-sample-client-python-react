@@ -1,5 +1,4 @@
-import json
-
+import os
 from flask import redirect, request
 from ..data.Database import *
 from . import app
@@ -23,7 +22,7 @@ loggedInUser = get_loggedin_user()
 #########################################################################################
 # Test route
 #########################################################################################
-@app.route('/',methods=['GET'])
+@app.route('/', methods=['GET'])
 def verify_port_listening():
     return 'Listening on Port 3001 for the Server!'
 
@@ -31,7 +30,7 @@ def verify_port_listening():
 # Authorize routes
 #########################################################################################
 
-@app.route('/api/authorize/authurl',methods=['GET'])
+@app.route('/api/authorize/authurl', methods=['GET'])
 def get_auth_url():
     """ DEVELOPER NOTE:
     * to utilize the latest security features/best practices
@@ -43,11 +42,11 @@ def get_auth_url():
     PKCE = request.args.get('pkce') or True
     return generate_authorize_url(Settings(my_env, my_version, PKCE), get_config_settings(my_env))
 
-@app.route('/api/authorize/currentAuthToken',methods=['GET'])
+@app.route('/api/authorize/currentAuthToken', methods=['GET'])
 def get_current_auth_token():
     return loggedInUser.get('authToken')
 
-@app.route('/api/bluebutton/callback/',methods=['GET'])
+@app.route('/api/bluebutton/callback/', methods=['GET'])
 def authorization_callback():
     try:
         request_query = request.args
@@ -56,7 +55,7 @@ def authorization_callback():
             # clear all saved claims data since the bene has denied access for the application
             clear_bb2_data()
             myLogger.error('Beneficiary denied application access to their data')
-            return redirect('http://localhost:3000')
+            return redirect(get_fe_redirect_url())
 
         if (request_query.get('code') == ''):
             myLogger.error('Response was missing access code!')
@@ -122,7 +121,7 @@ def authorization_callback():
     * This is a hardcoded redirect, but this should be used from settings stored in a conf file
     * or other mechanism
     """
-    return redirect('http://localhost:3000')
+    return redirect(get_fe_redirect_url())
 
 #########################################################################################
 # DATA Routes
@@ -141,3 +140,8 @@ def get_patient_eob():
         return loggedInUser.get('eobData')
     else:
         return {}
+
+
+def get_fe_redirect_url():
+    is_selenium_tests = os.getenv('SELENIUM_TESTS', 'False').lower() in ('true')
+    return 'http://client:3000' if is_selenium_tests else 'http://localhost:3000'

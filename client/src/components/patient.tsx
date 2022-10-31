@@ -1,4 +1,5 @@
 import avatar from '../images/patient.png'
+import React from 'react'
 
 export default function Patient() {
 
@@ -20,4 +21,4 @@ export default function Patient() {
             </div>
         </div>
     );
-};
+}
