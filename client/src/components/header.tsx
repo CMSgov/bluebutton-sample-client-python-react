@@ -1,5 +1,6 @@
 import { Badge } from '@cmsgov/design-system';
 import { Link as RouterLink } from 'react-router-dom';
+import React from 'react'
 
 export default function Header() {
     return (
@@ -16,4 +17,4 @@ export default function Header() {
             </div>
         </header>
     );
-};
+}
