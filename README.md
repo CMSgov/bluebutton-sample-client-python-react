@@ -25,12 +25,11 @@ Running the Back-end & Front-end
     
 Once Docker and Python are Installed then do the following:
     
-    copy server/src/configs/sample_config.py -> server/src/configs/config.py
+    cp server/sample-bluebutton-config.py server/.bluebutton-config.py
     
-Make sure to replace the clientId and clientSecret variables within the config file with
-the ones you were provided, for your application, when you created your Blue Button Sandbox account.
-
-    copy server/src/prestart/env/sandbox.sample.env -> server/src/prestart/env/development.env
+Make sure to replace the client_id and client_secret variables within the config file with
+the ones you were provided, for your application, when you created your Blue Button Sandbox account,
+the supported environments are SANDBOX or PRODUCTION.
 
     docker-compose up -d
 
@@ -51,9 +50,9 @@ data would be:  BBUser29999 (PWD: PW29999!) or BBUser29998 (PWD: PW29998!)
 
 Development
 -----------
-Read the DEVELOPER NOTES found in the code to understand the application
-and where you will need to make adjustments/changes as well as some 
-suggestions for best practices.
+Read the comments in the code to understand the application and where
+you will need to make adjustments/changes as well as some suggestions
+for best practices.
 
 Debugging server component
 --------------------------

@@ -1,0 +1,12 @@
+{
+    "environment": "SANDBOX",
+    "client_id": "<client_id>",
+    "client_secret": "<client_secret>",
+    "callback_url": "http://localhost:3001/api/bluebutton/callback/",
+    "version": 2,
+    "retry_settings": {
+        "total": 3,
+        "backoff_factor": 5,
+        "status_forcelist": [500, 502, 503, 504]
+    }
+}

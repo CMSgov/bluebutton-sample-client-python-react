@@ -5,17 +5,16 @@ LABEL description="Demo of a Medicare claims data sample app"
 
 WORKDIR /server
 
-COPY ["./src/configs/sample_config.py", "./src/configs/config.py"]
-COPY ["./src/prestart/env/sandbox.sample.env","./src/prestart/env/development.env"]
+# COPY ["./src/configs/sample_config.py", "./src/configs/config.py"]
+# COPY ["./src/prestart/env/sandbox.sample.env","./src/prestart/env/development.env"]
 
 COPY . . 
 
-RUN pip install pipenv
-RUN pip install debugpy
+RUN pip install pipenv debugpy ./cms_bluebutton_sdk-1.0.0-py3-none-any.whl
 RUN pipenv install --system --deploy --ignore-pipfile
 
-ENV ENV "development"
+# ENV ENV "development"
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:5678 run.py --ENV ${ENV}"]
+CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:5678 app.py"]
