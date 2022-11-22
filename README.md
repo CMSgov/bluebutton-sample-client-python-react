@@ -25,7 +25,7 @@ Running the Back-end & Front-end
     
 Once Docker and Python are Installed then do the following:
     
-    cp server/sample-bluebutton-config.py server/.bluebutton-config.py
+    cp server/sample-bluebutton-config.json server/.bluebutton-config.json
     
 Make sure to replace the client_id and client_secret variables within the config file with
 the ones you were provided, for your application, when you created your Blue Button Sandbox account,
