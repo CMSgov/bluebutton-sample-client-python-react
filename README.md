@@ -54,6 +54,14 @@ Read the comments in the code to understand the application and where
 you will need to make adjustments/changes as well as some suggestions
 for best practices.
 
+Python SDK
+----------
+
+The sample app utilizes our [Python SDK](https://github.com/CMSgov/cms-bb2-python-sdk).
+
+Please review our SDK documentation for more information and additional features available for your use.
+
+
 Debugging server component
 --------------------------
 debugpy remote debugging enabled on port 5678 for server in docker compose, developer can attach to server from IDE e.g. vscode.
