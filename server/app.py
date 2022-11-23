@@ -4,14 +4,20 @@ from flask import redirect, request, Flask
 from cms_bluebutton.cms_bluebutton import BlueButton
 
 
+BENE_DENIED_ACCESS = "access_denied"
+FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
+ERR_QUERY_EOB = "Error when querying the patient's EOB!"
+ERR_MISSING_AUTH_CODE = "Response was missing access code!"
+ERR_MISSING_STATE = "State is required when using PKCE"
+
 app = Flask(__name__)
 bb = BlueButton()
 
 # This is where medicare.gov beneficiary associated
 # with the current logged in app user,
 # in real app, this could be the app specific
-# accoount management system
-loggedInUser = {
+# account management system
+logged_in_user = {
     'authToken': None,
     'eobData': None
 }
@@ -35,13 +41,31 @@ def get_auth_url():
 @app.route('/api/bluebutton/callback/', methods=['GET'])
 def authorization_callback():
     request_query = request.args
+
+    if (request_query.get('error') == BENE_DENIED_ACCESS):
+        # clear all cached claims eob data since the bene has denied access
+        # for the application
+        clear_bb2_data()
+        logged_in_user.update({'eobData': {'message': FE_MSG_ACCESS_DENIED}})
+        print(FE_MSG_ACCESS_DENIED)
+        return redirect(get_fe_redirect_url())
+
     code = request_query.get('code')
+
+    if code is None:
+        print(ERR_MISSING_AUTH_CODE)
+        return redirect(get_fe_redirect_url())
+
     state = request_query.get('state')
+
+    if state is None:
+        print(ERR_MISSING_STATE)
+        return redirect(get_fe_redirect_url())
 
     auth_token = bb.get_authorization_token(auth_data, code, state)
 
     # correlate app user with medicare bene
-    loggedInUser['authToken'] = auth_token
+    logged_in_user['authToken'] = auth_token
 
     config = {
         "auth_token": auth_token,
@@ -49,11 +73,8 @@ def authorization_callback():
         "url": "to be overriden"
     }
 
-    # result = {}
-
     try:
-        # search eob
-
+        # search eob (or other fhir resources: patient, coverage, etc.)
         eob_data = bb.get_explaination_of_benefit_data(config)
 
         # fhir search response could contain large number of resources,
@@ -65,9 +86,12 @@ def authorization_callback():
         # Use bb.get_pages(data, config) to get all the pages
 
         auth_token = eob_data['auth_token']
-        loggedInUser['authToken'] = auth_token
-        loggedInUser['eobData'] = eob_data['response'].json()
+        logged_in_user['authToken'] = auth_token
+        logged_in_user['eobData'] = eob_data['response'].json()
     except Exception as ex:
+        clear_bb2_data()
+        logged_in_user.update({'eobData': {'message': ERR_QUERY_EOB}})
+        print(ERR_QUERY_EOB)
         print(ex)
 
     return redirect(get_fe_redirect_url())
@@ -81,8 +105,8 @@ def get_patient_eob():
     * This would be replaced by a persistence service layer for whatever
     *  DB you would choose to use
     """
-    if loggedInUser and loggedInUser.get('eobData'):
-        return loggedInUser.get('eobData')
+    if logged_in_user and logged_in_user.get('eobData'):
+        return logged_in_user.get('eobData')
     else:
         return {}
 
@@ -93,6 +117,14 @@ def get_fe_redirect_url():
     '''
     is_selenium = os.getenv('SELENIUM_TESTS', 'False').lower() in ('true')
     return 'http://client:3000' if is_selenium else 'http://localhost:3000'
+
+
+def clear_bb2_data():
+    '''
+    helper to clean up cached result
+    '''
+    logged_in_user.update({'authToken': None})
+    logged_in_user.update({'eobData': {}})
 
 
 if __name__ == '__main__':
