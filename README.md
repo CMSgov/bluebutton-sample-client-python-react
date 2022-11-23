@@ -26,7 +26,11 @@ Running the Back-end & Front-end
 Once Docker and Python are Installed then do the following:
     
     cp server/sample-bluebutton-config.json server/.bluebutton-config.json
-    
+
+or (if running docker compose selenium tests)
+
+    cp server/sample-bluebutton-selenium-config.json server/.bluebutton-config.json
+
 Make sure to replace the client_id and client_secret variables within the config file with
 the ones you were provided, for your application, when you created your Blue Button Sandbox account,
 the supported environments are SANDBOX or PRODUCTION.
@@ -69,6 +73,10 @@ debugpy remote debugging enabled on port 5678 for server in docker compose, deve
 ## Run selenium tests in docker
 
 Configure the remote target BB2 instance where the tested app is registered (as described above "Running the Back-end & Front-end")
+
+Also use below call back URL in configuration, and add it as redirect URI at Blue Button API app registry:
+
+http://server:3001/api/bluebutton/callback/
 
 Go to local repository base directory and run docker compose as below:
 
