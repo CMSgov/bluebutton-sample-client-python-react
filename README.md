@@ -70,24 +70,6 @@ Debugging server component
 --------------------------
 debugpy remote debugging enabled on port 5678 for server in docker compose, developer can attach to server from IDE e.g. vscode.
 
-## Run selenium tests in docker
-
-Configure the remote target BB2 instance where the tested app is registered (as described above "Running the Back-end & Front-end")
-
-Also use below call back URL in configuration, and add it as redirect URI at Blue Button API app registry:
-
-http://server:3001/api/bluebutton/callback/
-
-Go to local repository base directory and run docker compose as below:
-
-docker-compose -f docker-compose.selenium.yml up --abort-on-container-exit
-
-Note: --abort-on-container-exit will abort client and server containers when selenium tests ends
-
-## Visual trouble shoot
-
-Install VNC viewer and point browser to http://localhost:5900 to monitor web UI interactions
-
 Error Responses and handling:
 -----------------------------
 [See ErrorResponses.md](./ErrorResponses.md)
