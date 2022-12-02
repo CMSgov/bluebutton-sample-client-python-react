@@ -14,6 +14,9 @@ Change your `callback_url` configuration to use `server` instead of `localhost`.
 ```JSON
     "callback_url": "http://server:3001/api/bluebutton/callback/"
 ```
+can also start your configuration by the sample config template for selenium tests:
+
+cp server/sample-bluebutton-selenium-config.json server/.bluebutton-config.json
 
 You will also need to add this URL to your `redirect_uris` list in your application's configuration on the BB2 Sandbox UI.
 

@@ -27,10 +27,6 @@ Once Docker and Python are Installed then do the following:
     
     cp server/sample-bluebutton-config.json server/.bluebutton-config.json
 
-or (if running docker compose selenium tests)
-
-    cp server/sample-bluebutton-selenium-config.json server/.bluebutton-config.json
-
 Make sure to replace the client_id and client_secret variables within the config file with
 the ones you were provided, for your application, when you created your Blue Button Sandbox account,
 the supported environments are SANDBOX or PRODUCTION.
