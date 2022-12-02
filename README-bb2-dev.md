@@ -14,7 +14,7 @@ Change your `callback_url` configuration to use `server` instead of `localhost`.
 ```JSON
     "callback_url": "http://server:3001/api/bluebutton/callback/"
 ```
-can also start your configuration by the sample config template for selenium tests:
+You can also start your configuration by following the sample config template for selenium tests:
 
 cp server/sample-bluebutton-selenium-config.json server/.bluebutton-config.json
 
