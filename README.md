@@ -25,12 +25,11 @@ Running the Back-end & Front-end
     
 Once Docker and Python are Installed then do the following:
     
-    copy server/src/configs/sample_config.py -> server/src/configs/config.py
-    
-Make sure to replace the clientId and clientSecret variables within the config file with
-the ones you were provided, for your application, when you created your Blue Button Sandbox account.
+    cp server/sample-bluebutton-config.json server/.bluebutton-config.json
 
-    copy server/src/prestart/env/sandbox.sample.env -> server/src/prestart/env/development.env
+Make sure to replace the client_id and client_secret variables within the config file with
+the ones you were provided, for your application, when you created your Blue Button Sandbox account,
+the supported environments are SANDBOX or PRODUCTION.
 
     docker-compose up -d
 
@@ -51,27 +50,21 @@ data would be:  BBUser29999 (PWD: PW29999!) or BBUser29998 (PWD: PW29998!)
 
 Development
 -----------
-Read the DEVELOPER NOTES found in the code to understand the application
-and where you will need to make adjustments/changes as well as some 
-suggestions for best practices.
+Read the comments in the code to understand the application and where
+you will need to make adjustments/changes as well as some suggestions
+for best practices.
+
+Python SDK
+----------
+
+The sample app utilizes our [Python SDK](https://github.com/CMSgov/cms-bb2-python-sdk).
+
+Please review our SDK documentation for more information and additional features available for your use.
+
 
 Debugging server component
 --------------------------
 debugpy remote debugging enabled on port 5678 for server in docker compose, developer can attach to server from IDE e.g. vscode.
-
-## Run selenium tests in docker
-
-Configure the remote target BB2 instance where the tested app is registered (as described above "Running the Back-end & Front-end")
-
-Go to local repository base directory and run docker compose as below:
-
-docker-compose -f docker-compose.selenium.yml up --abort-on-container-exit
-
-Note: --abort-on-container-exit will abort client and server containers when selenium tests ends
-
-## Visual trouble shoot
-
-Install VNC viewer and point browser to http://localhost:5900 to monitor web UI interactions
 
 Error Responses and handling:
 -----------------------------

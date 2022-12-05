@@ -5,10 +5,6 @@ name = "pypi"
 
 [packages]
 flask = "*"
-requests = "*"
-argparse = "*"
-requests-toolbelt = "*"
-python-dotenv = "*"
 
 [dev-packages]
 

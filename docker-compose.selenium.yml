@@ -24,7 +24,7 @@ services:
     build:
       context: ./selenium_tests
       dockerfile: ./Dockerfile
-    command: pytest ./src/test_node_sample.py
+    command: pytest ./src/test_python_sample.py
     depends_on:
       - chrome
       - server
