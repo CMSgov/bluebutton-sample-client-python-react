@@ -1,19 +1,24 @@
 FROM python:3.9.6
 
-LABEL version="1.0"
+ARG INSTALL_FROM_TEST_PYPI="False"
+
+LABEL version="1.0.0"
 LABEL description="Demo of a Medicare claims data sample app"
 
 WORKDIR /server
 
-# COPY ["./src/configs/sample_config.py", "./src/configs/config.py"]
-# COPY ["./src/prestart/env/sandbox.sample.env","./src/prestart/env/development.env"]
-
 COPY . . 
 
-RUN pip install pipenv debugpy ./cms_bluebutton_sdk-1.0.0-py3-none-any.whl
-RUN pipenv install --system --deploy --ignore-pipfile
+RUN pip install pipenv debugpy
 
-# ENV ENV "development"
+# Install cms_bluebutton_sdk from pypi.org or test.pypi.org
+RUN if [ "$INSTALL_FROM_TEST_PYPI" = "True" ]; then \
+    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ cms-bluebutton-sdk; \
+  else \
+    pip install cms-bluebutton-sdk; \
+  fi
+
+RUN pipenv install --system --deploy --ignore-pipfile
 
 EXPOSE 3001
 

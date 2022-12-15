@@ -5,6 +5,8 @@ services:
     build:
       context: ./server
       dockerfile: ./Dockerfile
+      args:
+        INSTALL_FROM_TEST_PYPI: ${INSTALL_FROM_TEST_PYPI}
     ports:
       - "3001:3001"
       - "5678:5678"
