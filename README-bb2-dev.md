@@ -41,17 +41,17 @@ To utilize the test.pypi.org repository use the following commands:
 To create and start the containers:
 
 ```
-INSTALL_FROM_TEST_PYPI="True" docker-compose up -d
+BUILD_DEVELOPMENT="True" docker-compose up -d
 ```
 
 To build just the `server` container:
 
 ```
-INSTALL_FROM_TEST_PYPI="True" docker-compose up -d --build server
+BUILD_DEVELOPMENT="True" docker-compose up -d --build server
 ```
 OR
 ```
-docker-compose build server --build-arg INSTALL_FROM_TEST_PYPI="True"
+docker-compose build server --build-arg BUILD_DEVELOPMENT="True"
 ```
 
 To show the version installed:
