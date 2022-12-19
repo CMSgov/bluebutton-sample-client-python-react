@@ -5,6 +5,8 @@ services:
     build:
       context: ./server
       dockerfile: ./Dockerfile
+      args:
+        BUILD_DEVELOPMENT: ${BUILD_DEVELOPMENT}
     ports:
       - "3001:3001"
       - "5678:5678"

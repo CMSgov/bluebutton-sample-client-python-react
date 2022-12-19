@@ -31,3 +31,32 @@ Note: You may need to clean up already existing Docker containers, if you are ha
 ## Visual trouble shoot
 
 Install VNC viewer and point browser to http://localhost:5900 to monitor web UI interactions
+
+## Installing cms-bluebutton-sdk from test.pypi.org
+
+The package can be installed from the test instance of the PyPI site for development testing. The default behavior is to install from the main site.
+
+To utilize the test.pypi.org repository use the following commands:
+
+To create and start the containers:
+
+```
+BUILD_DEVELOPMENT="True" docker-compose up -d
+```
+
+To build just the `server` container:
+
+```
+BUILD_DEVELOPMENT="True" docker-compose up -d --build server
+```
+OR
+```
+docker-compose build server --build-arg BUILD_DEVELOPMENT="True"
+```
+
+To show the version installed:
+
+```
+docker-compose exec server pip show cms-bluebutton-sdk
+```
+
