@@ -1,4 +1,4 @@
-FROM python:3.9.6
+FROM python:3.9.16-slim
 
 ARG BUILD_DEVELOPMENT="False"
 
