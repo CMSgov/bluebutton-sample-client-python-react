@@ -21,6 +21,8 @@ production.env
 sandbox.env
 
 config.py
+config.json
+.bluebutton-config.json
 
 # Generic
 *.pyc
