@@ -1,6 +1,6 @@
-FROM node:18.14-slim
+FROM node:19.9-slim
 
-LABEL version="1.0"
+LABEL version="1.1"
 LABEL description="Demo of a Medicare claims data sample app"
 
 WORKDIR /client

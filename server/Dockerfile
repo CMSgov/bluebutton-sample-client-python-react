@@ -1,8 +1,8 @@
-FROM python:3.9.16-slim
+FROM python:3.11.6-slim
 
 ARG BUILD_DEVELOPMENT="False"
 
-LABEL version="1.0.0"
+LABEL version="1.1.0"
 LABEL description="Demo of a Medicare claims data sample app"
 
 WORKDIR /server
