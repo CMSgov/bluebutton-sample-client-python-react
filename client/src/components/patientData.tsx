@@ -9,7 +9,7 @@ export default function PatientData() {
     const [settingsState] = useState<SettingsType>({
         pkce: true,
         version: 'v2',
-        env: 'sandbox'
+        env: 'local'
     });
     async function goAuthorize() {
         const authUrlResponse = await axios.get(`/api/authorize/authurl`, { params: settingsState });

@@ -30,6 +30,45 @@ $image-path: "~@cmsgov/design-system/dist/images";
   padding: 1rem;
 }
 
+.background {
+  background-image: url("../images/medicare_base.jpg");
+  position: relative;
+  height: 259px;
+  width: 400px;
+}
+
+.name {
+  position: absolute;
+  top: 90px;
+  left: 20px;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.mbi {
+  position: absolute;
+  top: 150px;
+  left: 20px;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.date-a {
+  position: absolute;
+  top: 183px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 24px;
+}
+
+.date-b {
+  position: absolute;
+  top: 208px;
+  left: 240px;
+  font-weight: bold;
+  font-size: 24px;
+}
+
 @media screen and (min-device-width: 1024px) {
   .bb-c-card.default-card {
     width: 445px;

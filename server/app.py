@@ -1,4 +1,5 @@
 import os
+import json
 
 from flask import redirect, request, Flask
 from cms_bluebutton.cms_bluebutton import BlueButton
@@ -76,6 +77,9 @@ def authorization_callback():
     try:
         # search eob (or other fhir resources: patient, coverage, etc.)
         eob_data = bb.get_explaination_of_benefit_data(config)
+        coverage_data = bb.get_c4dic_coverage_data(config)
+        patient_data = bb.get_c4dic_patient_data(config)
+        org_data = bb.get_c4dic_organization_data(config)
 
         # fhir search response could contain large number of resources,
         # by default they are chunked into pages of 10 resources each,
@@ -88,6 +92,21 @@ def authorization_callback():
         auth_token = eob_data['auth_token']
         logged_in_user['authToken'] = auth_token
         logged_in_user['eobData'] = eob_data['response'].json()
+        coverage_json = coverage_data['response'].json()
+        logged_in_user['coverageData'] = json.dumps(coverage_json, indent=3)
+        mbi_plain = coverage_json[0]['subscriberId']
+        mbi = "{0}-{1}-{2}".format(mbi_plain[:4], mbi_plain[4:7], mbi_plain[7:])
+        coverage = {'mbi': mbi}
+        patient_json = patient_data['response'].json()
+        org_json = org_data['response'].json()
+        coverage['patient_name'] = "{0} {1}".format(patient_json['name'][0]['given'][0], patient_json['name'][0]['family'])
+        coverage['organization_name'] = "{0}".format(org_json[0]['name'])
+        coverage['organization_active'] = "{0}".format(org_json[0]['active'])
+        coverage['date_a'] = coverage_json[0]['period']
+        coverage['type'] = coverage_json[0]['type']['coding'][0]['code']
+        coverage['plan'] = "Part A, Part B"
+        coverage['group'] = "Medicare"
+        logged_in_user['coverage'] = coverage
     except Exception as ex:
         clear_bb2_data()
         logged_in_user.update({'eobData': {'message': ERR_QUERY_EOB}})
@@ -111,12 +130,40 @@ def get_patient_eob():
         return {}
 
 
+@app.route('/api/data/insurance', methods=['GET'])
+def get_insurance():
+    """
+    * this function is used directly by the front-end to
+    * retrieve eob data from the logged in user from within the mocked DB
+    * This would be replaced by a persistence service layer for whatever
+    *  DB you would choose to use
+    """
+    if logged_in_user and logged_in_user.get('coverage'):
+        return logged_in_user.get('coverage')
+    else:
+        return {}
+
+
+@app.route('/api/data/coverage', methods=['GET'])
+def get_coverage():
+    """
+    * this function is used directly by the front-end to
+    * retrieve eob data from the logged in user from within the mocked DB
+    * This would be replaced by a persistence service layer for whatever
+    *  DB you would choose to use
+    """
+    if logged_in_user and logged_in_user.get('coverageData'):
+        return logged_in_user.get('coverageData')
+    else:
+        return {}
+
+
 def get_fe_redirect_url():
     '''
     helper to figure out the correct front end redirect url per context
     '''
     is_selenium = os.getenv('SELENIUM_TESTS', 'False').lower() in ('true')
-    return 'http://client:3000' if is_selenium else 'http://localhost:3000'
+    return 'http://localhost:3000' if is_selenium else 'http://localhost:3000'
 
 
 def clear_bb2_data():
@@ -125,6 +172,7 @@ def clear_bb2_data():
     '''
     logged_in_user.update({'authToken': None})
     logged_in_user.update({'eobData': {}})
+    logged_in_user.update({'coverage': {}})
 
 
 if __name__ == '__main__':

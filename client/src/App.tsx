@@ -3,6 +3,8 @@ import Header from './components/header';
 import Patient from './components/patient';
 import PatientData from './components/patientData';
 import Records from './components/records';
+import InsuranceCardData from './components/insuranceCardData';
+import CoverageData from "./components/coverageData";
 import { BrowserRouter as Router} from "react-router-dom";
 import { TabPanel, Tabs } from '@cmsgov/design-system';
 
@@ -14,22 +16,23 @@ function App() {
       <Tabs tablistClassName="ds-u-margin-top--3">
         <TabPanel id="patient" tab="Patient info">
           <h2>Patient information</h2>
-          <div className="ds-u-display--flex ds-u-flex-direction--column ds-u-lg-flex-direction--row ds-u-flex-wrap--nowrap ds-u-lg-flex-wrap--wrap">
+          <div
+              className="ds-u-display--flex ds-u-flex-direction--column ds-u-lg-flex-direction--row ds-u-flex-wrap--nowrap ds-u-lg-flex-wrap--wrap">
             <div className="bb-c-card default-card">
-              <Patient />
-            </div>          
+              <Patient/>
+            </div>
             <div className="bb-c-card default-card">
-              <PatientData />
-            </div>          
+              <PatientData/>
+            </div>
           </div>
           {}
-          <Records /> 
+          <Records/>
           {}
-        <div>
           <div>
-            {}
+            <div>
+              {}
+            </div>
           </div>
-        </div>
         </TabPanel>
         <TabPanel id="summary" tab="Summary">
           <p className='ds-u-measure--base'>
@@ -43,6 +46,11 @@ function App() {
             utility classes, and a grid framework to allow teams to quickly prototype and build
             accessible, responsive, production-ready websites. <a href="https://design.cms.gov/">Learn more about CMS Design System</a>
           </p>
+        </TabPanel>
+        <TabPanel id="insurance" tab="Digital Insurance">
+          <div className="bb-c-card full-width-card ds-u-fill--gray-lightest">
+            <CoverageData/>
+          </div>
         </TabPanel>
       </Tabs>
     </Router>
