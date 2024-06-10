@@ -1,4 +1,4 @@
-FROM node:20.12.2-slim
+FROM node:20-slim
 
 LABEL version="1.1"
 LABEL description="Demo of a Medicare claims data sample app"
