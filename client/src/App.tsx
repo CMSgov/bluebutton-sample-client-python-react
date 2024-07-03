@@ -2,6 +2,7 @@ import React from 'react';
 import Header from './components/header';
 import Patient from './components/patient';
 import PatientData from './components/patientData';
+import {DIC} from './components/dic'
 import Records from './components/records';
 import { BrowserRouter as Router} from "react-router-dom";
 import { TabPanel, Tabs } from '@cmsgov/design-system';
@@ -43,6 +44,11 @@ function App() {
             utility classes, and a grid framework to allow teams to quickly prototype and build
             accessible, responsive, production-ready websites. <a href="https://design.cms.gov/">Learn more about CMS Design System</a>
           </p>
+        </TabPanel>
+        <TabPanel id="dic" tab="DIC">
+          <div className="bb-c-card default-card">
+              <DIC />
+          </div>
         </TabPanel>
       </Tabs>
     </Router>

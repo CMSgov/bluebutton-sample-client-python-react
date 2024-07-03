@@ -5,6 +5,130 @@ $image-path: "~@cmsgov/design-system/dist/images";
 // Core CMSDS styles
 @import "@cmsgov/design-system/dist/scss/index";
 
+@import url('https://fonts.googleapis.com/css?family=Cutive+Mono|Teko');
+
+.ins-card {
+  border-radius: 6px;
+  width: 400px;
+  height: 250px;
+  margin: 0 auto;
+  position: relative;
+  transition: all .3s;
+  transform-style: preserve-3d;
+  box-shadow: 0 1px 0 #F6A440,
+              0 3px 0 -1px #F6A440,
+              0 4px 0 -2px #F6A440,
+              0 30px 50px -10px rgba(0,0,0,.2);
+}
+
+
+label {
+  font-family: 'Teko';
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  display: block;
+  line-height: 0.675;
+}
+
+input {
+  border-radius: 4px;
+  font-family: 'Cutive Mono';
+  position: absolute;
+  background: transparent;
+  -webkit-font-smoothing: antialiased;
+  text-shadow: 0 1px 0 rgba(79, 48, 96,1);
+  border: none;
+  color: #f0f0f0;
+  font-size: 1.75rem;
+  padding: 0.125em 0;
+  transition: all .1s;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  &:hover,
+  &:focus {
+    // background: rgba(255,255,255,.1);
+    outline: none;
+  }
+}
+
+.card-number {
+  width: 345px;
+  right: 20px;
+  left: 20px;
+  top: 36%;
+}
+
+.card-date-group {
+  position: absolute;
+  left: 20px;
+  bottom: 70px;
+}
+
+.card-date {
+  position: relative;
+  font-size: 1.375rem;
+  width: 70px;
+}
+
+.card-name-group {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
+
+.card-name {
+  position: relative;
+  width: 300px;
+  font-size: 1.25rem;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #E4B0F3;
+  text-shadow: none;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #E4B0F3;
+  text-shadow: none;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #E4B0F3;
+  text-shadow: none;
+}
+
+.credit-card__front,
+.credit-card__back {
+  background-image:
+  radial-gradient(
+    circle at top center,
+    #D6A0E6,
+    #8241A9
+  );
+
+  border-radius: 6px;
+  overflow: hidden;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  backface-visibility: hidden;
+  transform:rotateY(0deg)
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number]::-webkit-input-placeholder {
+  color: #BBB;
+}
+
 .bb-c-card {
   background: #fff;
   border: 1px solid #d6d7d9;
