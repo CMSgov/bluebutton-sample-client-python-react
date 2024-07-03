@@ -1,5 +1,6 @@
 FROM selenium/standalone-chrome-debug
 
+ENV PYDEVD_DISABLE_FILE_VALIDATION 1
 ENV PYTHONUNBUFFERED 1
 USER root
 RUN apt-get update && apt-get install -yq python3.8 python3-pip
