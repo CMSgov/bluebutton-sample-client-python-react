@@ -28,14 +28,13 @@ export class DIC extends React.Component {
             version: 'v2',
             env: 'test'
         };
-        const reqHeader = {Authorization: ""};
 
         const DICResponse = axios.get(
             'https://test.bluebutton.cms.gov/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient',
             {
                 params: settingsState,
                 headers: {
-                    reqHeader
+                    Authorization: ""
                 }
             },
         ).then((response: any) => {
