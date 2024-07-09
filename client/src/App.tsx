@@ -45,7 +45,7 @@ function App() {
             accessible, responsive, production-ready websites. <a href="https://design.cms.gov/">Learn more about CMS Design System</a>
           </p>
         </TabPanel>
-        <TabPanel id="dic" tab="DIC">
+        <TabPanel id="dic" tab="Digital Insurance Card">
           <div className="bb-c-card default-card">
               <DIC />
           </div>
