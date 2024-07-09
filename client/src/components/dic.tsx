@@ -53,7 +53,7 @@ export class DIC extends React.Component {
                 <div className="ins-card">
                     <div className="ins-card__front">
 
-                        <input value={this.state.insNum} className="card-number" placeholder="4012 8888 8888 1881"/>
+                        <input value={this.state.insNum} className="card-number" placeholder="1234-234-1243-12345678901"/>
 
                         <div className="card-date-group">
                             <label htmlFor="card-date">Coverage Start Date</label>
@@ -62,7 +62,7 @@ export class DIC extends React.Component {
 
                         <div className="card-name-group">
                             <label htmlFor="card-name">Member Name</label>
-                            <input value={this.state.fullName} className="card-name" placeholder="John Cardholder"/>
+                            <input value={this.state.fullName} className="card-name" placeholder="John Smith"/>
                         </div>
 
                     </div>
