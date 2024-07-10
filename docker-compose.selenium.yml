@@ -8,7 +8,7 @@ services:
       - DANGEROUSLY_DISABLE_HOST_CHECK=true
     ports: 
       - "3001:3001"
-      - "5678:5678"
+      - "10678:10678"
   client:
     build:
       context: ./client
@@ -23,6 +23,17 @@ services:
       context: ./selenium_tests
       dockerfile: ./Dockerfile
     command: pytest ./src/test_python_sample.py
+    depends_on:
+      - chrome
+      - server
+      - client
+  selenium-tests-debug:
+    build:
+      context: ./selenium_tests
+      dockerfile: ./Dockerfile
+    command: python3 -m debugpy --listen 0.0.0.0:10679 --wait-for-client -m pytest ./src/test_python_sample.py
+    ports: 
+      - "10679:10679"
     depends_on:
       - chrome
       - server

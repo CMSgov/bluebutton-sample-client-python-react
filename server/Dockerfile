@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:3.11
+FROM python:3.9
 
 ARG BUILD_DEVELOPMENT="False"
 
@@ -21,7 +21,3 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
 
 RUN pipenv lock
 RUN pipenv install --system --deploy --ignore-pipfile
-
-# EXPOSE 3001
-
-# CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:5678 app.py"]

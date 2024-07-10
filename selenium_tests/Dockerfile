@@ -9,4 +9,4 @@ ADD . /code/
 WORKDIR /code
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 RUN pip3 install --upgrade pip
-RUN pip3 install selenium pytest
+RUN pip3 install selenium pytest debugpy
