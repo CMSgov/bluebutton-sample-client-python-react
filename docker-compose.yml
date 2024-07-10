@@ -9,7 +9,7 @@ services:
         BUILD_DEVELOPMENT: ${BUILD_DEVELOPMENT}
     ports:
       - "3001:3001"
-      - "5678:5678"
+      - "10678:10678"
     volumes:
       - ./server:/server
   client:

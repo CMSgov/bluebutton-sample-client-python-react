@@ -64,7 +64,7 @@ Please review our SDK documentation for more information and additional features
 
 Debugging server component
 --------------------------
-debugpy remote debugging enabled on port 5678 for server in docker compose, developer can attach to server from IDE e.g. vscode.
+debugpy remote debugging enabled on port 10678 for server in docker compose, developer can attach to server from IDE e.g. vscode.
 
 Error Responses and handling:
 -----------------------------

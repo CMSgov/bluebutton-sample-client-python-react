@@ -10,7 +10,6 @@ services:
       - DANGEROUSLY_DISABLE_HOST_CHECK=true
     ports: 
       - "3001:3001"
-      - "5678:5678"
   client:
     build:
       context: ./client

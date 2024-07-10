@@ -38,6 +38,11 @@ def get_auth_url():
     return redirect_url
 
 
+@app.route('/api/authorize/authurlSpanish', methods=['GET'])
+def get_auth_url_spanish():
+    redirect_url = bb.generate_authorize_url(auth_data)
+    return redirect_url + "&lang=es"
+
 @app.route('/api/bluebutton/callback/', methods=['GET'])
 def authorization_callback():
     request_query = request.args
