@@ -1,7 +1,8 @@
-FROM python:3.8
+FROM python:3.9
 
 ARG BUILD_DEVELOPMENT="False"
 
+ENV PYDEVD_DISABLE_FILE_VALIDATION 1
 LABEL version="1.1.0"
 LABEL description="Demo of a Medicare claims data sample app"
 
@@ -17,9 +18,6 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
   else \
     pip install cms-bluebutton-sdk; \
   fi
+
 RUN pipenv lock
 RUN pipenv install --system --deploy --ignore-pipfile
-
-EXPOSE 3001
-
-CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:10678 app.py"]
