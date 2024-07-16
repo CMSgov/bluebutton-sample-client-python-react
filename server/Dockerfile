@@ -10,8 +10,8 @@ WORKDIR /server
 
 COPY . . 
 
-RUN pip install pipenv debugpy
-
+RUN python --version
+RUN pip install pipenv debugpy --upgrade
 # Install cms_bluebutton_sdk from pypi.org or test.pypi.org
 RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ cms-bluebutton-sdk; \

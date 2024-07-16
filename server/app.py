@@ -35,8 +35,13 @@ auth_token = None
 @app.route('/api/authorize/authurl', methods=['GET'])
 def get_auth_url():
     redirect_url = bb.generate_authorize_url(auth_data)
-    return redirect_url
+    return redirect_url + "&lang=en"
 
+
+@app.route('/api/authorize/authurlSpanish', methods=['GET'])
+def get_auth_url_spanish():
+    redirect_url = bb.generate_authorize_url(auth_data)
+    return redirect_url + "&lang=es"
 
 @app.route('/api/bluebutton/callback/', methods=['GET'])
 def authorization_callback():
