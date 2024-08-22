@@ -6,7 +6,7 @@ from cms_bluebutton.cms_bluebutton import BlueButton
 
 BENE_DENIED_ACCESS = "access_denied"
 FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
-ERR_QUERY_EOB = "Error when querying the patient's EOB!"
+ERR_QUERY_DATA = "Error when querying the patient's Data: EOB or Coverage or Patient!"
 ERR_MISSING_AUTH_CODE = "Response was missing access code!"
 ERR_MISSING_STATE = "State is required when using PKCE"
 
@@ -76,6 +76,20 @@ def authorization_callback():
     try:
         # search eob (or other fhir resources: patient, coverage, etc.)
         eob_data = bb.get_explaination_of_benefit_data(config)
+        auth_token = eob_data['auth_token']
+        coverage_data = bb.get_coverage_data(config)
+        auth_token = coverage_data['auth_token']
+        patient_data = bb.get_patient_data(config)
+        auth_token = patient_data['auth_token']
+
+        config_clone = dict(config)
+        config_clone['url'] = "https://test.bluebutton.cms.gov/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient"
+        dic_pt_data = bb.get_custom_data(config_clone)
+        auth_token = dic_pt_data['auth_token']
+
+        config_clone['url'] = "https://test.bluebutton.cms.gov/v2/fhir/Coverage?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage"
+        dic_coverage_data = bb.get_custom_data(config_clone)
+        auth_token = dic_coverage_data['auth_token']
 
         # fhir search response could contain large number of resources,
         # by default they are chunked into pages of 10 resources each,
@@ -88,10 +102,14 @@ def authorization_callback():
         auth_token = eob_data['auth_token']
         logged_in_user['authToken'] = auth_token
         logged_in_user['eobData'] = eob_data['response'].json()
+        logged_in_user['coverageData'] = coverage_data['response'].json()
+        logged_in_user['patientData'] = patient_data['response'].json()
+        logged_in_user['dicPatientData'] = dic_pt_data['response'].json()
+        logged_in_user['dicCoverageData'] = dic_coverage_data['response'].json()
     except Exception as ex:
         clear_bb2_data()
-        logged_in_user.update({'eobData': {'message': ERR_QUERY_EOB}})
-        print(ERR_QUERY_EOB)
+        logged_in_user.update({'eobData': {'message': ERR_QUERY_DATA}})
+        print(ERR_QUERY_DATA)
         print(ex)
 
     return redirect(get_fe_redirect_url())
@@ -125,6 +143,10 @@ def clear_bb2_data():
     '''
     logged_in_user.update({'authToken': None})
     logged_in_user.update({'eobData': {}})
+    logged_in_user.update({'coverageData': {}})
+    logged_in_user.update({'patientData': {}})
+    logged_in_user.update({'dicPatientData': {}})
+    logged_in_user.update({'dicCoverageData': {}})
 
 
 if __name__ == '__main__':

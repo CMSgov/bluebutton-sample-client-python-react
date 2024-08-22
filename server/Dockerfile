@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM python:3.9
 
 ARG BUILD_DEVELOPMENT="False"
 
@@ -22,4 +22,5 @@ RUN pipenv install --system --deploy --ignore-pipfile
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:5678 app.py"]
+CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:10678 app.py"]
+# CMD ["sh", "-c", "python app.py"]

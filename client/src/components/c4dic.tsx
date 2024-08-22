@@ -1,7 +1,6 @@
-import axios from 'axios';
 import React from 'react'
 
-export class DIC extends React.Component {
+export class C4DIC extends React.Component {
 
     /* DEVELOPER NOTES:
     * This is a minimal implementation with some sample calls to hardcoded
@@ -19,43 +18,25 @@ export class DIC extends React.Component {
     constructor(props: any) {
         super(props);
         this.state = {
-            insNum: "",
-            startDate: "",
-            fullName: ""
+            insNum: "FAKE MBI",
+            startDate: "FAKE DATE",
+            fullName: "J SMITH Jr."
         };
         const settingsState = {
             pkce: true,
             version: 'v2',
             env: 'test'
         };
-
-        const DICResponse = axios.get(
-            'https://test.bluebutton.cms.gov/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient',
-            {
-                params: settingsState,
-                headers: {
-                    Authorization: ""
-                }
-            },
-        ).then((response: any) => {
-            const fName = response['name'][0]['family'];
-            const mName = response['name'][0]['given'][1];
-            const lName = response['name'][0]['given'][0];
-            this.state.insNum = response['identifier'][1]['value'];
-            this.state.startDate = response['identifier'][1]['period']['start'];
-            this.state.fullName = fName + mName + lName;
-        }).catch((err: any) => console.log("Axios err: ", err));
-
         // just reference the const to suppress compile time warning 
-        if (DICResponse === null)
-            console.log("DICResponse is null...")
+        if (settingsState === null)
+            console.log("settingState is null...")
     }
 
     render() {
         return (
             <div className="content-wrapper">
-                <div className="ins-card">
-                    <div className="ins-card__front">
+                <div className="ins-c4dic-card">
+                    <div className="ins-c4dic-card__front">
 
                         <input value={this.state.insNum} className="card-number" placeholder="1234-234-1243-12345678901"/>
 
