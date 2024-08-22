@@ -15,6 +15,10 @@ export default function PatientData() {
         const authUrlResponse = await axios.get(`/api/authorize/authurl`, { params: settingsState });
         window.location.href = authUrlResponse.data || '/';
     }    
+    async function goAuthorizeSpanish() {
+        const authUrlResponse = await axios.get(`/api/authorize/authurlSpanish`, { params: settingsState });
+        window.location.href = authUrlResponse.data || '/';
+    }    
     
     /* DEVELOPER NOTES:
     * Here we are hard coding the users information for the sake of saving time
@@ -35,6 +39,12 @@ export default function PatientData() {
                     <h4>{ header }</h4>
                 </div>
                 <Button id="auth_btn" variation="primary" onClick={goAuthorize}>Authorize</Button>
+            </div>
+            <div className='ds-u-margin-top--2 ds-u-border-top--2'>
+                <div>
+                    <h4>{ header }</h4>
+                </div>
+                <Button id="auth_btn" variation="primary" onClick={goAuthorizeSpanish}>Authorize (Spanish)</Button>
             </div>
         </div>
     );
