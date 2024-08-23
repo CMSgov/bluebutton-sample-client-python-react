@@ -1,59 +1,127 @@
-import React from 'react'
+import { Table, TableCaption, TableRow, TableCell, TableHead, TableBody } from '@cmsgov/design-system';
+import React, { useEffect, useState } from 'react';
 
-export class C4DIC extends React.Component {
+// From C4DIC Patient extract:
+// 1. identifier mbi, e.g. 1S00EU7JH47
+// 2. name, e.g. Johnie C
+// 3. gender, e.g. male
+// 4. dob, e.g. 1990-08-14
+// From C4DIC Coverage extract:
+// 1. coverage class: by Coverage resource 'class': "Part A"
+// 2. status: active or not active
+// 3. period, start date: e.g. 2014-02-06
+// 4. relationship to insured: e.g. self
+// 5. payor: CMS
+// 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
+// 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+// 8. other info such as: DIB, ESRD etc. can be added as needed
 
-    /* DEVELOPER NOTES:
-    * This is a minimal implementation with some sample calls to hardcoded
-    * resources. Authorization isn't fully implemented because it follows a pattern
-    * contrary to existing server usage (the call to an external service).
-    *
-    * Once hardcoded resources are deployed, this can be used as a toy to test DIC
-    * implementation and design by adding a valid Bearer token to the Authorization header.
-    *
-    * In the long run, the profile querystring will be deprecated as well.
+export type CoverageInfo = {
+    coverageClass: string,
+    contractId: string,
+    coverageStartDate: string,
+    coverageActive: string,
+    referenceYear: string,
+}
+
+export type InsuranceInfo = {
+    fullName: string,
+    gender: string,
+    dob: string,
+    identifier: string, // mbi
+    relationship: string, // self, spouse etc.
+    coverages: CoverageInfo[] // Part A, Part B, Part C, Part D
+}
+
+export type ErrorResponse = {
+    type: string,
+    content: string,
+}
+
+export default function InsuranceCard() {
+    const [insInfo, setInsInfo] = useState<InsuranceInfo>();
+    const [message, setMessage] = useState<ErrorResponse>();
+    /*
+    * DEVELOPER NOTES:
     */
+    useEffect(() => {
+        fetch('/api/data/insurance')
+            .then(res => {
+                return res.json();
+            }).then(insuranceData => {
+                if (insuranceData.insInfo) {
+                    const coverages: CoverageInfo[] = insuranceData.insInfo.coverages.map((coverage: any) => {
+                        return {
+                            coverageClass: coverage.class,
+                            contractId: coverage.contractId,
+                            coverageStartDate: coverage.startDate,
+                            coverageActive: coverage.isActive,
+                            referenceYear: coverage.referenceYear}
+                    });
+                    setInsInfo(
+                        {
+                            fullName: insuranceData.insInfo.fullName,
+                            gender: insuranceData.insInfo.gender,
+                            dob: insuranceData.insInfo.dob,
+                            identifier: insuranceData.insInfo.identifier,
+                            relationship: insuranceData.insInfo.relationship,
+                            coverages: coverages
+                        }
+                    );
+                }
+                else {
+                    if (insuranceData.message) {
+                        setMessage({"type": "error", "content": insuranceData.message || "Unknown"})
+                    }
+                }
+            });
+    }, [])
 
-    state: any;
-
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            insNum: "FAKE MBI",
-            startDate: "FAKE DATE",
-            fullName: "J SMITH Jr."
-        };
-        const settingsState = {
-            pkce: true,
-            version: 'v2',
-            env: 'test'
-        };
-        // just reference the const to suppress compile time warning 
-        if (settingsState === null)
-            console.log("settingState is null...")
-    }
-
-    render() {
+    if (message) {
+        return (
+            <div className='full-width-card'>
+                <Table className="ds-u-margin-top--2" stackable stackableBreakpoint="md">
+                    <TableCaption>Error Response</TableCaption>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell id="column_1">Type</TableCell>
+                            <TableCell id="column_2">Content</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell stackedTitle="Type" headers="column_1">
+                                {message.type}
+                            </TableCell>
+                            <TableCell stackedTitle="Content" headers="column_2">
+                                {message.content}
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
+        );
+    } else {
         return (
             <div className="content-wrapper">
                 <div className="ins-c4dic-card">
-                    <div className="ins-c4dic-card__front">
+                    <pre>{insInfo?.fullName||"Null"}    {insInfo?.gender||"Null"}    {insInfo?.dob||"Null"}</pre>
+                    <pre>MBI: {insInfo?.identifier||"Null"}</pre>
+                    <pre>Relationship to insured: {insInfo?.relationship||"Null"}</pre>
 
-                        <input value={this.state.insNum} className="card-number" placeholder="1234-234-1243-12345678901"/>
-
-                        <div className="card-date-group">
-                            <label htmlFor="card-date">Coverage Start Date</label>
-                            <input value={this.state.startDate} className="card-date" placeholder="04/22"/>
-                        </div>
-
-                        <div className="card-name-group">
-                            <label htmlFor="card-name">Member Name</label>
-                            <input value={this.state.fullName} className="card-name" placeholder="John Smith"/>
-                        </div>
-
-                    </div>
+                    {insInfo?.coverages.map(cvrg => {
+                            return (
+                                <div>
+                                    <pre>Coverage Type: {cvrg.coverageClass}</pre>
+                                    <pre>Contract Number: {cvrg.contractId}</pre>
+                                    <pre>Start Date: {cvrg.coverageStartDate}</pre>
+                                    <pre>Active: {cvrg.coverageActive}</pre>
+                                    <pre>Reference Year: {cvrg.referenceYear}</pre>
+                                </div>
+                            )
+                        })}
                 </div>
             </div>
-
         );
     }
 }

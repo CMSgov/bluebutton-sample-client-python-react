@@ -29,20 +29,17 @@ $image-path: "~@cmsgov/design-system/dist/images";
   margin: 0 auto;
   position: relative;
   transition: all .3s;
-  transform-style: preserve-3d;
 }
 
 
-.ins-classic-card {
-  border-radius: 6px;
-  width: 790px;
-  height: 512px;
-  margin: 0 auto;
-  position: relative;
-  transition: all .3s;
-  transform-style: preserve-3d;
+.ins-fld-div {
+  position: absolute;
+  top: 80px;
+  right: 0;
+  width: 200px;
+  height: 100px;
+  border: 3px solid #73AD21;
 }
-
 
 label {
   font-family: 'Teko';
@@ -157,16 +154,6 @@ input[type=number]::-webkit-input-placeholder {
   border-radius: 0.3rem;
 }
 
-.bb-c-card-png {
-  background: #fff;
-  border: 1px solid #d6d7d9;
-  border-radius: 0.3rem;
-  background-image: url("../images/medicare-card.png");
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
 .bb-c-c4dic-card-png {
   background: #fff;
   border: 1px solid #d6d7d9;
@@ -186,16 +173,6 @@ input[type=number]::-webkit-input-placeholder {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.bb-c-card-png.default-card {
-  color: #323a45;
-  max-width: 790px;
-  max-height: 512px;
-  text-decoration: none;
-  margin: 0.5rem;
-  padding: 0 1rem 1rem 1rem;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
 .bb-c-c4dic-card-png.default-card {
   color: #323a45;
   max-width: 480px;
@@ -207,11 +184,6 @@ input[type=number]::-webkit-input-placeholder {
 }
 
 .bb-c-card.default-card:hover {
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-  color: #000;
-}
-
-.bb-c-card-png.default-card:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   color: #000;
 }

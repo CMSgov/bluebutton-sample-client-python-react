@@ -3,8 +3,7 @@ import Header from './components/header';
 import Patient from './components/patient';
 import PatientData from './components/patientData';
 import {DIC} from './components/dic'
-import {C4DIC} from './components/c4dic'
-import {DICClassic} from './components/dicclassic'
+import InsuranceCard from './components/c4dic'
 import Records from './components/records';
 import { BrowserRouter as Router} from "react-router-dom";
 import { TabPanel, Tabs } from '@cmsgov/design-system';
@@ -50,12 +49,7 @@ function App() {
         </TabPanel>
         <TabPanel id="dic-new-design" tab="Insurance Card (New Design)">
           <div className="bb-c-c4dic-card-png default-card">
-              <C4DIC />
-          </div>
-        </TabPanel>
-        <TabPanel id="dic-classic" tab="Insurance Card (Classic)">
-          <div className="bb-c-card-png default-card">
-              <DICClassic />
+              <InsuranceCard />
           </div>
         </TabPanel>
         <TabPanel id="dic" tab="Insurance Card">
