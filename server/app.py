@@ -1,6 +1,7 @@
 import os
 
 from flask import redirect, request, Flask
+from jsonpath_ng import jsonpath, parse
 from cms_bluebutton.cms_bluebutton import BlueButton
 
 
@@ -125,6 +126,46 @@ def get_patient_eob():
     """
     if logged_in_user and logged_in_user.get('eobData'):
         return logged_in_user.get('eobData')
+    else:
+        return {}
+
+@app.route('/api/data/insurance', methods=['GET'])
+def get_patient_insurance():
+    """
+    * This function is used directly by the front-end to
+    * retrieve insurance data from the logged in user from within the mocked DB
+    * This would be replaced by a persistence service layer for whatever
+    *  DB you would choose to use
+    *
+    * This is for POC, the insurance data composition will be implemented
+    * in BB2 server tier, and exposed as an API end point
+    """
+    dic_patient = logged_in_user.get('dicPatientData')
+    dic_coverage = logged_in_user.get('dicCoverage')
+    if logged_in_user and dic_patient and dic_coverage:
+        ## extract info from C4DIC Patient and Coverage
+        ## and composite into insurance info and response to
+        ## FE for insurance card rendering
+        ## Note, Coverage could be paged, not iterate page here for POC purpose
+        card = {}
+        ## From C4DIC Patient extract:
+        ## 1. identifier mbi, e.g. 1S00EU7JH47
+        ## 2. name, e.g. Johnie C
+        ## 3. gender, e.g. male
+        ## 4. dob, e.g. 1990-08-14
+        ## From C4DIC Coverage extract:
+        ## 1. coverage class: by Coverage resource 'class': "Part A"
+        ## 2. status: active or not active
+        ## 3. period, start date: e.g. 2014-02-06
+        ## 4. relationship to insured: e.g. self
+        ## 5. payor: CMS
+        ## 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
+        ## 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+        ## 8. other info such as: DIB, ESRD etc. can be added as needed
+        jsonpath_expression = parse('$.id')
+        match1 = jsonpath_expression.find(dic_patient)
+        match2 = jsonpath_expression.find(dic_coverage)
+        return card
     else:
         return {}
 

@@ -48,9 +48,9 @@ function App() {
             <Records /> 
           </div>
         </TabPanel>
-        <TabPanel id="dic" tab="Insurance Card">
-          <div className="bb-c-card default-card">
-              <DIC />
+        <TabPanel id="dic-new-design" tab="Insurance Card (New Design)">
+          <div className="bb-c-c4dic-card-png default-card">
+              <C4DIC />
           </div>
         </TabPanel>
         <TabPanel id="dic-classic" tab="Insurance Card (Classic)">
@@ -58,9 +58,9 @@ function App() {
               <DICClassic />
           </div>
         </TabPanel>
-        <TabPanel id="dic-new-design" tab="Insurance Card (New Design)">
-          <div className="bb-c-c4dic-card-png default-card">
-              <C4DIC />
+        <TabPanel id="dic" tab="Insurance Card">
+          <div className="bb-c-card default-card">
+              <DIC />
           </div>
         </TabPanel>
       </Tabs>
