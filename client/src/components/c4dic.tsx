@@ -109,32 +109,32 @@ export default function InsuranceCard() {
         return (
             <div className="content-wrapper">
                 <div className="ins-c4dic-card">
-                    <pre>{insInfo?.name||"Null"}    {insInfo?.gender||"Null"}    {insInfo?.dob||"Null"}</pre>
-                    <pre>MBI: {insInfo?.identifier||"Null"}</pre>
-                    <pre>Relationship to insured: {insInfo?.relationship||"Null"}</pre>
+                    <pre className="ins-fld-text">{insInfo?.name||"Null"}    {insInfo?.gender||"Null"}    {insInfo?.dob||"Null"}</pre>
+                    <pre className="ins-fld-text">MBI: {insInfo?.identifier||"Null"}</pre>
+                    <pre className="ins-fld-text">Relationship to insured: {insInfo?.relationship||"Null"}</pre>
 
                     {insInfo?.coverages.map(c => {
                             return (
-                                <div className="ins-fld-text">
-                                    <pre>
+                                <div>
+                                    <pre className="ins-fld-text">
                                         Coverage Type: {c.clazz}
                                     </pre>
-                                    <pre>
+                                    <pre className="ins-fld-text">
                                         Payer: {c.payer}
                                     </pre>
-                                    <pre>
+                                    <pre className="ins-fld-text">
                                         Contract Number: {c.contractId}
                                     </pre>
-                                    <pre>
+                                    <pre className="ins-fld-text">
                                         Start Date: {c.startDate}
                                     </pre>
-                                    <pre>
+                                    <pre className="ins-fld-text">
                                         End Date: {c.endDate}
                                     </pre>
-                                    <pre>
+                                    <pre className="ins-fld-text">
                                         Status: {c.status}
                                     </pre>
-                                    <pre>
+                                    <pre className="ins-fld-text">
                                         Reference Year: {c.referenceYear}
                                     </pre>
                                 </div>

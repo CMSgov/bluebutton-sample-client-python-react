@@ -180,7 +180,7 @@ def get_patient_insurance():
         coverages = {}
         for c in coverage_array:
             c_clazz = lookup_1_and_get("$.resource.class[?(@.type.coding=='plan')]", "value", c)
-            coverages['clazz'] = c_clazz
+            coverages['clazz'] = c_clazz if c_clazz else "Null"
             c_status = c['resource']['status']
             coverages['status'] = c_status
             c_start = c['resource']['period']['start']
@@ -235,7 +235,7 @@ def lookup_by_path(expr, json_obj):
 def lookup_1_and_get(expr, attribute, json_obj):
     r = lookup_by_path(expr, json_obj)
     if r and isinstance(r, list):
-        return r[0][attribute]
+        return r[0].value[attribute]
         
 
 if __name__ == '__main__':
