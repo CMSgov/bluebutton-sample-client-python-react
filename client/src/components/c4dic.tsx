@@ -17,15 +17,17 @@ import React, { useEffect, useState } from 'react';
 // 8. other info such as: DIB, ESRD etc. can be added as needed
 
 export type CoverageInfo = {
-    coverageClass: string,
+    clazz: string,
     contractId: string,
-    coverageStartDate: string,
-    coverageActive: string,
+    startDate: string,
+    endDate: string,
+    payer: string,
+    status: string,
     referenceYear: string,
 }
 
 export type InsuranceInfo = {
-    fullName: string,
+    name: string,
     gender: string,
     dob: string,
     identifier: string, // mbi
@@ -52,15 +54,17 @@ export default function InsuranceCard() {
                 if (insuranceData.insInfo) {
                     const coverages: CoverageInfo[] = insuranceData.insInfo.coverages.map((coverage: any) => {
                         return {
-                            coverageClass: coverage.class,
+                            clazz: coverage.clazz,
+                            payer: coverage.payer,
                             contractId: coverage.contractId,
-                            coverageStartDate: coverage.startDate,
-                            coverageActive: coverage.isActive,
+                            startDate: coverage.startDate,
+                            endDate: coverage.endDate,
+                            status: coverage.active,
                             referenceYear: coverage.referenceYear}
                     });
                     setInsInfo(
                         {
-                            fullName: insuranceData.insInfo.fullName,
+                            name: insuranceData.insInfo.name,
                             gender: insuranceData.insInfo.gender,
                             dob: insuranceData.insInfo.dob,
                             identifier: insuranceData.insInfo.identifier,
@@ -105,18 +109,34 @@ export default function InsuranceCard() {
         return (
             <div className="content-wrapper">
                 <div className="ins-c4dic-card">
-                    <pre>{insInfo?.fullName||"Null"}    {insInfo?.gender||"Null"}    {insInfo?.dob||"Null"}</pre>
+                    <pre>{insInfo?.name||"Null"}    {insInfo?.gender||"Null"}    {insInfo?.dob||"Null"}</pre>
                     <pre>MBI: {insInfo?.identifier||"Null"}</pre>
                     <pre>Relationship to insured: {insInfo?.relationship||"Null"}</pre>
 
-                    {insInfo?.coverages.map(cvrg => {
+                    {insInfo?.coverages.map(c => {
                             return (
-                                <div>
-                                    <pre>Coverage Type: {cvrg.coverageClass}</pre>
-                                    <pre>Contract Number: {cvrg.contractId}</pre>
-                                    <pre>Start Date: {cvrg.coverageStartDate}</pre>
-                                    <pre>Active: {cvrg.coverageActive}</pre>
-                                    <pre>Reference Year: {cvrg.referenceYear}</pre>
+                                <div className="ins-fld-text">
+                                    <pre>
+                                        Coverage Type: {c.clazz}
+                                    </pre>
+                                    <pre>
+                                        Payer: {c.payer}
+                                    </pre>
+                                    <pre>
+                                        Contract Number: {c.contractId}
+                                    </pre>
+                                    <pre>
+                                        Start Date: {c.startDate}
+                                    </pre>
+                                    <pre>
+                                        End Date: {c.endDate}
+                                    </pre>
+                                    <pre>
+                                        Status: {c.status}
+                                    </pre>
+                                    <pre>
+                                        Reference Year: {c.referenceYear}
+                                    </pre>
                                 </div>
                             )
                         })}

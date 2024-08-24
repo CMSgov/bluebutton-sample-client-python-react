@@ -1,9 +1,9 @@
 import os
 
 from flask import redirect, request, Flask
-from jsonpath_ng import jsonpath, parse
+from jsonpath_ng import jsonpath
+from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
-
 
 BENE_DENIED_ACCESS = "access_denied"
 FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
@@ -140,14 +140,17 @@ def get_patient_insurance():
     * This is for POC, the insurance data composition will be implemented
     * in BB2 server tier, and exposed as an API end point
     """
+
+    ## jsonPath("$.error[?(@.errorMessage=='Fixed Error Message')]").exists
     dic_patient = logged_in_user.get('dicPatientData')
-    dic_coverage = logged_in_user.get('dicCoverage')
+    dic_coverage = logged_in_user.get('dicCoverageData')
+    insurance = {}
     if logged_in_user and dic_patient and dic_coverage:
         ## extract info from C4DIC Patient and Coverage
         ## and composite into insurance info and response to
         ## FE for insurance card rendering
         ## Note, Coverage could be paged, not iterate page here for POC purpose
-        card = {}
+
         ## From C4DIC Patient extract:
         ## 1. identifier mbi, e.g. 1S00EU7JH47
         ## 2. name, e.g. Johnie C
@@ -162,12 +165,46 @@ def get_patient_insurance():
         ## 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
         ## 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
         ## 8. other info such as: DIB, ESRD etc. can be added as needed
-        jsonpath_expression = parse('$.id')
-        match1 = jsonpath_expression.find(dic_patient)
-        match2 = jsonpath_expression.find(dic_coverage)
-        return card
-    else:
-        return {}
+        pt = dic_patient['entry']
+        patient = pt[0]
+        pt_id = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
+        insurance['identifier'] = pt_id
+        pt_name = patient['resource']['name'][0]['family']
+        insurance['name'] = pt_name
+        pt_gender = patient['resource']['gender']
+        insurance['gender'] = pt_gender
+        pt_dob = patient['resource']['birthDate']
+        insurance['dob'] = pt_dob
+
+        coverage_array = dic_coverage['entry']
+        coverages = {}
+        for c in coverage_array:
+            c_clazz = lookup_1_and_get("$.resource.class[?(@.type.coding=='plan')]", "value", c)
+            coverages['clazz'] = c_clazz
+            c_status = c['resource']['status']
+            coverages['status'] = c_status
+            c_start = c['resource']['period']['start']
+            coverages['startDate'] = c_start
+            c_end = c['resource']['period'].get('end')
+            coverages['endDate'] = c_end
+            c_payer = c['resource']['payor'][0]
+            if c_payer:
+                c_payer = c_payer['identifier']['value']
+            coverages['payer'] = c_payer
+            c_contract_id = "NA" ## Part A and Part B does not have contract number
+            if c_clazz == "Part C":
+                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01')]", "valueCoding", c).get('code')
+            if c_clazz == "Part D":
+                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/ptdcntrct01')]", "valueCoding", c).get('code')
+            coverages['contractId'] = c_contract_id
+            c_reference_year = jsonpath.query("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/rfrnc_yr')]", c).get('valueDate')
+            coverages['referenceYear'] = c_reference_year
+            c_relationship = c['resource']['relationship']['coding'][0]['display']
+            coverages['relationship'] = c_relationship
+
+        insurance['coverages'] = coverages
+
+    return insurance
 
 
 def get_fe_redirect_url():
@@ -189,6 +226,17 @@ def clear_bb2_data():
     logged_in_user.update({'dicPatientData': {}})
     logged_in_user.update({'dicCoverageData': {}})
 
+
+def lookup_by_path(expr, json_obj):
+    jsonpath_expr = ext_parse(expr)
+    return jsonpath_expr.find(json_obj)
+    
+
+def lookup_1_and_get(expr, attribute, json_obj):
+    r = lookup_by_path(expr, json_obj)
+    if r and isinstance(r, list):
+        return r[0][attribute]
+        
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3001)

@@ -31,14 +31,10 @@ $image-path: "~@cmsgov/design-system/dist/images";
   transition: all .3s;
 }
 
-
-.ins-fld-div {
-  position: absolute;
-  top: 80px;
-  right: 0;
-  width: 200px;
-  height: 100px;
-  border: 3px solid #73AD21;
+.ins-fld-text {
+  font-family: serif;
+  font-size: 13px;
+  color: white;
 }
 
 label {
