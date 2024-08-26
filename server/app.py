@@ -1,4 +1,5 @@
 import os
+import json
 
 from flask import redirect, request, Flask
 from jsonpath_ng import jsonpath
@@ -141,10 +142,15 @@ def get_patient_insurance():
     * in BB2 server tier, and exposed as an API end point
     """
 
-    ## jsonPath("$.error[?(@.errorMessage=='Fixed Error Message')]").exists
+    ## C4DIC patient and coverage where to extract PII and coverage plans & eligibilities
     dic_patient = logged_in_user.get('dicPatientData')
     dic_coverage = logged_in_user.get('dicCoverageData')
-    insurance = {}
+    ## a empty insurance response
+    coverages = []
+    insurance = {'coverages': coverages}
+    ## a response
+    resp = {'insData': insurance}
+
     if logged_in_user and dic_patient and dic_coverage:
         ## extract info from C4DIC Patient and Coverage
         ## and composite into insurance info and response to
@@ -177,34 +183,37 @@ def get_patient_insurance():
         insurance['dob'] = pt_dob
 
         coverage_array = dic_coverage['entry']
-        coverages = {}
+
         for c in coverage_array:
-            c_clazz = lookup_1_and_get("$.resource.class[?(@.type.coding=='plan')]", "value", c)
-            coverages['clazz'] = c_clazz if c_clazz else "Null"
+            coverage = {}
+            c_clazz = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+            coverage['clazz'] = c_clazz if c_clazz else "Null"
             c_status = c['resource']['status']
-            coverages['status'] = c_status
-            c_start = c['resource']['period']['start']
-            coverages['startDate'] = c_start
-            c_end = c['resource']['period'].get('end')
-            coverages['endDate'] = c_end
+            coverage['status'] = c_status
+            c_period = c['resource'].get('period') ## Part C seems not have period
+            c_start = c_period.get('start') if c_period else ""
+            coverage['startDate'] = c_start if c_start else ""
+            c_end = c_period.get('end') if c_period else ""
+            coverage['endDate'] = c_end if c_end else ""
             c_payer = c['resource']['payor'][0]
             if c_payer:
                 c_payer = c_payer['identifier']['value']
-            coverages['payer'] = c_payer
-            c_contract_id = "NA" ## Part A and Part B does not have contract number
+            coverage['payer'] = c_payer
+            c_contract_id = "" ## Part A and Part B does not have contract number
             if c_clazz == "Part C":
                 c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01')]", "valueCoding", c).get('code')
             if c_clazz == "Part D":
                 c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/ptdcntrct01')]", "valueCoding", c).get('code')
-            coverages['contractId'] = c_contract_id
-            c_reference_year = jsonpath.query("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/rfrnc_yr')]", c).get('valueDate')
-            coverages['referenceYear'] = c_reference_year
+            coverage['contractId'] = c_contract_id
+            c_reference_year = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/rfrnc_yr')]", "valueDate", c)
+            coverage['referenceYear'] = c_reference_year
             c_relationship = c['resource']['relationship']['coding'][0]['display']
-            coverages['relationship'] = c_relationship
+            coverage['relationship'] = c_relationship
+            coverages.append(coverage)
 
         insurance['coverages'] = coverages
-
-    return insurance
+    
+    return resp
 
 
 def get_fe_redirect_url():

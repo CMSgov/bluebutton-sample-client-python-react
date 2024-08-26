@@ -23,6 +23,7 @@ export type CoverageInfo = {
     endDate: string,
     payer: string,
     status: string,
+    relationship: string, // self, spouse etc.
     referenceYear: string,
 }
 
@@ -31,7 +32,6 @@ export type InsuranceInfo = {
     gender: string,
     dob: string,
     identifier: string, // mbi
-    relationship: string, // self, spouse etc.
     coverages: CoverageInfo[] // Part A, Part B, Part C, Part D
 }
 
@@ -51,25 +51,25 @@ export default function InsuranceCard() {
             .then(res => {
                 return res.json();
             }).then(insuranceData => {
-                if (insuranceData.insInfo) {
-                    const coverages: CoverageInfo[] = insuranceData.insInfo.coverages.map((coverage: any) => {
+                if (insuranceData.insData) {
+                    const coveragesList: CoverageInfo[] = insuranceData.insData?.coverages.map((c: any) => {
                         return {
-                            clazz: coverage.clazz,
-                            payer: coverage.payer,
-                            contractId: coverage.contractId,
-                            startDate: coverage.startDate,
-                            endDate: coverage.endDate,
-                            status: coverage.active,
-                            referenceYear: coverage.referenceYear}
+                            clazz: c.clazz,
+                            payer: c.payer,
+                            contractId: c.contractId,
+                            startDate: c.startDate,
+                            endDate: c.endDate,
+                            status: c.active,
+                            relationship: c.relationship,
+                            referenceYear: c.referenceYear}
                     });
                     setInsInfo(
                         {
-                            name: insuranceData.insInfo.name,
-                            gender: insuranceData.insInfo.gender,
-                            dob: insuranceData.insInfo.dob,
-                            identifier: insuranceData.insInfo.identifier,
-                            relationship: insuranceData.insInfo.relationship,
-                            coverages: coverages
+                            name: insuranceData.insData.name,
+                            gender: insuranceData.insData.gender,
+                            dob: insuranceData.insData.dob,
+                            identifier: insuranceData.insData.identifier,
+                            coverages: coveragesList
                         }
                     );
                 }
@@ -109,9 +109,8 @@ export default function InsuranceCard() {
         return (
             <div className="content-wrapper">
                 <div className="ins-c4dic-card">
-                    <pre className="ins-fld-text">{insInfo?.name||"Null"}    {insInfo?.gender||"Null"}    {insInfo?.dob||"Null"}</pre>
-                    <pre className="ins-fld-text">MBI: {insInfo?.identifier||"Null"}</pre>
-                    <pre className="ins-fld-text">Relationship to insured: {insInfo?.relationship||"Null"}</pre>
+                    <pre className="ins-fld-text">{insInfo?.name||""}    Gender: {insInfo?.gender||""}   DOB:  {insInfo?.dob||""}</pre>
+                    <pre className="ins-fld-text">MBI: {insInfo?.identifier||""}</pre>
 
                     {insInfo?.coverages.map(c => {
                             return (
@@ -133,6 +132,9 @@ export default function InsuranceCard() {
                                     </pre>
                                     <pre className="ins-fld-text">
                                         Status: {c.status}
+                                    </pre>
+                                    <pre className="ins-fld-text">
+                                        Relationship to insured: {c.relationship||""}
                                     </pre>
                                     <pre className="ins-fld-text">
                                         Reference Year: {c.referenceYear}
