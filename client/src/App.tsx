@@ -2,7 +2,6 @@ import React from 'react';
 import Header from './components/header';
 import Patient from './components/patient';
 import PatientData from './components/patientData';
-import {DIC} from './components/dic'
 import InsuranceCard from './components/c4dic'
 import Records from './components/records';
 import { BrowserRouter as Router} from "react-router-dom";
@@ -63,11 +62,6 @@ function App() {
             <a href='/card_only' target="_blank">Show in new window</a>
             <div className="bb-c-c4dic-card-png default-card">
                 <InsuranceCard />
-            </div>
-          </TabPanel>
-          <TabPanel id="dic" tab="Insurance Card">
-            <div className="bb-c-card default-card">
-                <DIC />
             </div>
           </TabPanel>
         </Tabs>
