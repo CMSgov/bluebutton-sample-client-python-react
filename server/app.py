@@ -135,11 +135,10 @@ def get_patient_insurance():
     """
     * This function is used directly by the front-end to
     * retrieve insurance data from the logged in user from within the mocked DB
-    * This would be replaced by a persistence service layer for whatever
-    *  DB you would choose to use
     *
-    * This is for POC, the insurance data composition will be implemented
-    * in BB2 server tier, and exposed as an API end point
+    * Insurance info of the bene is extracted from the C4DIC resources Patient,
+    * Coverage (fetched from the BB2 server and cached in logged_in_user), and 
+    * sent back to FE to render a CMS insurance 'card'
     """
 
     ## C4DIC patient and coverage where to extract PII and coverage plans & eligibilities
