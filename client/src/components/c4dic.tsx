@@ -32,6 +32,7 @@ export type InsuranceInfo = {
     gender: string,
     dob: string,
     identifier: string, // mbi
+    cardImg: string,
     coverages: CoverageInfo[] // Part A, Part B, Part C, Part D
 }
 
@@ -69,6 +70,7 @@ export default function InsuranceCard() {
                             gender: insuranceData.insData.gender,
                             dob: insuranceData.insData.dob,
                             identifier: insuranceData.insData.identifier,
+                            cardImg: insuranceData.cardImg,
                             coverages: coveragesList
                         }
                     );
@@ -106,6 +108,7 @@ export default function InsuranceCard() {
             </div>
         );
     } else {
+        const urlExpr = 'data:image/png;base64,'+insInfo?.cardImg;
         return (
             <div className="content-wrapper">
                 <div className="ins-c4dic-card">

@@ -1,10 +1,10 @@
 import os
-import json
 
 from flask import redirect, request, Flask
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
+from card import CARD_IMG_PNG
 
 BENE_DENIED_ACCESS = "access_denied"
 FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
@@ -12,8 +12,29 @@ ERR_QUERY_DATA = "Error when querying the patient's Data: EOB or Coverage or Pat
 ERR_MISSING_AUTH_CODE = "Response was missing access code!"
 ERR_MISSING_STATE = "State is required when using PKCE"
 
+## helper trouble shoot
+def print_setting():
+    print("URL::BlueButton->base_url: {}".format(bb.base_url), flush=True)
+    print("URL::BlueButton->auth_base_url: {}".format(bb.auth_base_url), flush=True)
+    print("URL::BlueButton->auth_token_url: {}".format(bb.auth_token_url), flush=True)
+    print("URL::BlueButton->callback_url: {}".format(bb.callback_url), flush=True)
+
+
 app = Flask(__name__)
 bb = BlueButton()
+
+host_ip = os.environ.get("HOST_IP")
+
+print_setting()
+
+if host_ip:
+    if str(bb.base_url).startswith("http://localhost"):
+        bb.base_url = str(bb.base_url).replace("http://localhost", "http://{}".format(host_ip))
+    if str(bb.auth_base_url).startswith("http://localhost"):
+        bb.auth_base_url = str(bb.auth_base_url).replace("http://localhost", "http://{}".format(host_ip))
+    if str(bb.auth_token_url).startswith("http://localhost"):
+        bb.auth_token_url = str(bb.auth_token_url).replace("http://localhost", "http://{}".format(host_ip))
+    print_setting()
 
 # This is where medicare.gov beneficiary associated
 # with the current logged in app user,
@@ -36,6 +57,7 @@ auth_token = None
 
 @app.route('/api/authorize/authurl', methods=['GET'])
 def get_auth_url():
+    print_setting()
     redirect_url = bb.generate_authorize_url(auth_data)
     return redirect_url
 
@@ -43,6 +65,7 @@ def get_auth_url():
 @app.route('/api/bluebutton/callback/', methods=['GET'])
 def authorization_callback():
     request_query = request.args
+    print_setting()
 
     if (request_query.get('error') == BENE_DENIED_ACCESS):
         # clear all cached claims eob data since the bene has denied access
@@ -85,11 +108,11 @@ def authorization_callback():
         auth_token = patient_data['auth_token']
 
         config_clone = dict(config)
-        config_clone['url'] = "https://test.bluebutton.cms.gov/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient"
+        config_clone['url'] = "{}/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient".format(bb.base_url)
         dic_pt_data = bb.get_custom_data(config_clone)
         auth_token = dic_pt_data['auth_token']
 
-        config_clone['url'] = "https://test.bluebutton.cms.gov/v2/fhir/Coverage?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage"
+        config_clone['url'] = "{}/v2/fhir/Coverage?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage".format(bb.base_url)
         dic_coverage_data = bb.get_custom_data(config_clone)
         auth_token = dic_coverage_data['auth_token']
 
@@ -141,6 +164,8 @@ def get_patient_insurance():
     * sent back to FE to render a CMS insurance 'card'
     """
 
+    print_setting()
+
     ## C4DIC patient and coverage where to extract PII and coverage plans & eligibilities
     dic_patient = logged_in_user.get('dicPatientData')
     dic_coverage = logged_in_user.get('dicCoverageData')
@@ -180,6 +205,8 @@ def get_patient_insurance():
         insurance['gender'] = pt_gender
         pt_dob = patient['resource']['birthDate']
         insurance['dob'] = pt_dob
+        # this background image can be from C4DIC response, get it from local var for simulation
+        insurance['cardImg'] = CARD_IMG_PNG
 
         coverage_array = dic_coverage['entry']
 

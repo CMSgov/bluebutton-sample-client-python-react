@@ -23,4 +23,4 @@ RUN pipenv install --system --deploy --ignore-pipfile
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "python -m debugpy --listen 0.0.0.0:10678 app.py"]
+CMD ["sh", "-c", "python -u -m debugpy --listen 0.0.0.0:10678 app.py"]
