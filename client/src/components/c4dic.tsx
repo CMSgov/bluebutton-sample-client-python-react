@@ -25,6 +25,15 @@ export type CoverageInfo = {
     status: string,
     relationship: string, // self, spouse etc.
     referenceYear: string,
+    cardImage: {
+        description: string,
+        label: string,
+        image: {
+            type: string,
+            data: string
+        }
+    },
+    c4dicSupportingImageSrc: string
 }
 
 export type InsuranceInfo = {
@@ -32,8 +41,7 @@ export type InsuranceInfo = {
     gender: string,
     dob: string,
     identifier: string, // mbi
-    cardImg: string,
-    coverages: CoverageInfo[] // Part A, Part B, Part C, Part D
+    coverages: CoverageInfo[] // e.g. Part A, Part B, Part C, Part D
 }
 
 export type ErrorResponse = {
@@ -62,15 +70,25 @@ export default function InsuranceCard() {
                             endDate: c.endDate,
                             status: c.active,
                             relationship: c.relationship,
-                            referenceYear: c.referenceYear}
+                            referenceYear: c.referenceYear,
+                            cardImage: {
+                                description: c.cardImage.description,
+                                label: c.cardImage.label,
+                                image: {
+                                    type: c.cardImage.image.type,
+                                    data: c.cardImage.image.data
+                                }
+                            },
+                            c4dicSupportingImageSrc: `data:image/png;base64,${c.cardImage.image.data}`
+                        }
                     });
+
                     setInsInfo(
                         {
                             name: insuranceData.insData.name,
                             gender: insuranceData.insData.gender,
                             dob: insuranceData.insData.dob,
                             identifier: insuranceData.insData.identifier,
-                            cardImg: insuranceData.cardImg,
                             coverages: coveragesList
                         }
                     );
@@ -108,43 +126,47 @@ export default function InsuranceCard() {
             </div>
         );
     } else {
-        const urlExpr = 'data:image/png;base64,'+insInfo?.cardImg;
         return (
             <div className="content-wrapper">
                 <div className="ins-c4dic-card">
-                    <pre className="ins-fld-text">{insInfo?.name||""}    Gender: {insInfo?.gender||""}   DOB:  {insInfo?.dob||""}</pre>
-                    <pre className="ins-fld-text">MBI: {insInfo?.identifier||""}</pre>
+                    <div className="pii-sec bb-c-c4dic-card-pii-area">
+                        <pre className="ins-fld-text">Full Name: {insInfo?.name||""}    Gender: {insInfo?.gender||""}   DOB:  {insInfo?.dob||""}</pre>
+                        <pre className="ins-fld-text">MBI: {insInfo?.identifier||""}</pre>
+                    </div>
 
-                    {insInfo?.coverages.map(c => {
-                            return (
-                                <div>
-                                    <pre className="ins-fld-text">
-                                        Coverage Type: {c.clazz}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        Payer: {c.payer}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        Contract Number: {c.contractId}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        Start Date: {c.startDate}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        End Date: {c.endDate}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        Status: {c.status}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        Relationship to insured: {c.relationship||""}
-                                    </pre>
-                                    <pre className="ins-fld-text">
-                                        Reference Year: {c.referenceYear}
-                                    </pre>
-                                </div>
-                            )
-                        })}
+                    <div className="coverage-sec bb-c-c4dic-card-coverages-area">
+                        {insInfo?.coverages.map(c => {
+                                return (
+                                    <div>
+                                        <pre className="ins-fld-text">
+                                            Coverage Type: {c.clazz}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            Payer: {c.payer}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            Contract Number: {c.contractId}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            Start Date: {c.startDate}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            End Date: {c.endDate}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            Status: {c.status}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            Relationship to insured: {c.relationship||""}
+                                        </pre>
+                                        <pre className="ins-fld-text">
+                                            Reference Year: {c.referenceYear}
+                                        </pre>
+                                        <img className="bb-c-card-img" src={c.c4dicSupportingImageSrc} alt="cardImage"></img>
+                                    </div>
+                                )
+                            })}
+                    </div>
                 </div>
             </div>
         );

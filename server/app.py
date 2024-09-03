@@ -1,10 +1,16 @@
 import os
+import json
 
 from flask import redirect, request, Flask
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
 from card import CARD_IMG_PNG
+
+C4DIC_SUPPORTING_IMAGE_URL = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-SupportingImage-extension"
+CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
+CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
+CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
 
 BENE_DENIED_ACCESS = "access_denied"
 FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
@@ -128,9 +134,12 @@ def authorization_callback():
         logged_in_user['authToken'] = auth_token
         logged_in_user['eobData'] = eob_data['response'].json()
         logged_in_user['coverageData'] = coverage_data['response'].json()
+        ## print(json.dumps(logged_in_user['coverageData']), flush=True)
         logged_in_user['patientData'] = patient_data['response'].json()
         logged_in_user['dicPatientData'] = dic_pt_data['response'].json()
+        ## print(json.dumps(logged_in_user['dicPatientData']), flush=True)
         logged_in_user['dicCoverageData'] = dic_coverage_data['response'].json()
+        ## print(json.dumps(logged_in_user['dicCoverageData']), flush=True)
     except Exception as ex:
         clear_bb2_data()
         logged_in_user.update({'eobData': {'message': ERR_QUERY_DATA}})
@@ -194,6 +203,7 @@ def get_patient_insurance():
         ## 5. payor: CMS
         ## 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
         ## 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+        ## 8. supporting image extension
         ## 8. other info such as: DIB, ESRD etc. can be added as needed
         pt = dic_patient['entry']
         patient = pt[0]
@@ -205,8 +215,6 @@ def get_patient_insurance():
         insurance['gender'] = pt_gender
         pt_dob = patient['resource']['birthDate']
         insurance['dob'] = pt_dob
-        # this background image can be from C4DIC response, get it from local var for simulation
-        insurance['cardImg'] = CARD_IMG_PNG
 
         coverage_array = dic_coverage['entry']
 
@@ -227,14 +235,45 @@ def get_patient_insurance():
             coverage['payer'] = c_payer
             c_contract_id = "" ## Part A and Part B does not have contract number
             if c_clazz == "Part C":
-                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01')]", "valueCoding", c).get('code')
+                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_PTC_CNTRCT_ID_01), "valueCoding", c).get('code')
             if c_clazz == "Part D":
-                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/ptdcntrct01')]", "valueCoding", c).get('code')
+                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_PTD_CNTRCT_ID_01), "valueCoding", c).get('code')
             coverage['contractId'] = c_contract_id
-            c_reference_year = lookup_1_and_get("$.resource.extension[?(@.url=='https://bluebutton.cms.gov/resources/variables/rfrnc_yr')]", "valueDate", c)
+            c_reference_year = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_REF_YR), "valueDate", c)
             coverage['referenceYear'] = c_reference_year
             c_relationship = c['resource']['relationship']['coding'][0]['display']
             coverage['relationship'] = c_relationship
+            c_supporting_image_ext = lookup_by_path("$.resource.extension[?(@.url=='{}')]".format(C4DIC_SUPPORTING_IMAGE_URL), c)
+            c_supporting_image_ext_desc = ""
+            ## e.g. "contentType": "image/png",
+            c_supporting_image_ext_image_type = ""
+            ## e.g. base64 encoded image
+            c_supporting_image_ext_image_data = ""
+            c_supporting_image_ext_label = ""
+            if c_supporting_image_ext[0]:
+                ## yea, another layer of extension per C4DIC profile
+                ext_ext = c_supporting_image_ext[0].value['extension']
+                ## grab 'description, image, label
+                for e in ext_ext:
+                    img_url = e['url']
+                    if img_url == 'description':
+                        c_supporting_image_ext_desc = e['valueString']
+                    if img_url == 'label':
+                        c_supporting_image_ext_label = e['valueString']
+                    if img_url == 'image':
+                        attachment = e['valueAttachment']
+                        c_supporting_image_ext_image_type = attachment['contentType']
+                        c_supporting_image_ext_image_data = attachment['data']
+                ## set image for current coverage
+                coverage['cardImage'] = {
+                    "description": c_supporting_image_ext_desc,
+                    "label": c_supporting_image_ext_label,
+                    "image": {
+                        "type": c_supporting_image_ext_image_type,
+                        "data": c_supporting_image_ext_image_data
+                    }
+                }
+
             coverages.append(coverage)
 
         insurance['coverages'] = coverages
