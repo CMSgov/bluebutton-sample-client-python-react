@@ -7,6 +7,11 @@ from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
 from card import CARD_IMG_PNG
 
+C4DIC_COLOR_PALLETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension"
+C4DIC_COLOR_BG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension"
+C4DIC_COLOR_FG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ForegroundColor-extension"
+C4DIC_COLOR_HI_LT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension"
+
 C4DIC_SUPPORTING_IMAGE_URL = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-SupportingImage-extension"
 CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
 CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
@@ -139,7 +144,7 @@ def authorization_callback():
         logged_in_user['dicPatientData'] = dic_pt_data['response'].json()
         ## print(json.dumps(logged_in_user['dicPatientData']), flush=True)
         logged_in_user['dicCoverageData'] = dic_coverage_data['response'].json()
-        ## print(json.dumps(logged_in_user['dicCoverageData']), flush=True)
+        print(json.dumps(logged_in_user['dicCoverageData']), flush=True)
     except Exception as ex:
         clear_bb2_data()
         logged_in_user.update({'eobData': {'message': ERR_QUERY_DATA}})
@@ -230,9 +235,16 @@ def get_patient_insurance():
             c_end = c_period.get('end') if c_period else ""
             coverage['endDate'] = c_end if c_end else ""
             c_payer = c['resource']['payor'][0]
+            c_payer_org = "TO BE RESOLVED"
             if c_payer:
-                c_payer = c_payer['identifier']['value']
-            coverage['payer'] = c_payer
+                ## BFD C4DIC Coverage response: payer is a reference to the contained Organization
+                ref_payer_org = c_payer['reference']
+                if ref_payer_org:
+                    ref_payer_org = ref_payer_org[1:] if ref_payer_org.startswith('#') else ref_payer_org
+                    # can also extract more payer details, e.g. contact etc.
+                    c_payer_org = lookup_1_and_get("$.resource.contained[?(@.id=='{}')]".format(ref_payer_org), "name", c)
+
+            coverage['payer'] = c_payer_org
             c_contract_id = "" ## Part A and Part B does not have contract number
             if c_clazz == "Part C":
                 c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_PTC_CNTRCT_ID_01), "valueCoding", c).get('code')
@@ -243,17 +255,40 @@ def get_patient_insurance():
             coverage['referenceYear'] = c_reference_year
             c_relationship = c['resource']['relationship']['coding'][0]['display']
             coverage['relationship'] = c_relationship
+            # color pallettes extension
+            c_color_pallette_ext = lookup_by_path("$.resource.extension[?(@.url=='{}')]".format(C4DIC_COLOR_PALLETTE_EXT), c)
+            if c_color_pallette_ext[0]:
+                # another layer of extension for color codes per C4DIC profile
+                pallette_ext = c_color_pallette_ext[0].value['extension']
+                for p in pallette_ext:
+                    color_code_url = p['url']
+                    if color_code_url == C4DIC_COLOR_BG:
+                        c_color_pallette_ext_bg = p['valueCoding']['code']
+                    if color_code_url == C4DIC_COLOR_FG:
+                        c_color_pallette_ext_fg = p['valueCoding']['code']
+                    if color_code_url == C4DIC_COLOR_HI_LT:
+                        c_color_pallette_ext_hi_lt = p['valueCoding']['code']
+                # set color pallette
+                # fg #F4FEFF Light blue
+                # bg #092E86 Navy
+                # hi lt: #3B9BFB sky blue
+                coverage['colorPallette'] = {
+                    "foreground": c_color_pallette_ext_fg,
+                    "background": c_color_pallette_ext_bg,
+                    "highlight": c_color_pallette_ext_hi_lt,
+                }
+
             c_supporting_image_ext = lookup_by_path("$.resource.extension[?(@.url=='{}')]".format(C4DIC_SUPPORTING_IMAGE_URL), c)
             c_supporting_image_ext_desc = ""
-            ## e.g. "contentType": "image/png",
+            # e.g. "contentType": "image/png",
             c_supporting_image_ext_image_type = ""
-            ## e.g. base64 encoded image
+            # e.g. base64 encoded image
             c_supporting_image_ext_image_data = ""
             c_supporting_image_ext_label = ""
             if c_supporting_image_ext[0]:
-                ## yea, another layer of extension per C4DIC profile
+                # another layer of extension per C4DIC profile
                 ext_ext = c_supporting_image_ext[0].value['extension']
-                ## grab 'description, image, label
+                # grab 'description, image, label
                 for e in ext_ext:
                     img_url = e['url']
                     if img_url == 'description':
