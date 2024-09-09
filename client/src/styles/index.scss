@@ -160,6 +160,43 @@ input[type=number]::-webkit-input-placeholder {
   background-position: center;
 }
 
+.bb-c-c4dic-card-pii-area {
+  top: 65px;
+  background-color: transparent;
+  position: relative;
+  left: 10px;
+  padding: 10px;
+}
+
+.bb-c-c4dic-card-coverages-area {
+  top: 120px;
+  background-color: transparent;
+  position: relative;
+  left: 10px;
+  padding: 10px;
+  display: flex;
+  overflow-x: auto;  
+}
+
+.bb-c-c4dic-1-coverage {
+  background-color: transparent;
+  position: relative;
+  padding: 10px;
+  border: 5px solid #d6d7d9;
+}
+
+.bb-c-card-img {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 5px;
+  width: 120px;
+}
+
+.bb-c-card-img:hover {
+  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+  width: 470px;
+}
+
 .bb-c-card.default-card {
   color: #323a45;
   max-width: 700px;

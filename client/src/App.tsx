@@ -58,7 +58,7 @@ function App() {
               <Records /> 
             </div>
           </TabPanel>
-          <TabPanel id="dic-new-design" tab="Insurance Card (New Design)">
+          <TabPanel id="dic-new-design" tab="Insurance Card">
             <a href='/card_only' target="_blank">Show in new window</a>
             <div className="bb-c-c4dic-card-png default-card">
                 <InsuranceCard />
