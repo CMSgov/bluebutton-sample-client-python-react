@@ -25,20 +25,11 @@ export type CoverageInfo = {
     status: string,
     relationship: string, // self, spouse etc.
     referenceYear: string,
-    cardImage: {
-        description: string,
-        label: string,
-        image: {
-            type: string,
-            data: string
-        }
-    },
     colorPallette: {
         foreground: string,
         background: string,
         highlight: string
-    },
-    c4dicSupportingImageSrc: string
+    }
 }
 
 export type InsuranceInfo = {
@@ -76,20 +67,11 @@ export default function InsuranceCard() {
                             status: c.active,
                             relationship: c.relationship,
                             referenceYear: c.referenceYear,
-                            cardImage: {
-                                description: c.cardImage.description,
-                                label: c.cardImage.label,
-                                image: {
-                                    type: c.cardImage.image.type,
-                                    data: c.cardImage.image.data
-                                }
-                            },
                             colorPallette: {
                                 foreground: c.colorPallette.foreground,
                                 background: c.colorPallette.background,
                                 highlight: c.colorPallette.highlight
-                            },
-                            c4dicSupportingImageSrc: `data:image/png;base64,${c.cardImage.image.data}`
+                            }
                         }
                     });
 
@@ -177,7 +159,6 @@ export default function InsuranceCard() {
                                         <pre className="ins-fld-text">
                                             Reference Year: {c.referenceYear}
                                         </pre>
-                                        <img className="bb-c-card-img" src={c.c4dicSupportingImageSrc} alt="cardImage"></img>
                                     </div>
                                 )
                             })}

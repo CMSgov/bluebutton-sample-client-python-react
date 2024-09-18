@@ -6,7 +6,7 @@ services:
       args:
         BUILD_DEVELOPMENT: ${BUILD_DEVELOPMENT}
     environment:
-      HOST_IP: "192.168.0.144"
+      HOST_IP: "192.168.1.181"
     ports:
       - "3001:3001"
       - "10678:10678"
