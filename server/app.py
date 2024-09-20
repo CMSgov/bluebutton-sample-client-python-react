@@ -6,12 +6,12 @@ from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
 
-C4DIC_COLOR_PALLETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension"
+C4DIC_COLOR_PALETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension"
 C4DIC_COLOR_BG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension"
 C4DIC_COLOR_FG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ForegroundColor-extension"
 C4DIC_COLOR_HI_LT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension"
 
-C4DIC_SUPPORTING_IMAGE_URL = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-SupportingImage-extension"
+C4DIC_LOGO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension"
 CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
 CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
 CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
@@ -39,11 +39,11 @@ print_setting()
 
 if host_ip:
     if str(bb.base_url).startswith("http://localhost"):
-        bb.base_url = str(bb.base_url).replace(f"http://localhost", "http://{host_ip}")
+        bb.base_url = str(bb.base_url).replace("http://localhost", f"http://{host_ip}")
     if str(bb.auth_base_url).startswith("http://localhost"):
-        bb.auth_base_url = str(bb.auth_base_url).replace(f"http://localhost", "http://{host_ip}")
+        bb.auth_base_url = str(bb.auth_base_url).replace(f"http://localhost", f"http://{host_ip}")
     if str(bb.auth_token_url).startswith("http://localhost"):
-        bb.auth_token_url = str(bb.auth_token_url).replace(f"http://localhost", "http://{host_ip}")
+        bb.auth_token_url = str(bb.auth_token_url).replace(f"http://localhost", f"http://{host_ip}")
     print_setting()
 
 # This is where medicare.gov beneficiary associated
@@ -253,28 +253,30 @@ def get_patient_insurance():
             coverage['referenceYear'] = c_reference_year
             c_relationship = c['resource']['relationship']['coding'][0]['display']
             coverage['relationship'] = c_relationship
-            # color pallettes extension
-            c_color_pallette_ext = lookup_by_path(f"$.resource.extension[?(@.url=='{C4DIC_COLOR_PALLETTE_EXT}')]", c)
-            if c_color_pallette_ext[0]:
+            # color palettes extension
+            c_color_palette_ext = lookup_by_path(f"$.resource.extension[?(@.url=='{C4DIC_COLOR_PALETTE_EXT}')]", c)
+            if c_color_palette_ext[0]:
                 # another layer of extension for color codes per C4DIC profile
-                pallette_ext = c_color_pallette_ext[0].value['extension']
-                for p in pallette_ext:
+                palette_ext = c_color_palette_ext[0].value['extension']
+                for p in palette_ext:
                     color_code_url = p['url']
                     if color_code_url == C4DIC_COLOR_BG:
-                        c_color_pallette_ext_bg = p['valueCoding']['code']
+                        c_color_palette_ext_bg = p['valueCoding']['code']
                     if color_code_url == C4DIC_COLOR_FG:
-                        c_color_pallette_ext_fg = p['valueCoding']['code']
+                        c_color_palette_ext_fg = p['valueCoding']['code']
                     if color_code_url == C4DIC_COLOR_HI_LT:
-                        c_color_pallette_ext_hi_lt = p['valueCoding']['code']
-                # set color pallette
+                        c_color_palette_ext_hi_lt = p['valueCoding']['code']
+                # set color palette
                 # fg #F4FEFF Light blue
                 # bg #092E86 Navy
                 # hi lt: #3B9BFB sky blue
-                coverage['colorPallette'] = {
-                    "foreground": c_color_pallette_ext_fg,
-                    "background": c_color_pallette_ext_bg,
-                    "highlight": c_color_pallette_ext_hi_lt,
+                coverage['colorPalette'] = {
+                    "foreground": c_color_palette_ext_fg,
+                    "background": c_color_palette_ext_bg,
+                    "highlight": c_color_palette_ext_hi_lt,
                 }
+            c_logo_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_LOGO_EXT}')]", "valueString", c)
+            coverage['logo'] = c_logo_ext
 
             coverages.append(coverage)
 

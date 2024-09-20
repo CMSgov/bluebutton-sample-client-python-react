@@ -25,11 +25,12 @@ export type CoverageInfo = {
     status: string,
     relationship: string, // self, spouse etc.
     referenceYear: string,
-    colorPallette: {
+    colorPalette: {
         foreground: string,
         background: string,
         highlight: string
-    }
+    },
+    logo: string
 }
 
 export type InsuranceInfo = {
@@ -67,11 +68,12 @@ export default function InsuranceCard() {
                             status: c.active,
                             relationship: c.relationship,
                             referenceYear: c.referenceYear,
-                            colorPallette: {
-                                foreground: c.colorPallette.foreground,
-                                background: c.colorPallette.background,
-                                highlight: c.colorPallette.highlight
-                            }
+                            colorPalette: {
+                                foreground: c.colorPalette.foreground,
+                                background: c.colorPalette.background,
+                                highlight: c.colorPalette.highlight
+                            },
+                            logo: c.logo
                         }
                     });
 
@@ -119,50 +121,51 @@ export default function InsuranceCard() {
         );
     } else {
         return (
-            <div className="content-wrapper">
-                <div className="ins-c4dic-card">
-                    <div className="pii-sec bb-c-c4dic-card-pii-area">
-                        <pre className="ins-fld-text">Full Name: {insInfo?.name||""}    Gender: {insInfo?.gender||""}   DOB:  {insInfo?.dob||""}</pre>
-                        <pre className="ins-fld-text">MBI: {insInfo?.identifier||""}</pre>
-                    </div>
+            <div className="ins-c4dic-card" style={{backgroundColor: insInfo?.coverages[0]?.colorPalette.background}}>
+                <div className="card-banner">
+                    <img src={insInfo?.coverages[0]?.logo} alt="C4DIC Logo" height="120px"/>
+                </div>
+                <div className="pii-sec bb-c-c4dic-card-pii-area">
+                    <pre className="ins-fld-text">Full Name: {insInfo?.name||""}    Gender: {insInfo?.gender||""}   DOB:  {insInfo?.dob||""}</pre>
+                    <pre className="ins-fld-text">MBI: {insInfo?.identifier||""}</pre>
+                </div>
 
-                    <div className="coverage-sec bb-c-c4dic-card-coverages-area">
-                        {insInfo?.coverages.map(c => {
-                                const coverageColorStyle = {
-                                    backgroundColor: c?.colorPallette?.highlight,
-                                    color: c?.colorPallette?.foreground,
-                                };
-                            
-                                return (
-                                    <div>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            Coverage Type: {c.clazz}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Payer: {c.payer}
-                                        </pre>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            Contract Number: {c.contractId}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Start Date: {c.startDate}
-                                        </pre>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            End Date: {c.endDate}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Status: {c.status}
-                                        </pre>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            Relationship to insured: {c.relationship||""}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Reference Year: {c.referenceYear}
-                                        </pre>
-                                    </div>
-                                )
-                            })}
-                    </div>
+                <div className="coverage-sec bb-c-c4dic-card-coverages-area">
+                    {insInfo?.coverages.map(c => {
+                            const coverageColorStyle = {
+                                backgroundColor: c?.colorPalette?.highlight,
+                                color: c?.colorPalette?.foreground,
+                            };
+                        
+                            return (
+                                <div>
+                                    <pre className="ins-fld-text" style={coverageColorStyle}>
+                                        Coverage Type: {c.clazz}
+                                    </pre>
+                                    <pre className="ins-fld-text">
+                                        Payer: {c.payer}
+                                    </pre>
+                                    <pre className="ins-fld-text" style={coverageColorStyle}>
+                                        Contract Number: {c.contractId}
+                                    </pre>
+                                    <pre className="ins-fld-text">
+                                        Start Date: {c.startDate}
+                                    </pre>
+                                    <pre className="ins-fld-text" style={coverageColorStyle}>
+                                        End Date: {c.endDate}
+                                    </pre>
+                                    <pre className="ins-fld-text">
+                                        Status: {c.status}
+                                    </pre>
+                                    <pre className="ins-fld-text" style={coverageColorStyle}>
+                                        Relationship to insured: {c.relationship||""}
+                                    </pre>
+                                    <pre className="ins-fld-text">
+                                        Reference Year: {c.referenceYear}
+                                    </pre>
+                                </div>
+                            )
+                        })}
                 </div>
             </div>
         );
