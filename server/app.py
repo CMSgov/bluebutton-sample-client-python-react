@@ -12,6 +12,7 @@ C4DIC_COLOR_FG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DI
 C4DIC_COLOR_HI_LT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension"
 
 C4DIC_LOGO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension"
+C4DIC_ADDL_CARD_INFO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension"
 CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
 CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
 CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
@@ -203,16 +204,16 @@ def get_patient_insurance():
         ## 1. coverage class: by Coverage resource 'class': "Part A"
         ## 2. status: active or not active
         ## 3. period, start date: e.g. 2014-02-06
-        ## 4. relationship to insured: e.g. self
-        ## 5. payor: CMS
-        ## 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
-        ## 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
-        ## 8. other info such as: DIB, ESRD etc. can be added as needed
+        ## 4. payor: CMS
+        ## 5. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
+        ## 6. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+        ## 7. other info such as: DIB, ESRD etc. can be added as needed
         pt = dic_patient['entry']
         patient = pt[0]
         pt_id = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
         insurance['identifier'] = pt_id
-        pt_name = patient['resource']['name'][0]['family']
+        # TODO: handle wider variety of given/family names
+        pt_name = patient['resource']['name'][0]['given'][0] + " " + patient['resource']['name'][0]['family']
         insurance['name'] = pt_name
         pt_gender = patient['resource']['gender']
         insurance['gender'] = pt_gender
@@ -223,8 +224,8 @@ def get_patient_insurance():
 
         for c in coverage_array:
             coverage = {}
-            c_clazz = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
-            coverage['clazz'] = c_clazz if c_clazz else "Null"
+            c_type = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+            coverage['type'] = c_type if c_type else "Null"
             c_status = c['resource']['status']
             coverage['status'] = c_status
             c_period = c['resource'].get('period') ## Part C seems not have period
@@ -234,6 +235,8 @@ def get_patient_insurance():
             coverage['endDate'] = c_end if c_end else ""
             c_payer = c['resource']['payor'][0]
             c_payer_org = "TO BE RESOLVED"
+            c_contacts = []
+            c_payer_id = "TO BE RESOLVED"
             if c_payer:
                 ## BFD C4DIC Coverage response: payer is a reference to the contained Organization
                 ref_payer_org = c_payer['reference']
@@ -241,18 +244,24 @@ def get_patient_insurance():
                     ref_payer_org = ref_payer_org[1:] if ref_payer_org.startswith('#') else ref_payer_org
                     # can also extract more payer details, e.g. contact etc.
                     c_payer_org = lookup_1_and_get(f"$.resource.contained[?(@.id=='{ref_payer_org}')]", "name", c)
+                    # contacts = lookup_by_path(f"$.resource.contained[?(@.id=='{ref_payer_org}')].contact[0].telecom", c)
+                    contacts = lookup_1_and_get(f"$.resource.contained[?(@.id=='{ref_payer_org}')]", "contact", c)
+                    if contacts[0]:
+                        telecoms = contacts[0]['telecom']
+                        for t in telecoms:
+                            c_contacts.append(t['value'])
 
             coverage['payer'] = c_payer_org
+            coverage['payerId'] = c_payer_id
+            coverage['contacts'] = c_contacts
             c_contract_id = "" ## Part A and Part B does not have contract number
-            if c_clazz == "Part C":
+            if c_type == "Part C":
                 c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTC_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
-            if c_clazz == "Part D":
+            if c_type == "Part D":
                 c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTD_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             coverage['contractId'] = c_contract_id
             c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)
             coverage['referenceYear'] = c_reference_year
-            c_relationship = c['resource']['relationship']['coding'][0]['display']
-            coverage['relationship'] = c_relationship
             # color palettes extension
             c_color_palette_ext = lookup_by_path(f"$.resource.extension[?(@.url=='{C4DIC_COLOR_PALETTE_EXT}')]", c)
             if c_color_palette_ext[0]:
@@ -277,6 +286,8 @@ def get_patient_insurance():
                 }
             c_logo_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_LOGO_EXT}')]", "valueString", c)
             coverage['logo'] = c_logo_ext
+            c_addl_card_info_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_ADDL_CARD_INFO_EXT}')]", "valueAnnotation", c).get('text')
+            coverage['addlCardInfo'] = c_addl_card_info_ext
 
             coverages.append(coverage)
 
