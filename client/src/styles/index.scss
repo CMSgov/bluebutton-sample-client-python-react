@@ -25,16 +25,10 @@ $image-path: "~@cmsgov/design-system/dist/images";
 .ins-c4dic-card {
   border-radius: 6px;
   width: 480px;
-  height: 920px;
   margin: 0 auto;
   position: relative;
   transition: all .3s;
-}
-
-.ins-fld-text {
-  font-family: serif;
-  font-size: 13px;
-  color: white;
+  padding: 1rem;
 }
 
 label {
@@ -150,55 +144,74 @@ input[type=number]::-webkit-input-placeholder {
   border-radius: 0.3rem;
 }
 
-.bb-c-c4dic-card-png {
+.bb-c-c4dic-card {
   background: #fff;
   border: 1px solid #d6d7d9;
   border-radius: 0.3rem;
-  background-image: url("../images/medicare-card-figma.png");
+  background-color: transparent;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+
+  .field-label {
+    font-size: 10px;
+    font-weight: lighter;
+  }
+
+  .field-value {
+    font-size: 18px;
+  }
+
+  h6 {
+    margin: 0px;
+  }
+}
+
+.bb-c-c4dic-card-header {
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  align-items: center;
+  gap: 1rem;
+  text-wrap: pretty;
 }
 
 .bb-c-c4dic-card-pii-area {
-  top: 65px;
   background-color: transparent;
   position: relative;
-  left: 10px;
-  padding: 10px;
+
+  .patient-name {
+  }
+
+  .patient-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
 .bb-c-c4dic-card-coverages-area {
-  top: 120px;
   background-color: transparent;
   position: relative;
-  left: 10px;
+}
+
+.bb-c-c4dic-coverage {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   padding: 10px;
-  display: flex;
-  overflow-x: auto;  
 }
 
-.bb-c-c4dic-1-coverage {
-  background-color: transparent;
-  position: relative;
-  padding: 10px;
-  border: 5px solid #d6d7d9;
+.bb-c-c4dic-card-org-contact {
+  .contact-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 
-.bb-c-card-img {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 5px;
-  width: 120px;
-}
-
-.bb-c-card-img:hover {
-  box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
-  width: 470px;
+.bb-c-c4dic-card-additional-card-info {
+  white-space: pre-wrap;
+  font-size: 8px;
 }
 
 .bb-c-card.default-card {
-  color: #323a45;
   max-width: 700px;
   text-decoration: none;
   margin: 0.5rem;
@@ -206,13 +219,10 @@ input[type=number]::-webkit-input-placeholder {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.bb-c-c4dic-card-png.default-card {
-  color: #323a45;
-  max-width: 480px;
-  max-height: 920px;
+.bb-c-c4dic-card.default-card {
   text-decoration: none;
   margin: 0.5rem;
-  padding: 0 1rem 1rem 1rem;
+  padding: 1rem 1rem 1rem 1rem;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -221,7 +231,7 @@ input[type=number]::-webkit-input-placeholder {
   color: #000;
 }
 
-.bb-c-c4dic-card-png.default-card:hover {
+.bb-c-c4dic-card.default-card:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   color: #000;
 }

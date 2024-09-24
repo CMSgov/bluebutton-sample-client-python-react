@@ -12,7 +12,7 @@ function App() {
     return (
       <div className="ds-l-container ds-u-margin-bottom--7 ds-u-padding-bottom--7">
       <Router>
-        <div className="bb-c-c4dic-card-png default-card">
+        <div className="bb-c-c4dic-card default-card">
             <InsuranceCard />
         </div>
       </Router>
@@ -60,7 +60,7 @@ function App() {
           </TabPanel>
           <TabPanel id="dic-new-design" tab="Insurance Card">
             <a href='/card_only' target="_blank">Show in new window</a>
-            <div className="bb-c-c4dic-card-png default-card">
+            <div className="bb-c-c4dic-card default-card">
                 <InsuranceCard />
             </div>
           </TabPanel>

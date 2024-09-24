@@ -5,14 +5,14 @@ from flask import redirect, request, Flask
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
-from card import CARD_IMG_PNG
 
-C4DIC_COLOR_PALLETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension"
+C4DIC_COLOR_PALETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension"
 C4DIC_COLOR_BG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension"
 C4DIC_COLOR_FG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ForegroundColor-extension"
 C4DIC_COLOR_HI_LT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension"
 
-C4DIC_SUPPORTING_IMAGE_URL = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-SupportingImage-extension"
+C4DIC_LOGO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension"
+C4DIC_ADDL_CARD_INFO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension"
 CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
 CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
 CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
@@ -25,10 +25,10 @@ ERR_MISSING_STATE = "State is required when using PKCE"
 
 ## helper trouble shoot
 def print_setting():
-    print("URL::BlueButton->base_url: {}".format(bb.base_url), flush=True)
-    print("URL::BlueButton->auth_base_url: {}".format(bb.auth_base_url), flush=True)
-    print("URL::BlueButton->auth_token_url: {}".format(bb.auth_token_url), flush=True)
-    print("URL::BlueButton->callback_url: {}".format(bb.callback_url), flush=True)
+    print(f"URL::BlueButton->base_url: {bb.base_url}", flush=True)
+    print(f"URL::BlueButton->auth_base_url: {bb.auth_base_url}", flush=True)
+    print(f"URL::BlueButton->auth_token_url: {bb.auth_token_url}", flush=True)
+    print(f"URL::BlueButton->callback_url: {bb.callback_url}", flush=True)
 
 
 app = Flask(__name__)
@@ -40,11 +40,11 @@ print_setting()
 
 if host_ip:
     if str(bb.base_url).startswith("http://localhost"):
-        bb.base_url = str(bb.base_url).replace("http://localhost", "http://{}".format(host_ip))
+        bb.base_url = str(bb.base_url).replace("http://localhost", f"http://{host_ip}")
     if str(bb.auth_base_url).startswith("http://localhost"):
-        bb.auth_base_url = str(bb.auth_base_url).replace("http://localhost", "http://{}".format(host_ip))
+        bb.auth_base_url = str(bb.auth_base_url).replace(f"http://localhost", f"http://{host_ip}")
     if str(bb.auth_token_url).startswith("http://localhost"):
-        bb.auth_token_url = str(bb.auth_token_url).replace("http://localhost", "http://{}".format(host_ip))
+        bb.auth_token_url = str(bb.auth_token_url).replace(f"http://localhost", f"http://{host_ip}")
     print_setting()
 
 # This is where medicare.gov beneficiary associated
@@ -119,11 +119,11 @@ def authorization_callback():
         auth_token = patient_data['auth_token']
 
         config_clone = dict(config)
-        config_clone['url'] = "{}/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient".format(bb.base_url)
+        config_clone['url'] = f"{bb.base_url}/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient"
         dic_pt_data = bb.get_custom_data(config_clone)
         auth_token = dic_pt_data['auth_token']
 
-        config_clone['url'] = "{}/v2/fhir/Coverage?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage".format(bb.base_url)
+        config_clone['url'] = f"{bb.base_url}/v2/fhir/Coverage?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage"
         dic_coverage_data = bb.get_custom_data(config_clone)
         auth_token = dic_coverage_data['auth_token']
 
@@ -198,35 +198,29 @@ def get_patient_insurance():
         ## From C4DIC Patient extract:
         ## 1. identifier mbi, e.g. 1S00EU7JH47
         ## 2. name, e.g. Johnie C
-        ## 3. gender, e.g. male
-        ## 4. dob, e.g. 1990-08-14
         ## From C4DIC Coverage extract:
         ## 1. coverage class: by Coverage resource 'class': "Part A"
         ## 2. status: active or not active
         ## 3. period, start date: e.g. 2014-02-06
-        ## 4. relationship to insured: e.g. self
-        ## 5. payor: CMS
-        ## 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
-        ## 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
-        ## 8. supporting image extension
-        ## 8. other info such as: DIB, ESRD etc. can be added as needed
+        ## 4. payor: CMS
+        ## 5. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
+        ## 6. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+        ## 7. other info such as: DIB, ESRD etc. can be added as needed
         pt = dic_patient['entry']
         patient = pt[0]
+        # TODO: format the mbi with dashes
         pt_id = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
         insurance['identifier'] = pt_id
-        pt_name = patient['resource']['name'][0]['family']
+        # TODO: handle wider variety of given/family names
+        pt_name = patient['resource']['name'][0]['given'][0] + " " + patient['resource']['name'][0]['family']
         insurance['name'] = pt_name
-        pt_gender = patient['resource']['gender']
-        insurance['gender'] = pt_gender
-        pt_dob = patient['resource']['birthDate']
-        insurance['dob'] = pt_dob
 
         coverage_array = dic_coverage['entry']
 
         for c in coverage_array:
             coverage = {}
-            c_clazz = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
-            coverage['clazz'] = c_clazz if c_clazz else "Null"
+            c_coverageClass = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+            coverage['coverageClass'] = c_coverageClass if c_coverageClass else "Null"
             c_status = c['resource']['status']
             coverage['status'] = c_status
             c_period = c['resource'].get('period') ## Part C seems not have period
@@ -236,78 +230,59 @@ def get_patient_insurance():
             coverage['endDate'] = c_end if c_end else ""
             c_payer = c['resource']['payor'][0]
             c_payer_org = "TO BE RESOLVED"
+            c_contacts = []
+            c_payer_id = "TO BE RESOLVED"
             if c_payer:
                 ## BFD C4DIC Coverage response: payer is a reference to the contained Organization
                 ref_payer_org = c_payer['reference']
                 if ref_payer_org:
                     ref_payer_org = ref_payer_org[1:] if ref_payer_org.startswith('#') else ref_payer_org
                     # can also extract more payer details, e.g. contact etc.
-                    c_payer_org = lookup_1_and_get("$.resource.contained[?(@.id=='{}')]".format(ref_payer_org), "name", c)
+                    c_payer_org = lookup_1_and_get(f"$.resource.contained[?(@.id=='{ref_payer_org}')]", "name", c)
+                    # contacts = lookup_by_path(f"$.resource.contained[?(@.id=='{ref_payer_org}')].contact[0].telecom", c)
+                    contacts = lookup_1_and_get(f"$.resource.contained[?(@.id=='{ref_payer_org}')]", "contact", c)
+                    if contacts[0]:
+                        telecoms = contacts[0]['telecom']
+                        for t in telecoms:
+                            c_contacts.append(t['value'])
 
             coverage['payer'] = c_payer_org
+            coverage['payerId'] = c_payer_id
+            coverage['contacts'] = c_contacts
             c_contract_id = "" ## Part A and Part B does not have contract number
-            if c_clazz == "Part C":
-                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_PTC_CNTRCT_ID_01), "valueCoding", c).get('code')
-            if c_clazz == "Part D":
-                c_contract_id = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_PTD_CNTRCT_ID_01), "valueCoding", c).get('code')
+            if c_coverageClass == "Part C":
+                c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTC_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
+            if c_coverageClass == "Part D":
+                c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTD_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             coverage['contractId'] = c_contract_id
-            c_reference_year = lookup_1_and_get("$.resource.extension[?(@.url=='{}')]".format(CMS_VAR_REF_YR), "valueDate", c)
+            c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)
             coverage['referenceYear'] = c_reference_year
-            c_relationship = c['resource']['relationship']['coding'][0]['display']
-            coverage['relationship'] = c_relationship
-            # color pallettes extension
-            c_color_pallette_ext = lookup_by_path("$.resource.extension[?(@.url=='{}')]".format(C4DIC_COLOR_PALLETTE_EXT), c)
-            if c_color_pallette_ext[0]:
+            # color palettes extension
+            c_color_palette_ext = lookup_by_path(f"$.resource.extension[?(@.url=='{C4DIC_COLOR_PALETTE_EXT}')]", c)
+            if c_color_palette_ext[0]:
                 # another layer of extension for color codes per C4DIC profile
-                pallette_ext = c_color_pallette_ext[0].value['extension']
-                for p in pallette_ext:
+                palette_ext = c_color_palette_ext[0].value['extension']
+                for p in palette_ext:
                     color_code_url = p['url']
                     if color_code_url == C4DIC_COLOR_BG:
-                        c_color_pallette_ext_bg = p['valueCoding']['code']
+                        c_color_palette_ext_bg = p['valueCoding']['code']
                     if color_code_url == C4DIC_COLOR_FG:
-                        c_color_pallette_ext_fg = p['valueCoding']['code']
+                        c_color_palette_ext_fg = p['valueCoding']['code']
                     if color_code_url == C4DIC_COLOR_HI_LT:
-                        c_color_pallette_ext_hi_lt = p['valueCoding']['code']
-                # set color pallette
+                        c_color_palette_ext_hi_lt = p['valueCoding']['code']
+                # set color palette
                 # fg #F4FEFF Light blue
                 # bg #092E86 Navy
                 # hi lt: #3B9BFB sky blue
-                coverage['colorPallette'] = {
-                    "foreground": c_color_pallette_ext_fg,
-                    "background": c_color_pallette_ext_bg,
-                    "highlight": c_color_pallette_ext_hi_lt,
+                coverage['colorPalette'] = {
+                    "foreground": c_color_palette_ext_fg,
+                    "background": c_color_palette_ext_bg,
+                    "highlight": c_color_palette_ext_hi_lt,
                 }
-
-            c_supporting_image_ext = lookup_by_path("$.resource.extension[?(@.url=='{}')]".format(C4DIC_SUPPORTING_IMAGE_URL), c)
-            c_supporting_image_ext_desc = ""
-            # e.g. "contentType": "image/png",
-            c_supporting_image_ext_image_type = ""
-            # e.g. base64 encoded image
-            c_supporting_image_ext_image_data = ""
-            c_supporting_image_ext_label = ""
-            if c_supporting_image_ext[0]:
-                # another layer of extension per C4DIC profile
-                ext_ext = c_supporting_image_ext[0].value['extension']
-                # grab 'description, image, label
-                for e in ext_ext:
-                    img_url = e['url']
-                    if img_url == 'description':
-                        c_supporting_image_ext_desc = e['valueString']
-                    if img_url == 'label':
-                        c_supporting_image_ext_label = e['valueString']
-                    if img_url == 'image':
-                        attachment = e['valueAttachment']
-                        c_supporting_image_ext_image_type = attachment['contentType']
-                        c_supporting_image_ext_image_data = attachment['data']
-                ## set image for current coverage
-                coverage['cardImage'] = {
-                    "description": c_supporting_image_ext_desc,
-                    "label": c_supporting_image_ext_label,
-                    "image": {
-                        "type": c_supporting_image_ext_image_type,
-                        "data": c_supporting_image_ext_image_data
-                    }
-                }
+            c_logo_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_LOGO_EXT}')]", "valueString", c)
+            coverage['logo'] = c_logo_ext
+            c_addl_card_info_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_ADDL_CARD_INFO_EXT}')]", "valueAnnotation", c).get('text')
+            coverage['addlCardInfo'] = c_addl_card_info_ext
 
             coverages.append(coverage)
 
@@ -339,13 +314,13 @@ def clear_bb2_data():
 def lookup_by_path(expr, json_obj):
     jsonpath_expr = ext_parse(expr)
     return jsonpath_expr.find(json_obj)
-    
+
 
 def lookup_1_and_get(expr, attribute, json_obj):
     r = lookup_by_path(expr, json_obj)
     if r and isinstance(r, list):
         return r[0].value[attribute]
-        
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=3001)

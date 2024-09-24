@@ -4,47 +4,37 @@ import React, { useEffect, useState } from 'react';
 // From C4DIC Patient extract:
 // 1. identifier mbi, e.g. 1S00EU7JH47
 // 2. name, e.g. Johnie C
-// 3. gender, e.g. male
-// 4. dob, e.g. 1990-08-14
 // From C4DIC Coverage extract:
 // 1. coverage class: by Coverage resource 'class': "Part A"
 // 2. status: active or not active
 // 3. period, start date: e.g. 2014-02-06
-// 4. relationship to insured: e.g. self
-// 5. payor: CMS
-// 6. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
-// 7. reference year: e.g. Part A: 2025, Part B: 2025, etc.
-// 8. other info such as: DIB, ESRD etc. can be added as needed
+// 4. payor: CMS
+// 5. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
+// 6. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+// 7. other info such as: DIB, ESRD etc. can be added as needed
 
 export type CoverageInfo = {
-    clazz: string,
+    coverageClass: string,
     contractId: string,
     startDate: string,
     endDate: string,
     payer: string,
+    payerId: string,
     status: string,
-    relationship: string, // self, spouse etc.
+    medicaidEligibility: string,
     referenceYear: string,
-    cardImage: {
-        description: string,
-        label: string,
-        image: {
-            type: string,
-            data: string
-        }
-    },
-    colorPallette: {
+    colorPalette: {
         foreground: string,
         background: string,
         highlight: string
     },
-    c4dicSupportingImageSrc: string
+    logo: string,
+    addlCardInfo: string,
+    contacts: string[]
 }
 
 export type InsuranceInfo = {
     name: string,
-    gender: string,
-    dob: string,
     identifier: string, // mbi
     coverages: CoverageInfo[] // e.g. Part A, Part B, Part C, Part D
 }
@@ -68,36 +58,29 @@ export default function InsuranceCard() {
                 if (insuranceData.insData) {
                     const coveragesList: CoverageInfo[] = insuranceData.insData?.coverages.map((c: any) => {
                         return {
-                            clazz: c.clazz,
+                            coverageClass: c.coverageClass,
                             payer: c.payer,
+                            payerId: c.payerId,
                             contractId: c.contractId,
                             startDate: c.startDate,
                             endDate: c.endDate,
                             status: c.active,
-                            relationship: c.relationship,
+                            medicaidEligibility: c.medicaidEligibility,
                             referenceYear: c.referenceYear,
-                            cardImage: {
-                                description: c.cardImage.description,
-                                label: c.cardImage.label,
-                                image: {
-                                    type: c.cardImage.image.type,
-                                    data: c.cardImage.image.data
-                                }
+                            colorPalette: {
+                                foreground: c.colorPalette.foreground,
+                                background: c.colorPalette.background,
+                                highlight: c.colorPalette.highlight
                             },
-                            colorPallette: {
-                                foreground: c.colorPallette.foreground,
-                                background: c.colorPallette.background,
-                                highlight: c.colorPallette.highlight
-                            },
-                            c4dicSupportingImageSrc: `data:image/png;base64,${c.cardImage.image.data}`
+                            logo: c.logo,
+                            addlCardInfo: c.addlCardInfo,
+                            contacts: c.contacts
                         }
                     });
 
                     setInsInfo(
                         {
                             name: insuranceData.insData.name,
-                            gender: insuranceData.insData.gender,
-                            dob: insuranceData.insData.dob,
                             identifier: insuranceData.insData.identifier,
                             coverages: coveragesList
                         }
@@ -136,52 +119,155 @@ export default function InsuranceCard() {
             </div>
         );
     } else {
+        var backgroundColor = insInfo?.coverages[0]?.colorPalette.background
+        var highlightColor = insInfo?.coverages[0]?.colorPalette.highlight
+        var textColor = insInfo?.coverages[0]?.colorPalette.foreground
+        const primaryStyle = {
+            backgroundColor: backgroundColor,
+            color: textColor
+        }
+        const highlightStyle = {
+            backgroundColor: highlightColor,
+            color: textColor
+        }
         return (
-            <div className="content-wrapper">
-                <div className="ins-c4dic-card">
-                    <div className="pii-sec bb-c-c4dic-card-pii-area">
-                        <pre className="ins-fld-text">Full Name: {insInfo?.name||""}    Gender: {insInfo?.gender||""}   DOB:  {insInfo?.dob||""}</pre>
-                        <pre className="ins-fld-text">MBI: {insInfo?.identifier||""}</pre>
+            <div className="ins-c4dic-card" style={primaryStyle}>
+                <div className="bb-c-c4dic-card-header">
+                    <img src={insInfo?.coverages[0]?.logo} alt="C4DIC Logo" height="48px"/>
+                    <h3>{insInfo?.coverages[0]?.payer}</h3>
+                </div>
+                <div className="pii-sec bb-c-c4dic-card-pii-area">
+                    <div className="ins-fld-text patient-name">
+                        <div>
+                            <text className="field-label">NAME</text>
+                            <br/>
+                            <text className="field-value">{insInfo?.name||""}</text>
+                        </div>
                     </div>
+                    <div className="ins-fld-text patient-info">
+                        <div>
+                            <text className="field-label">MEDICARE NUMBER</text>
+                            <br/>
+                            <text className="field-value">{insInfo?.identifier||""}</text>
+                        </div>
+                        <div>
+                            <text className="field-label">PAYER ID</text>
+                            <br/>
+                            <text className="field-value">{insInfo?.coverages[0]?.payerId||""}</text>
+                        </div>
+                        <div>
+                            <text className="field-label">MEDICAID ELIGIBILITY</text>
+                            <br/>
+                            <text className="field-value">{insInfo?.coverages[0]?.medicaidEligibility||"TBD"}</text>
+                        </div>
+                    </div>
+                </div>
 
-                    <div className="coverage-sec bb-c-c4dic-card-coverages-area">
-                        {insInfo?.coverages.map(c => {
-                                const coverageColorStyle = {
-                                    backgroundColor: c?.colorPallette?.highlight,
-                                    color: c?.colorPallette?.foreground,
-                                };
-                            
-                                return (
-                                    <div>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            Coverage Type: {c.clazz}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Payer: {c.payer}
-                                        </pre>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            Contract Number: {c.contractId}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Start Date: {c.startDate}
-                                        </pre>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            End Date: {c.endDate}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Status: {c.status}
-                                        </pre>
-                                        <pre className="ins-fld-text" style={coverageColorStyle}>
-                                            Relationship to insured: {c.relationship||""}
-                                        </pre>
-                                        <pre className="ins-fld-text">
-                                            Reference Year: {c.referenceYear}
-                                        </pre>
-                                        <img className="bb-c-card-img" src={c.c4dicSupportingImageSrc} alt="cardImage"></img>
-                                    </div>
-                                )
-                            })}
+                <div className="coverage-sec bb-c-c4dic-card-coverages-area">
+                    <hr/>
+                    <h6>Benefits</h6>
+                    {insInfo?.coverages.map(c => {
+                            switch (c.coverageClass) {
+                                case "Part A":
+                                    return (
+                                        <div className="bb-c-c4dic-coverage">
+                                            <div> 
+                                                <text className="field-label">COVERAGE</text>
+                                                <br/>
+                                                <text className="field-value">{c.coverageClass}</text>
+                                            </div>
+                                            <div> 
+                                                <text className="field-label">START DATE</text>
+                                                <br/>
+                                                <text className="field-value">{c.startDate}??? ?, ????</text>
+                                            </div>
+                                            <div> 
+                                                <text className="field-label">ENTITLEMENT REASON</text>
+                                                <br/>
+                                                <text className="field-value">{c.contractId}</text>
+                                            </div>
+                                        </div>
+                                    )
+                                case "Part B":
+                                    return (
+                                        <div className="bb-c-c4dic-coverage" style={highlightStyle}>
+                                            <div> 
+                                                <text className="field-label">COVERAGE</text>
+                                                <br/>
+                                                <text className="field-value">{c.coverageClass}</text>
+                                            </div>
+                                            <div> 
+                                                <text className="field-label">START DATE</text>
+                                                <br/>
+                                                <text className="field-value">{c.startDate}??? ?, ????</text>
+                                            </div>
+                                        </div>
+                                    )
+                                case "Part C":
+                                    return (
+                                        <div className="bb-c-c4dic-coverage">
+                                            <div> 
+                                                <text className="field-label">COVERAGE</text>
+                                                <br/>
+                                                <text className="field-value">{c.coverageClass}</text>
+                                                <br/>
+                                                <text className="field-label">TYPE</text>
+                                                <br/>
+                                                <text className="field-value">{c.coverageClass}</text>
+                                            </div>
+                                            <div> 
+                                                <text className="field-label">PLAN #</text>
+                                                <br/>
+                                                <text className="field-value">{c.contractId}</text>
+                                                <br/>
+                                                <text className="field-label">ORGANIZATION</text>
+                                                <br/>
+                                                <text className="field-value">{c.payer}</text>
+                                            </div>
+                                        </div>
+                                    )
+                                case "Part D":
+                                    return (
+                                        <div className="bb-c-c4dic-coverage" style={highlightStyle}>
+                                            <div> 
+                                                <text className="field-label">COVERAGE</text>
+                                                <br/>
+                                                <text className="field-value">{c.coverageClass}</text>
+                                            </div>
+                                            <div> 
+                                                <text className="field-label">START DATE</text>
+                                                <br/>
+                                                <text className="field-value">{c.startDate}??? ?, ????</text>
+                                                <br/>
+                                                <text className="field-label">PLAN #</text>
+                                                <br/>
+                                                <text className="field-value">{c.contractId}</text>
+                                            </div>
+                                            <div> 
+                                                <text className="field-label">COST SHARE</text>
+                                                <br/>
+                                                <text className="field-value">{c.contractId}</text>
+                                            </div>
+                                        </div>
+                                    )
+                            }
+                        })}
+                </div>
+                <div className="bb-c-c4dic-card-org-contact">
+                    <hr/>
+                    <h6>Contact</h6>
+
+                    <text className="field-label">CUSTOMER SERVICE</text>
+                    <br/>
+                    <div className="contact-list">
+                    {insInfo?.coverages[0]?.contacts.map(contact => {
+                        return <text className="field-value">{contact}</text>
+                    })}
                     </div>
+                    <br/>
+                </div>
+                <div className="bb-c-c4dic-card-additional-card-info">
+                    <text>{insInfo?.coverages[0]?.addlCardInfo}</text>
                 </div>
             </div>
         );
