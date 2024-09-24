@@ -4,8 +4,6 @@ import React, { useEffect, useState } from 'react';
 // From C4DIC Patient extract:
 // 1. identifier mbi, e.g. 1S00EU7JH47
 // 2. name, e.g. Johnie C
-// 3. gender, e.g. male
-// 4. dob, e.g. 1990-08-14
 // From C4DIC Coverage extract:
 // 1. coverage class: by Coverage resource 'class': "Part A"
 // 2. status: active or not active
@@ -37,8 +35,6 @@ export type CoverageInfo = {
 
 export type InsuranceInfo = {
     name: string,
-    gender: string,
-    dob: string,
     identifier: string, // mbi
     coverages: CoverageInfo[] // e.g. Part A, Part B, Part C, Part D
 }
@@ -85,8 +81,6 @@ export default function InsuranceCard() {
                     setInsInfo(
                         {
                             name: insuranceData.insData.name,
-                            gender: insuranceData.insData.gender,
-                            dob: insuranceData.insData.dob,
                             identifier: insuranceData.insData.identifier,
                             coverages: coveragesList
                         }

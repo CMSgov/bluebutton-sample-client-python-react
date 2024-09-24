@@ -198,8 +198,6 @@ def get_patient_insurance():
         ## From C4DIC Patient extract:
         ## 1. identifier mbi, e.g. 1S00EU7JH47
         ## 2. name, e.g. Johnie C
-        ## 3. gender, e.g. male
-        ## 4. dob, e.g. 1990-08-14
         ## From C4DIC Coverage extract:
         ## 1. coverage class: by Coverage resource 'class': "Part A"
         ## 2. status: active or not active
@@ -210,15 +208,12 @@ def get_patient_insurance():
         ## 7. other info such as: DIB, ESRD etc. can be added as needed
         pt = dic_patient['entry']
         patient = pt[0]
+        # TODO: format the mbi with dashes
         pt_id = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
         insurance['identifier'] = pt_id
         # TODO: handle wider variety of given/family names
         pt_name = patient['resource']['name'][0]['given'][0] + " " + patient['resource']['name'][0]['family']
         insurance['name'] = pt_name
-        pt_gender = patient['resource']['gender']
-        insurance['gender'] = pt_gender
-        pt_dob = patient['resource']['birthDate']
-        insurance['dob'] = pt_dob
 
         coverage_array = dic_coverage['entry']
 
