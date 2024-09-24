@@ -219,8 +219,8 @@ def get_patient_insurance():
 
         for c in coverage_array:
             coverage = {}
-            c_type = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
-            coverage['type'] = c_type if c_type else "Null"
+            c_coverageClass = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+            coverage['coverageClass'] = c_coverageClass if c_coverageClass else "Null"
             c_status = c['resource']['status']
             coverage['status'] = c_status
             c_period = c['resource'].get('period') ## Part C seems not have period
@@ -250,9 +250,9 @@ def get_patient_insurance():
             coverage['payerId'] = c_payer_id
             coverage['contacts'] = c_contacts
             c_contract_id = "" ## Part A and Part B does not have contract number
-            if c_type == "Part C":
+            if c_coverageClass == "Part C":
                 c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTC_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
-            if c_type == "Part D":
+            if c_coverageClass == "Part D":
                 c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTD_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             coverage['contractId'] = c_contract_id
             c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)

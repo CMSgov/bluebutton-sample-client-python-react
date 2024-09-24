@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 // 7. other info such as: DIB, ESRD etc. can be added as needed
 
 export type CoverageInfo = {
-    type: string,
+    coverageClass: string,
     contractId: string,
     startDate: string,
     endDate: string,
@@ -58,7 +58,7 @@ export default function InsuranceCard() {
                 if (insuranceData.insData) {
                     const coveragesList: CoverageInfo[] = insuranceData.insData?.coverages.map((c: any) => {
                         return {
-                            type: c.type,
+                            coverageClass: c.coverageClass,
                             payer: c.payer,
                             payerId: c.payerId,
                             contractId: c.contractId,
@@ -167,14 +167,14 @@ export default function InsuranceCard() {
                     <hr/>
                     <h6>Benefits</h6>
                     {insInfo?.coverages.map(c => {
-                            switch (c.type) {
+                            switch (c.coverageClass) {
                                 case "Part A":
                                     return (
                                         <div className="bb-c-c4dic-coverage">
                                             <div> 
                                                 <text className="field-label">COVERAGE</text>
                                                 <br/>
-                                                <text className="field-value">{c.type}</text>
+                                                <text className="field-value">{c.coverageClass}</text>
                                             </div>
                                             <div> 
                                                 <text className="field-label">START DATE</text>
@@ -194,7 +194,7 @@ export default function InsuranceCard() {
                                             <div> 
                                                 <text className="field-label">COVERAGE</text>
                                                 <br/>
-                                                <text className="field-value">{c.type}</text>
+                                                <text className="field-value">{c.coverageClass}</text>
                                             </div>
                                             <div> 
                                                 <text className="field-label">START DATE</text>
@@ -209,11 +209,11 @@ export default function InsuranceCard() {
                                             <div> 
                                                 <text className="field-label">COVERAGE</text>
                                                 <br/>
-                                                <text className="field-value">{c.type}</text>
+                                                <text className="field-value">{c.coverageClass}</text>
                                                 <br/>
                                                 <text className="field-label">TYPE</text>
                                                 <br/>
-                                                <text className="field-value">{c.type}</text>
+                                                <text className="field-value">{c.coverageClass}</text>
                                             </div>
                                             <div> 
                                                 <text className="field-label">PLAN #</text>
@@ -232,7 +232,7 @@ export default function InsuranceCard() {
                                             <div> 
                                                 <text className="field-label">COVERAGE</text>
                                                 <br/>
-                                                <text className="field-value">{c.type}</text>
+                                                <text className="field-value">{c.coverageClass}</text>
                                             </div>
                                             <div> 
                                                 <text className="field-label">START DATE</text>
