@@ -5,6 +5,7 @@ from flask import redirect, request, Flask
 from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
+from datetime import datetime
 
 C4DIC_COLOR_PALETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension"
 C4DIC_COLOR_BG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension"
@@ -208,9 +209,10 @@ def get_patient_insurance():
         ## 7. other info such as: DIB, ESRD etc. can be added as needed
         pt = dic_patient['entry']
         patient = pt[0]
-        # TODO: format the mbi with dashes
-        pt_id = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
-        insurance['identifier'] = pt_id
+        mbi = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
+        if len(mbi) == 11:
+            mbi = mbi[0:4] + '-' + mbi[4:7] + '-' + mbi[7:]
+        insurance['identifier'] = mbi
         # TODO: handle wider variety of given/family names
         pt_name = patient['resource']['name'][0]['given'][0] + " " + patient['resource']['name'][0]['family']
         insurance['name'] = pt_name
@@ -223,15 +225,21 @@ def get_patient_insurance():
             coverage['coverageClass'] = c_coverageClass if c_coverageClass else "Null"
             c_status = c['resource']['status']
             coverage['status'] = c_status
-            c_period = c['resource'].get('period') ## Part C seems not have period
+            c_medicaidEligibility = "FULL"
+            coverage['medicaidEligibility'] = c_medicaidEligibility
+            c_period = c['resource'].get('period')
             c_start = c_period.get('start') if c_period else ""
+            try: 
+                c_start_date = datetime.strptime(c_start, '%Y-%m-%d').date()
+                c_start = c_start_date.strftime("%b %d, %Y")
+            except ValueError:
+                pass # Some room for improvement here, but for now, we'll just use the original value from FHIR
             coverage['startDate'] = c_start if c_start else ""
             c_end = c_period.get('end') if c_period else ""
             coverage['endDate'] = c_end if c_end else ""
             c_payer = c['resource']['payor'][0]
             c_payer_org = "TO BE RESOLVED"
             c_contacts = []
-            c_payer_id = "TO BE RESOLVED"
             if c_payer:
                 ## BFD C4DIC Coverage response: payer is a reference to the contained Organization
                 ref_payer_org = c_payer['reference']
@@ -247,7 +255,6 @@ def get_patient_insurance():
                             c_contacts.append(t['value'])
 
             coverage['payer'] = c_payer_org
-            coverage['payerId'] = c_payer_id
             coverage['contacts'] = c_contacts
             c_contract_id = "" ## Part A and Part B does not have contract number
             if c_coverageClass == "Part C":

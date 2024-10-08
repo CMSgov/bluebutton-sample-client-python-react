@@ -19,7 +19,6 @@ export type CoverageInfo = {
     startDate: string,
     endDate: string,
     payer: string,
-    payerId: string,
     status: string,
     medicaidEligibility: string,
     referenceYear: string,
@@ -60,7 +59,6 @@ export default function InsuranceCard() {
                         return {
                             coverageClass: c.coverageClass,
                             payer: c.payer,
-                            payerId: c.payerId,
                             contractId: c.contractId,
                             startDate: c.startDate,
                             endDate: c.endDate,
@@ -122,16 +120,28 @@ export default function InsuranceCard() {
         var backgroundColor = insInfo?.coverages[0]?.colorPalette.background
         var highlightColor = insInfo?.coverages[0]?.colorPalette.highlight
         var textColor = insInfo?.coverages[0]?.colorPalette.foreground
-        const primaryStyle = {
-            backgroundColor: backgroundColor,
-            color: textColor
+        const root = document.documentElement;
+        if (backgroundColor != null) {
+            root.style.setProperty('--c4dic-backgroundColor', backgroundColor);
         }
-        const highlightStyle = {
-            backgroundColor: highlightColor,
-            color: textColor
+        if (highlightColor != null) {
+            root.style.setProperty('--c4dic-highlightColor', highlightColor);
         }
+        if (textColor != null) {
+            root.style.setProperty('--c4dic-textColor', textColor);
+        }
+        const medicaidEligibility = (insInfo?.coverages[0]?.medicaidEligibility != null) ? 
+        (
+            <div>
+                <text className="field-label">Medicaid Eligibility</text>
+                <br/>
+                <div className="bb-c-c4dic-badge-container">
+                    <div className="bb-c-c4dic-badge">{insInfo?.coverages[0]?.medicaidEligibility}</div>
+                </div>
+            </div>
+        ) : null
         return (
-            <div className="ins-c4dic-card" style={primaryStyle}>
+            <div className="ins-c4dic-card">
                 <div className="bb-c-c4dic-card-header">
                     <img src={insInfo?.coverages[0]?.logo} alt="C4DIC Logo" height="48px"/>
                     <h3>{insInfo?.coverages[0]?.payer}</h3>
@@ -139,27 +149,18 @@ export default function InsuranceCard() {
                 <div className="pii-sec bb-c-c4dic-card-pii-area">
                     <div className="ins-fld-text patient-name">
                         <div>
-                            <text className="field-label">NAME</text>
+                            <text className="field-label">Name</text>
                             <br/>
                             <text className="field-value">{insInfo?.name||""}</text>
                         </div>
                     </div>
                     <div className="ins-fld-text patient-info">
                         <div>
-                            <text className="field-label">MEDICARE NUMBER</text>
+                            <text className="field-label">Medicare Number</text>
                             <br/>
                             <text className="field-value">{insInfo?.identifier||""}</text>
                         </div>
-                        <div>
-                            <text className="field-label">PAYER ID</text>
-                            <br/>
-                            <text className="field-value">{insInfo?.coverages[0]?.payerId||""}</text>
-                        </div>
-                        <div>
-                            <text className="field-label">MEDICAID ELIGIBILITY</text>
-                            <br/>
-                            <text className="field-value">{insInfo?.coverages[0]?.medicaidEligibility||"TBD"}</text>
-                        </div>
+                        {medicaidEligibility}
                     </div>
                 </div>
 
@@ -167,22 +168,26 @@ export default function InsuranceCard() {
                     <hr/>
                     <h6>Benefits</h6>
                     {insInfo?.coverages.map(c => {
+                            const startDateDiv = (c.startDate != null && c.startDate != "") ? 
+                                (
+                                    <div> 
+                                        <text className="field-label">Start Date</text>
+                                        <br/>
+                                        <text className="field-value">{c.startDate}</text>
+                                    </div>
+                                ) : null
                             switch (c.coverageClass) {
                                 case "Part A":
                                     return (
-                                        <div className="bb-c-c4dic-coverage">
+                                        <div className="bb-c-c4dic-coverage-a">
                                             <div> 
-                                                <text className="field-label">COVERAGE</text>
+                                                <text className="field-label">Coverage</text>
                                                 <br/>
-                                                <text className="field-value">{c.coverageClass}</text>
+                                                <text className="field-value">Hospital<br/>{c.coverageClass}</text>
                                             </div>
+                                            {startDateDiv}
                                             <div> 
-                                                <text className="field-label">START DATE</text>
-                                                <br/>
-                                                <text className="field-value">{c.startDate}??? ?, ????</text>
-                                            </div>
-                                            <div> 
-                                                <text className="field-label">ENTITLEMENT REASON</text>
+                                                <text className="field-label">Entitlement Reason</text>
                                                 <br/>
                                                 <text className="field-value">{c.contractId}</text>
                                             </div>
@@ -190,37 +195,38 @@ export default function InsuranceCard() {
                                     )
                                 case "Part B":
                                     return (
-                                        <div className="bb-c-c4dic-coverage" style={highlightStyle}>
+                                        <div className="bb-c-c4dic-coverage-b">
                                             <div> 
-                                                <text className="field-label">COVERAGE</text>
+                                                <text className="field-label">Coverage</text>
                                                 <br/>
-                                                <text className="field-value">{c.coverageClass}</text>
+                                                <text className="field-value">Medical<br/>{c.coverageClass}</text>
                                             </div>
-                                            <div> 
-                                                <text className="field-label">START DATE</text>
-                                                <br/>
-                                                <text className="field-value">{c.startDate}??? ?, ????</text>
-                                            </div>
+                                            {startDateDiv}
                                         </div>
                                     )
                                 case "Part C":
+                                    const partCTypeDiv = (c.coverageClass != null) ? 
+                                    (
+                                        <div> 
+                                            <text className="field-label">Type</text>
+                                            <br/>
+                                            <text className="field-value">{c.coverageClass}</text>
+                                        </div>
+                                    ) : null
                                     return (
-                                        <div className="bb-c-c4dic-coverage">
+                                        <div className="bb-c-c4dic-coverage-c">
                                             <div> 
-                                                <text className="field-label">COVERAGE</text>
+                                                <text className="field-label">Coverage</text>
                                                 <br/>
-                                                <text className="field-value">{c.coverageClass}</text>
-                                                <br/>
-                                                <text className="field-label">TYPE</text>
-                                                <br/>
-                                                <text className="field-value">{c.coverageClass}</text>
+                                                <text className="field-value">Advantage<br/>{c.coverageClass}</text>
+                                                {partCTypeDiv}
                                             </div>
                                             <div> 
-                                                <text className="field-label">PLAN #</text>
+                                                <text className="field-label">Plan #</text>
                                                 <br/>
                                                 <text className="field-value">{c.contractId}</text>
                                                 <br/>
-                                                <text className="field-label">ORGANIZATION</text>
+                                                <text className="field-label">Organization</text>
                                                 <br/>
                                                 <text className="field-value">{c.payer}</text>
                                             </div>
@@ -228,23 +234,15 @@ export default function InsuranceCard() {
                                     )
                                 case "Part D":
                                     return (
-                                        <div className="bb-c-c4dic-coverage" style={highlightStyle}>
+                                        <div className="bb-c-c4dic-coverage-d">
                                             <div> 
-                                                <text className="field-label">COVERAGE</text>
+                                                <text className="field-label">Coverage</text>
                                                 <br/>
-                                                <text className="field-value">{c.coverageClass}</text>
+                                                <text className="field-value">Rx<br/>{c.coverageClass}</text>
                                             </div>
-                                            <div> 
-                                                <text className="field-label">START DATE</text>
-                                                <br/>
-                                                <text className="field-value">{c.startDate}??? ?, ????</text>
-                                                <br/>
-                                                <text className="field-label">PLAN #</text>
-                                                <br/>
-                                                <text className="field-value">{c.contractId}</text>
-                                            </div>
-                                            <div> 
-                                                <text className="field-label">COST SHARE</text>
+                                            {startDateDiv}
+                                            <div>
+                                                <text className="field-label">Plan #</text>
                                                 <br/>
                                                 <text className="field-value">{c.contractId}</text>
                                             </div>
@@ -257,7 +255,7 @@ export default function InsuranceCard() {
                     <hr/>
                     <h6>Contact</h6>
 
-                    <text className="field-label">CUSTOMER SERVICE</text>
+                    <text className="field-label">Customer Service</text>
                     <br/>
                     <div className="contact-list">
                     {insInfo?.coverages[0]?.contacts.map(contact => {
