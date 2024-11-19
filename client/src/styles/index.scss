@@ -5,8 +5,6 @@ $image-path: "~@cmsgov/design-system/dist/images";
 // Core CMSDS styles
 @import "@cmsgov/design-system/dist/scss/index";
 
-@import url('https://fonts.googleapis.com/css?family=Cutive+Mono|Teko');
-
 .ins-card {
   border-radius: 6px;
   width: 400px;
@@ -21,7 +19,6 @@ $image-path: "~@cmsgov/design-system/dist/images";
               0 30px 50px -10px rgba(0,0,0,.2);
 }
 
-
 .ins-c4dic-card {
   border-radius: 6px;
   width: 480px;
@@ -33,37 +30,6 @@ $image-path: "~@cmsgov/design-system/dist/images";
   color: var(--c4dic-textColor);
   ::selection {
     background: var(--c4dic-highlightColor);
-  }
-}
-
-label {
-  font-family: 'Teko';
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 13px;
-  display: block;
-  line-height: 0.675;
-}
-
-input {
-  border-radius: 4px;
-  font-family: 'Cutive Mono';
-  position: absolute;
-  background: transparent;
-  -webkit-font-smoothing: antialiased;
-  text-shadow: 0 1px 0 rgba(79, 48, 96,1);
-  border: none;
-  color: #f0f0f0;
-  font-size: 1.75rem;
-  padding: 0.125em 0;
-  transition: all .1s;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-
-  &:hover,
-  &:focus {
-    // background: rgba(255,255,255,.1);
-    outline: none;
   }
 }
 
@@ -159,20 +125,26 @@ input[type=number]::-webkit-input-placeholder {
   background-position: center;
 
   .field-label {
-    font-size: 10px;
-    font-weight: lighter;
-    text-transform: uppercase;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
   }
 
   .field-value {
-    font-size: 18px;
+    font-family: var(--theme-font-family-body, "Open Sans");
+    font-size: var(--theme-font-size-md, 16px);
+    font-style: normal;
+    font-weight: var(--theme-font-weight-body-md, 700);
+    line-height: 150%; /* 24px */
   }
 
   h6 {
-    font-size: 10px;
+    font-family: var(--theme-font-family-body, "Open Sans");
+    font-size: var(--theme-font-size-sm, 14px);
     font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+    font-weight: var(--theme-font-weight-body-sm, 700);
+    line-height: 150%; /* 21px */
     margin: 0px
   }
 
@@ -261,6 +233,7 @@ input[type=number]::-webkit-input-placeholder {
 
 .bb-c-c4dic-card-org-contact {
   .contact-list {
+    white-space: pre-line;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
   }

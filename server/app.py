@@ -221,7 +221,13 @@ def get_patient_insurance():
 
         for c in coverage_array:
             coverage = {}
+            c_resource_id = c['resource'].get('id')
             c_coverageClass = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+            if c_coverageClass and (c_coverageClass != "Part A" or c_coverageClass != "Part B"):
+                if "c4dic-part-c" in c_resource_id:
+                    c_coverageClass = "Part C"
+                elif "c4dic-part-d" in c_resource_id:
+                    c_coverageClass = "Part D"
             coverage['coverageClass'] = c_coverageClass if c_coverageClass else "Null"
             c_status = c['resource']['status']
             coverage['status'] = c_status
@@ -258,9 +264,11 @@ def get_patient_insurance():
             coverage['contacts'] = c_contacts
             c_contract_id = "" ## Part A and Part B does not have contract number
             if c_coverageClass == "Part C":
-                c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTC_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
+                c_contract_id = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+                # c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTC_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             if c_coverageClass == "Part D":
-                c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTD_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
+                c_contract_id = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
+                # c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTD_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             coverage['contractId'] = c_contract_id
             c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)
             coverage['referenceYear'] = c_reference_year

@@ -168,7 +168,7 @@ export default function InsuranceCard() {
                     <hr/>
                     <h6>Benefits</h6>
                     {insInfo?.coverages.map(c => {
-                            const startDateDiv = (c.startDate != null && c.startDate != "") ? 
+                            const startDateDiv = (c.startDate !== null && c.startDate !== "") ?
                                 (
                                     <div> 
                                         <text className="field-label">Start Date</text>
@@ -248,6 +248,8 @@ export default function InsuranceCard() {
                                             </div>
                                         </div>
                                     )
+                                default:
+                                    return []
                             }
                         })}
                 </div>

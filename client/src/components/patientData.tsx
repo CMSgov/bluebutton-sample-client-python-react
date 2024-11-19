@@ -34,7 +34,7 @@ export default function PatientData() {
                 <div>
                     <h4>{ header }</h4>
                 </div>
-                <Button id="auth_btn" variation="primary" onClick={goAuthorize}>Authorize</Button>
+                <Button id="auth_btn" variation="solid" onClick={goAuthorize}>Authorize</Button>
             </div>
         </div>
     );
