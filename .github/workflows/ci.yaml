@@ -1,0 +1,23 @@
+name: CI for Node.js React Sample App
+on: [push]
+jobs:
+  build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        
+        - uses: actions/setup-node@v4
+          with:
+            node-version: 20
+
+        - name: Install server
+          run: yarn --cwd server install
+
+        - name: Install client
+          run: yarn --cwd client install
+
+        - name: Lint server source
+          run: yarn --cwd server lint
+
+        - name: Lint client source
+          run: yarn --cwd client lint
