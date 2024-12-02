@@ -24,17 +24,27 @@ Running the Back-end & Front-end
 ---------------
     
 Once Docker and Python are Installed then do the following:
-    
+
+```    
     cp server/sample-bluebutton-config.json server/.bluebutton-config.json
+```
 
 Make sure to replace the client_id and client_secret variables within the config file with
 the ones you were provided, for your application, when you created your Blue Button Sandbox account,
 the supported environments are SANDBOX or PRODUCTION.
 
+```
     docker-compose up -d
+```
 
 This single command will create the docker container with all the necessary packages, configuration, and code to 
 run both the front and back ends of this sample application.
+
+To run the front-end (client component listening on port 3000) in preview mode, set environment variable BB2_APP_LAUNCH=preview when launch docker-compose:
+
+```
+   BB2_APP_LAUNCH=preview docker-compose up -d
+```
 
 To see the application in action open your browser and enter the following URL:
 

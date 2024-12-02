@@ -15,5 +15,7 @@ services:
     build:
       context: ./client
       dockerfile: ./Dockerfile
+    environment:
+      BB2_APP_LAUNCH: ${BB2_APP_LAUNCH:-start}
     ports:
       - "3000:3000"
