@@ -10,14 +10,18 @@ jobs:
           with:
             node-version: 20
 
-        - name: Install server
-          run: yarn --cwd server install
+        - uses: actions/setup-python@v5
+          with:
+            python-version: 3.9
 
         - name: Install client
           run: yarn --cwd client install
 
-        - name: Lint server source
-          run: yarn --cwd server lint
-
         - name: Lint client source
           run: yarn --cwd client lint
+
+        - name: Install server
+          run: yarn --cwd server install
+
+        - name: Lint server source
+          run: yarn --cwd server lint
