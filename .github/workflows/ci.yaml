@@ -20,8 +20,13 @@ jobs:
         - name: Lint client source
           run: yarn --cwd client lint
 
-        - name: Install server
-          run: yarn --cwd server install
-
-        - name: Lint server source
-          run: yarn --cwd server lint
+        - name: Install server (Python) and lint
+          run: |
+            cd server
+            python -m venv bb2_venv
+            . ./bb2_venv/bin/activate
+            pip install pipenv
+            pip install cms-bluebutton-sdk
+            pipenv lock
+            pipenv install --system --deploy --ignore-pipfile
+            flake8 --exclude bb2_venv --max-line-length 130
