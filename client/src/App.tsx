@@ -1,6 +1,6 @@
 import React from 'react';
-import Header from './components/header';
-import Patient from './components/patient';
+import Header from '../src/components/header';
+import Patient from '../src/components/patient';
 import PatientData from './components/patientData';
 import Records from './components/records';
 import { BrowserRouter as Router} from "react-router-dom";
@@ -9,8 +9,8 @@ import { TabPanel, Tabs } from '@cmsgov/design-system';
 function App() {
   return (
     <div className="ds-l-container ds-u-margin-bottom--7 ds-u-padding-bottom--7">
+    <Header />
     <Router>
-      <Header />
       <Tabs tablistClassName="ds-u-margin-top--3">
         <TabPanel id="patient" tab="Patient info">
           <h2>Patient information</h2>

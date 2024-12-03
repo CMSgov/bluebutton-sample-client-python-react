@@ -1,5 +1,6 @@
 import { Table, TableCaption, TableRow, TableCell, TableHead, TableBody } from '@cmsgov/design-system';
 import React, { useEffect, useState } from 'react';
+import * as process from 'process'; 
 
 export type EOBRecord = {
     id: string,
@@ -33,7 +34,8 @@ export default function Records() {
     * Carrier Claims, SNF, HHA, Hospice, Inpatient, and Outpatient
     */
     useEffect(() => {
-        fetch('/api/data/benefit')
+        const test_url = process.env.TEST_APP_API_URL ? process.env.TEST_APP_API_URL : ''; 
+        fetch(`${test_url}/api/data/benefit`)
             .then(res => {
                 return res.json();
             }).then(eobData => {
