@@ -16,6 +16,7 @@ C4DIC_LOGO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DI
 C4DIC_ADDL_CARD_INFO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension"
 CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
 CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
+CMS_VAR_CREC = "https://bluebutton.cms.gov/resources/variables/crec"
 CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
 
 BENE_DENIED_ACCESS = "access_denied"
@@ -168,6 +169,19 @@ def get_patient_eob():
     else:
         return {}
 
+@app.route('/api/bluebutton/loadDefaults', methods=['GET'])
+def load_default_data():
+    logged_in_user['dicPatientData'] = get_response_json("c4dicPatient")
+    logged_in_user['dicCoverageData'] = get_response_json("c4dicCoverage")
+    logged_in_user['eobData'] = get_response_json("eobData")
+    return get_fe_redirect_url()
+
+def get_response_json(resource_file_name):
+    response_file = open("./defaultDatasets/{}.json".format(resource_file_name), 'r')
+    resource = json.load(response_file)
+    response_file.close()
+    return resource
+
 @app.route('/api/data/insurance', methods=['GET'])
 def get_patient_insurance():
     """
@@ -178,7 +192,6 @@ def get_patient_insurance():
     * Coverage (fetched from the BB2 server and cached in logged_in_user), and 
     * sent back to FE to render a CMS insurance 'card'
     """
-
     print_setting()
 
     ## C4DIC patient and coverage where to extract PII and coverage plans & eligibilities
@@ -272,6 +285,8 @@ def get_patient_insurance():
             coverage['contractId'] = c_contract_id
             c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)
             coverage['referenceYear'] = c_reference_year
+            c_entitlement_reason = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_CREC}')]", "valueCoding", c).get('display')
+            coverage['entitlementReason'] = c_entitlement_reason
             # color palettes extension
             c_color_palette_ext = lookup_by_path(f"$.resource.extension[?(@.url=='{C4DIC_COLOR_PALETTE_EXT}')]", c)
             if c_color_palette_ext[0]:

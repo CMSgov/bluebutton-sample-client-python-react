@@ -205,29 +205,37 @@ input[type=number]::-webkit-input-placeholder {
 }
 
 .bb-c-c4dic-coverage-a {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  padding: 10px;
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
 }
 
 .bb-c-c4dic-coverage-b {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  padding: 10px;
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
   border-top: 0.5px solid 
 }
 
 .bb-c-c4dic-coverage-c {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  padding: 10px;
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
   border-top: 0.5px solid 
 }
 
 .bb-c-c4dic-coverage-d {
-  display: grid;
-  grid-template-columns: 1fr 1fr 2fr;
-  padding: 10px;
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
   border-top: 0.5px solid 
 }
 
