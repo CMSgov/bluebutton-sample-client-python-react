@@ -31,6 +31,10 @@ export default function PatientData() {
         });
         console.log(authUrlResponseData);
     }    
+    async function goLoadDefaults() {
+        const authUrlResponse = await axios.get(`/api/bluebutton/loadDefaults`);
+        window.location.href = authUrlResponse.data || '/';
+    }    
     
     /* DEVELOPER NOTES:
     * Here we are hard coding the users information for the sake of saving time
@@ -50,7 +54,12 @@ export default function PatientData() {
                 <div>
                     <h4>{ header }</h4>
                 </div>
-                <Button id="auth_btn" variation="solid" onClick={goAuthorize}>Authorize</Button>
+                <div className='ds-u-margin-top--2'>
+                    <Button id="auth_btn" variation="solid" onClick={goAuthorize}>Authorize</Button>
+                </div>
+                <div className='ds-u-margin-top--2'>
+                    <Button id="load_defaults_btn" variation="solid" onClick={goLoadDefaults}>Load default data</Button>
+                </div>
             </div>
         </div>
     );
