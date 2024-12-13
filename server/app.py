@@ -106,7 +106,7 @@ def load_default_data():
 
 
 def load_data_file(dataset_name, resource_file_name):
-    response_file = open("./defaultDatasets/{}/{}.json".format(dataset_name, resource_file_name), 'r')
+    response_file = open("./default_datasets/{}/{}.json".format(dataset_name, resource_file_name), 'r')
     resource = json.load(response_file)
     response_file.close()
     return resource
