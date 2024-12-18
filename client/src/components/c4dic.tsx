@@ -22,6 +22,7 @@ export type CoverageInfo = {
     status: string,
     medicaidEligibility: string,
     referenceYear: string,
+    entitlementReason: string,
     colorPalette: {
         foreground: string,
         background: string,
@@ -65,6 +66,7 @@ export default function InsuranceCard() {
                             status: c.active,
                             medicaidEligibility: c.medicaidEligibility,
                             referenceYear: c.referenceYear,
+                            entitlementReason: c.entitlementReason,
                             colorPalette: {
                                 foreground: c.colorPalette.foreground,
                                 background: c.colorPalette.background,
@@ -170,7 +172,7 @@ export default function InsuranceCard() {
                     {insInfo?.coverages.map(c => {
                             const startDateDiv = (c.startDate !== null && c.startDate !== "") ?
                                 (
-                                    <div> 
+                                    <div style={{ width: '70px'}}> 
                                         <text className="field-label">Start Date</text>
                                         <br/>
                                         <text className="field-value">{c.startDate}</text>
@@ -180,7 +182,7 @@ export default function InsuranceCard() {
                                 case "Part A":
                                     return (
                                         <div className="bb-c-c4dic-coverage-a">
-                                            <div> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">Hospital<br/>{c.coverageClass}</text>
@@ -189,14 +191,14 @@ export default function InsuranceCard() {
                                             <div> 
                                                 <text className="field-label">Entitlement Reason</text>
                                                 <br/>
-                                                <text className="field-value">{c.contractId}</text>
+                                                <text className="field-value">{c.entitlementReason}</text>
                                             </div>
                                         </div>
                                     )
                                 case "Part B":
                                     return (
                                         <div className="bb-c-c4dic-coverage-b">
-                                            <div> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">Medical<br/>{c.coverageClass}</text>
@@ -205,37 +207,25 @@ export default function InsuranceCard() {
                                         </div>
                                     )
                                 case "Part C":
-                                    const partCTypeDiv = (c.coverageClass != null) ? 
-                                    (
-                                        <div> 
-                                            <text className="field-label">Type</text>
-                                            <br/>
-                                            <text className="field-value">{c.coverageClass}</text>
-                                        </div>
-                                    ) : null
+                                    
                                     return (
                                         <div className="bb-c-c4dic-coverage-c">
-                                            <div> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
-                                                <text className="field-value">Advantage<br/>{c.coverageClass}</text>
-                                                {partCTypeDiv}
+                                                <text className="field-value">{c.coverageClass}</text>
                                             </div>
                                             <div> 
                                                 <text className="field-label">Plan #</text>
                                                 <br/>
                                                 <text className="field-value">{c.contractId}</text>
-                                                <br/>
-                                                <text className="field-label">Organization</text>
-                                                <br/>
-                                                <text className="field-value">{c.payer}</text>
                                             </div>
                                         </div>
                                     )
                                 case "Part D":
                                     return (
                                         <div className="bb-c-c4dic-coverage-d">
-                                            <div> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">Rx<br/>{c.coverageClass}</text>

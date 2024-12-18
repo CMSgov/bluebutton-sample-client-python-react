@@ -7,14 +7,20 @@ import React, { useState } from 'react';
 export default function PatientData() {
     const [header] = useState('Fetch your Coverage and Medicare Prescription Drug data');
     const [settingsState] = useState<SettingsType>({
-        pkce: true,
-        version: 'v2',
-        env: 'sandbox'
+        useDefaultDataButton: false,
     });
     async function goAuthorize() {
-        const authUrlResponse = await axios.get(`/api/authorize/authurl`, { params: settingsState });
+        const authUrlResponse = await axios.get(`/api/authorize/authurl`);
         window.location.href = authUrlResponse.data || '/';
     }    
+    async function goLoadDefaults() {
+        const loadDefaultsData = await axios.get(`/api/bluebutton/loadDefaults`);
+        window.location.href = loadDefaultsData.data || '/';
+    }  
+    async function goLoadDefaults2() {
+        const loadDefaultsData = await axios.get(`/api/bluebutton/loadDefaults2`);
+        window.location.href = loadDefaultsData.data || '/';
+    }  
     
     /* DEVELOPER NOTES:
     * Here we are hard coding the users information for the sake of saving time
@@ -34,7 +40,21 @@ export default function PatientData() {
                 <div>
                     <h4>{ header }</h4>
                 </div>
-                <Button id="auth_btn" variation="primary" onClick={goAuthorize}>Authorize</Button>
+                <div className='ds-u-margin-top--2'>
+                    <Button id="auth_btn" variation="primary" onClick={goAuthorize}>Authorize</Button>
+                </div>
+                {
+                    settingsState.useDefaultDataButton ?
+                    <div>
+                        <div className='ds-u-margin-top--2'>
+                            <Button id="load_defaults_btn" variation="primary" onClick={goLoadDefaults}>Load default data 1</Button>
+                        </div>
+                        <div className='ds-u-margin-top--2'>
+                            <Button id="load_defaults_btn2" variation="primary" onClick={goLoadDefaults2}>Load default data 2</Button>
+                        </div>
+                    </div> :
+                        null
+                }
             </div>
         </div>
     );
