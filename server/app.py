@@ -169,15 +169,25 @@ def get_patient_eob():
     else:
         return {}
 
+
 @app.route('/api/bluebutton/loadDefaults', methods=['GET'])
 def load_default_data():
-    logged_in_user['dicPatientData'] = get_response_json("c4dicPatient")
-    logged_in_user['dicCoverageData'] = get_response_json("c4dicCoverage")
-    logged_in_user['eobData'] = get_response_json("eobData")
+    logged_in_user['dicPatientData'] = load_data_file("Dataset 1", "c4dicPatient")
+    logged_in_user['dicCoverageData'] = load_data_file("Dataset 1", "c4dicCoverage")
+    logged_in_user['eobData'] = load_data_file("Dataset 1", "eobData")
     return get_fe_redirect_url()
 
-def get_response_json(resource_file_name):
-    response_file = open("./defaultDatasets/{}.json".format(resource_file_name), 'r')
+
+@app.route('/api/bluebutton/loadDefaults2', methods=['GET'])
+def load_default_data2():
+    logged_in_user['dicPatientData'] = load_data_file("Dataset 2", "c4dicPatient")
+    logged_in_user['dicCoverageData'] = load_data_file("Dataset 2", "c4dicCoverage")
+    logged_in_user['eobData'] = load_data_file("Dataset 2", "eobData")
+    return get_fe_redirect_url()
+
+
+def load_data_file(dataset_name, resource_file_name):
+    response_file = open("./default_datasets/{}/{}.json".format(dataset_name, resource_file_name), 'r')
     resource = json.load(response_file)
     response_file.close()
     return resource

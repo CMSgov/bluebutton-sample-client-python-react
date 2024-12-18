@@ -182,7 +182,7 @@ export default function InsuranceCard() {
                                 case "Part A":
                                     return (
                                         <div className="bb-c-c4dic-coverage-a">
-                                            <div style={{ width: '70px'}}> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">Hospital<br/>{c.coverageClass}</text>
@@ -198,7 +198,7 @@ export default function InsuranceCard() {
                                 case "Part B":
                                     return (
                                         <div className="bb-c-c4dic-coverage-b">
-                                            <div style={{ width: '70px'}}> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">Medical<br/>{c.coverageClass}</text>
@@ -210,7 +210,7 @@ export default function InsuranceCard() {
                                     
                                     return (
                                         <div className="bb-c-c4dic-coverage-c">
-                                            <div> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">{c.coverageClass}</text>
@@ -225,7 +225,7 @@ export default function InsuranceCard() {
                                 case "Part D":
                                     return (
                                         <div className="bb-c-c4dic-coverage-d">
-                                            <div> 
+                                            <div style={{ width: '60px'}}> 
                                                 <text className="field-label">Coverage</text>
                                                 <br/>
                                                 <text className="field-value">Rx<br/>{c.coverageClass}</text>
