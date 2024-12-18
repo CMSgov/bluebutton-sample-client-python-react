@@ -14,8 +14,6 @@ C4DIC_COLOR_HI_LT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C
 
 C4DIC_LOGO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension"
 C4DIC_ADDL_CARD_INFO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension"
-CMS_VAR_PTC_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptc_cntrct_id_01"
-CMS_VAR_PTD_CNTRCT_ID_01 = "https://bluebutton.cms.gov/resources/variables/ptdcntrct01"
 CMS_VAR_CREC = "https://bluebutton.cms.gov/resources/variables/crec"
 CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
 
@@ -288,10 +286,8 @@ def get_patient_insurance():
             c_contract_id = "" ## Part A and Part B does not have contract number
             if c_coverageClass == "Part C":
                 c_contract_id = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
-                # c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTC_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             if c_coverageClass == "Part D":
                 c_contract_id = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
-                # c_contract_id = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_PTD_CNTRCT_ID_01}')]", "valueCoding", c).get('code')
             coverage['contractId'] = c_contract_id
             c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)
             coverage['referenceYear'] = c_reference_year

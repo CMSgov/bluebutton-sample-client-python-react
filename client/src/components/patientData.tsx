@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 export default function PatientData() {
     const [header] = useState('Fetch your Coverage and Medicare Prescription Drug data');
     const [settingsState] = useState<SettingsType>({
-        useDefaultDataButton: true,
+        useDefaultDataButton: false,
     });
     async function goAuthorize() {
         const authUrlResponse = await axios.get(`/api/authorize/authurl`);
