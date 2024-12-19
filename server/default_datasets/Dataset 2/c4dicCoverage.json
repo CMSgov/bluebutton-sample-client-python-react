@@ -1,0 +1,479 @@
+{
+    "resourceType": "Bundle",
+    "id": "89bfef9d-1603-48fb-945d-72a6b3fee76c",
+    "meta": {
+        "lastUpdated": "2024-12-11T12:01:20.563+00:00"
+    },
+    "type": "searchset",
+    "total": 2,
+    "link": [
+        {
+            "relation": "first",
+            "url": "http://localhost:8000/v2/fhir/Coverage?_format=application%2Fjson%2Bfhir&startIndex=0&_count=10&beneficiary=Patient%2F-10000010263999&_profile=http%3A%2F%2Fhl7.org%2Ffhir%2Fus%2Finsurance-card%2FStructureDefinition%2FC4DIC-Coverage"
+        },
+        {
+            "relation": "last",
+            "url": "http://localhost:8000/v2/fhir/Coverage?_format=application%2Fjson%2Bfhir&startIndex=0&_count=10&beneficiary=Patient%2F-10000010263999&_profile=http%3A%2F%2Fhl7.org%2Ffhir%2Fus%2Finsurance-card%2FStructureDefinition%2FC4DIC-Coverage"
+        },
+        {
+            "relation": "self",
+            "url": "http://localhost:8000/v2/fhir/Coverage/?_count=10&_format=application%2Fjson%2Bfhir&_profile=http%3A%2F%2Fhl7.org%2Ffhir%2Fus%2Finsurance-card%2FStructureDefinition%2FC4DIC-Coverage&beneficiary=Patient%2F-10000010263999&startIndex=0"
+        }
+    ],
+    "entry": [
+        {
+            "resource": {
+                "resourceType": "Coverage",
+                "id": "c4dic-part-a--10000010263999",
+                "meta": {
+                    "lastUpdated": "2023-03-03T20:37:56.945+00:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage|1.1"
+                    ]
+                },
+                "contained": [
+                    {
+                        "resourceType": "Organization",
+                        "id": "provider-org",
+                        "meta": {
+                            "profile": [
+                                "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Organization|1.1"
+                            ]
+                        },
+                        "active": true,
+                        "name": "Centers for Medicare and Medicaid Services",
+                        "contact": [
+                            {
+                                "purpose": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/contactentity-type",
+                                            "code": "PAYOR",
+                                            "display": "Payor"
+                                        }
+                                    ]
+                                },
+                                "telecom": [
+                                    {
+                                        "system": "phone",
+                                        "value": "1-800-MEDICARE\n(1-800-633-4227)"
+                                    },
+                                    {
+                                        "system": "phone",
+                                        "value": "TTY: 1-877-486-2048"
+                                    },
+                                    {
+                                        "system": "url",
+                                        "value": "www.medicare.gov"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension",
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ForegroundColor-extension",
+                                "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/IECColourManagement",
+                                    "code": "#F4FEFF"
+                                }
+                            },
+                            {
+                                "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension",
+                                "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/IECColourManagement",
+                                    "code": "#092E86"
+                                }
+                            },
+                            {
+                                "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension",
+                                "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/IECColourManagement",
+                                    "code": "#335097"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension",
+                        "valueAnnotation": {
+                            "text": "You may be asked to show this card when you get health care services. Only give your personal Medicare information to health care providers, or people you trust who work with Medicare on your behalf. WARNING: Intentionally misusing this card may be considered fraud and/or other violation of federal law and is punishable by law.\n\nEs posible que le pidan que muestre esta tarjeta cuando reciba servicios de cuidado médico. Solamente dé su información personal de Medicare a los proveedores de salud, sus aseguradores o personas de su confianza que trabajan con Medicare en su nombre. ¡ADVERTENCIA! El mal uso intencional de esta tarjeta puede ser considerado como fraude y/u otra violación de la ley federal y es sancionada por la ley."
+                        }
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension",
+                        "valueString": "https://www.hhs.gov/sites/default/files/logo-white-lg.png"
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/ms_cd",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/ms_cd",
+                            "code": "10",
+                            "display": "Aged without end-stage renal disease (ESRD)"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/orec",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/orec",
+                            "code": "1",
+                            "display": "Disability insurance benefits (DIB)"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/crec",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/crec",
+                            "code": "0",
+                            "display": "Old age and survivor’s insurance (OASI)"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/esrd_ind",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/esrd_ind",
+                            "code": "0",
+                            "display": "the beneficiary does not have ESRD"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/a_trm_cd",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/a_trm_cd",
+                            "code": "0",
+                            "display": "Not Terminated"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/rfrnc_yr",
+                        "valueDate": "2025"
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/buyin01",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/buyin01",
+                            "code": "3",
+                            "display": "Part A and Part B"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/buyin02",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/buyin02",
+                            "code": "3",
+                            "display": "Part A and Part B"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/buyin03",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/buyin03",
+                            "code": "3",
+                            "display": "Part A and Part B"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "MB",
+                                    "display": "Member Number"
+                                }
+                            ]
+                        },
+                        "system": "http://hl7.org/fhir/sid/us-mbi",
+                        "value": "1S00EU7PY99",
+                        "assigner": {
+                            "reference": "#provider-org"
+                        }
+                    }
+                ],
+                "status": "active",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                            "code": "SUBSIDIZ"
+                        }
+                    ]
+                },
+                "subscriber": {
+                    "reference": "Patient/-10000010263999"
+                },
+                "subscriberId": "1S00EU7PY99",
+                "beneficiary": {
+                    "reference": "Patient/-10000010263999"
+                },
+                "relationship": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+                            "code": "self",
+                            "display": "Self"
+                        }
+                    ]
+                },
+                "period": {
+                    "start": "1987-09-19"
+                },
+                "payor": [
+                    {
+                        "reference": "#provider-org"
+                    }
+                ],
+                "class": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/coverage-class",
+                                    "code": "group",
+                                    "display": "Group"
+                                }
+                            ]
+                        },
+                        "value": "Medicare"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/coverage-class",
+                                    "code": "plan",
+                                    "display": "Plan"
+                                }
+                            ]
+                        },
+                        "value": "Part A"
+                    }
+                ]
+            }
+        },
+        {
+            "resource": {
+                "resourceType": "Coverage",
+                "id": "c4dic-part-b--10000010263999",
+                "meta": {
+                    "lastUpdated": "2023-03-03T20:37:56.945+00:00",
+                    "profile": [
+                        "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage|1.1"
+                    ]
+                },
+                "contained": [
+                    {
+                        "resourceType": "Organization",
+                        "id": "provider-org",
+                        "meta": {
+                            "profile": [
+                                "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Organization|1.1"
+                            ]
+                        },
+                        "active": true,
+                        "name": "Centers for Medicare and Medicaid Services",
+                        "contact": [
+                            {
+                                "purpose": {
+                                    "coding": [
+                                        {
+                                            "system": "http://terminology.hl7.org/CodeSystem/contactentity-type",
+                                            "code": "PAYOR",
+                                            "display": "Payor"
+                                        }
+                                    ]
+                                },
+                                "telecom": [
+                                    {
+                                        "system": "phone",
+                                        "value": "1-800-MEDICARE\n(1-800-633-4227)"
+                                    },
+                                    {
+                                        "system": "phone",
+                                        "value": "TTY: 1-877-486-2048"
+                                    },
+                                    {
+                                        "system": "url",
+                                        "value": "www.medicare.gov"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ColorPalette-extension",
+                        "extension": [
+                            {
+                                "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ForegroundColor-extension",
+                                "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/IECColourManagement",
+                                    "code": "#F4FEFF"
+                                }
+                            },
+                            {
+                                "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension",
+                                "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/IECColourManagement",
+                                    "code": "#092E86"
+                                }
+                            },
+                            {
+                                "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension",
+                                "valueCoding": {
+                                    "system": "http://terminology.hl7.org/CodeSystem/IECColourManagement",
+                                    "code": "#335097"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension",
+                        "valueAnnotation": {
+                            "text": "You may be asked to show this card when you get health care services. Only give your personal Medicare information to health care providers, or people you trust who work with Medicare on your behalf. WARNING: Intentionally misusing this card may be considered fraud and/or other violation of federal law and is punishable by law.\n\nEs posible que le pidan que muestre esta tarjeta cuando reciba servicios de cuidado médico. Solamente dé su información personal de Medicare a los proveedores de salud, sus aseguradores o personas de su confianza que trabajan con Medicare en su nombre. ¡ADVERTENCIA! El mal uso intencional de esta tarjeta puede ser considerado como fraude y/u otra violación de la ley federal y es sancionada por la ley."
+                        }
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension",
+                        "valueString": "https://www.hhs.gov/sites/default/files/logo-white-lg.png"
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/ms_cd",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/ms_cd",
+                            "code": "10",
+                            "display": "Aged without end-stage renal disease (ESRD)"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/b_trm_cd",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/b_trm_cd",
+                            "code": "0",
+                            "display": "Not Terminated"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/rfrnc_yr",
+                        "valueDate": "2025"
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/crec",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/crec",
+                            "code": "0",
+                            "display": "Old age and survivor’s insurance (OASI)"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/buyin01",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/buyin01",
+                            "code": "3",
+                            "display": "Part A and Part B"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/buyin02",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/buyin02",
+                            "code": "3",
+                            "display": "Part A and Part B"
+                        }
+                    },
+                    {
+                        "url": "https://bluebutton.cms.gov/resources/variables/buyin03",
+                        "valueCoding": {
+                            "system": "https://bluebutton.cms.gov/resources/variables/buyin03",
+                            "code": "3",
+                            "display": "Part A and Part B"
+                        }
+                    }
+                ],
+                "identifier": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                                    "code": "MB",
+                                    "display": "Member Number"
+                                }
+                            ]
+                        },
+                        "system": "http://hl7.org/fhir/sid/us-mbi",
+                        "value": "1S00EU7PY99",
+                        "assigner": {
+                            "reference": "#provider-org"
+                        }
+                    }
+                ],
+                "status": "active",
+                "type": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                            "code": "SUBSIDIZ"
+                        }
+                    ]
+                },
+                "subscriber": {
+                    "reference": "Patient/-10000010263999"
+                },
+                "subscriberId": "1S00EU7PY99",
+                "beneficiary": {
+                    "reference": "Patient/-10000010263999"
+                },
+                "relationship": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/subscriber-relationship",
+                            "code": "self",
+                            "display": "Self"
+                        }
+                    ]
+                },
+                "period": {
+                    "start": "1987-09-19"
+                },
+                "payor": [
+                    {
+                        "reference": "#provider-org"
+                    }
+                ],
+                "class": [
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/coverage-class",
+                                    "code": "group",
+                                    "display": "Group"
+                                }
+                            ]
+                        },
+                        "value": "Medicare"
+                    },
+                    {
+                        "type": {
+                            "coding": [
+                                {
+                                    "system": "http://terminology.hl7.org/CodeSystem/coverage-class",
+                                    "code": "plan",
+                                    "display": "Plan"
+                                }
+                            ]
+                        },
+                        "value": "Part B"
+                    }
+                ]
+            }
+        }
+    ]
+}
