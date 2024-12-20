@@ -299,6 +299,9 @@
                         }
                     ]
                 },
+                "period": {
+                    "start": "1987-09-19"
+                },
                 "payor": [
                     {
                         "reference": "#provider-org"
@@ -593,6 +596,9 @@
                             "display": "Self"
                         }
                     ]
+                },
+                "period": {
+                    "start": "1987-09-19"
                 },
                 "payor": [
                     {
@@ -1112,6 +1118,9 @@
                             "display": "Self"
                         }
                     ]
+                },
+                "period": {
+                    "start": "1987-09-19"
                 },
                 "payor": [
                     {
@@ -1795,6 +1804,9 @@
                             "display": "Self"
                         }
                     ]
+                },
+                "period": {
+                    "start": "1987-09-19"
                 },
                 "payor": [
                     {

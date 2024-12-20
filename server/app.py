@@ -139,12 +139,9 @@ def authorization_callback():
         logged_in_user['authToken'] = auth_token
         logged_in_user['eobData'] = eob_data['response'].json()
         logged_in_user['coverageData'] = coverage_data['response'].json()
-        ## print(json.dumps(logged_in_user['coverageData']), flush=True)
         logged_in_user['patientData'] = patient_data['response'].json()
         logged_in_user['dicPatientData'] = dic_pt_data['response'].json()
-        ## print(json.dumps(logged_in_user['dicPatientData']), flush=True)
         logged_in_user['dicCoverageData'] = dic_coverage_data['response'].json()
-        print(json.dumps(logged_in_user['dicCoverageData']), flush=True)
     except Exception as ex:
         clear_bb2_data()
         logged_in_user.update({'eobData': {'message': ERR_QUERY_DATA}})
