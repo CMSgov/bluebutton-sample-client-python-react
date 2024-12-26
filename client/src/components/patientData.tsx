@@ -53,7 +53,7 @@ export default function PatientData() {
                 {
                     settingsState.useDefaultDataButton ?
                     <div className='ds-u-margin-top--2'>
-                        <Button id="load_defaults_btn" variation="primary" onClick={goLoadDefaults}>Load default data</Button>
+                        <Button id="load_defaults_btn" variation="solid" onClick={goLoadDefaults}>Load default data</Button>
                     </div> :
                         null
                 }
