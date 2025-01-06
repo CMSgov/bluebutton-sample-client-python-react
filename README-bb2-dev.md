@@ -28,6 +28,21 @@ Note: --abort-on-container-exit will abort client and server containers when sel
 
 Note: You may need to clean up already existing Docker containers, if you are having issues or have changed your configuration file.
 
+## Use default data sets
+
+Instead of using the BB2 API to retrieve data from a BB2 server every time you run the
+sample client, you can alternatively pre-populate json content to be loaded. To do so,
+replace the json files in `server/default_datasets/Dataset 1` with your desired default
+data, and then in `client/src/components/patientData.tsx`, update the 
+`useDefaultDataButton` const to `true`. 
+
+Then on the landing page of the sample client, in addition to the normal button
+`Authorize` which can be used to query a BB2 server, there will also be a
+`Load default data` button which can be used to load the data from the json files.
+
+This is useful when developing front-end content since it shortens the amount of time
+it takes to load sample data.
+
 ## Visual trouble shoot
 
 Install VNC viewer and point browser to http://localhost:5900 to monitor web UI interactions
