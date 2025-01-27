@@ -151,6 +151,20 @@ def authorization_callback():
     return redirect(get_fe_redirect_url())
 
 
+@app.route('/api/bluebutton/loadDefaults', methods=['GET'])
+def load_default_data():
+    # TODO: add config var or param to detemine dataset
+    logged_in_user['eobData'] = load_data_file("Dataset 1", "eobData")
+    return get_fe_redirect_url()
+
+
+def load_data_file(dataset_name, resource_file_name):
+    response_file = open("./default_datasets/{}/{}.json".format(dataset_name, resource_file_name), 'r')
+    resource = json.load(response_file)
+    response_file.close()
+    return resource
+
+
 @app.route('/api/data/benefit', methods=['GET'])
 def get_patient_eob():
     """

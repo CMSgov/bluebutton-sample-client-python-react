@@ -1,5 +1,6 @@
 FROM selenium/standalone-chrome-debug
 
+ENV PYDEVD_DISABLE_FILE_VALIDATION 1
 ENV PYTHONUNBUFFERED 1
 USER root
 RUN apt-get update && apt-get install -yq python3.8 python3-pip
@@ -8,4 +9,4 @@ ADD . /code/
 WORKDIR /code
 RUN ln -s /usr/bin/python3 /usr/local/bin/python
 RUN pip3 install --upgrade pip
-RUN pip3 install selenium pytest
+RUN pip3 install selenium pytest debugpy

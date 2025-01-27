@@ -2,6 +2,7 @@ FROM python:3.9
 
 ARG BUILD_DEVELOPMENT="False"
 
+ENV PYDEVD_DISABLE_FILE_VALIDATION 1
 LABEL version="1.1.0"
 LABEL description="Demo of a Medicare claims data sample app"
 
@@ -18,7 +19,7 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
     pip install cms-bluebutton-sdk; \
   fi
 
-RUN pip install jsonpath-ng
+RUN pipenv lock
 RUN pipenv install --system --deploy --ignore-pipfile
 
 EXPOSE 3001

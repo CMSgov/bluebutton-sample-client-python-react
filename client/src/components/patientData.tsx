@@ -3,16 +3,27 @@ import axios from 'axios';
 import chart from '../images/who-charted.png'
 import { SettingsType } from '../types/settings';
 import React, { useState } from 'react';
+import * as process from 'process'; 
 
 export default function PatientData() {
     const [header] = useState('Fetch your Coverage and Medicare Prescription Drug data');
     const [settingsState] = useState<SettingsType>({
-        useDefaultDataButton: false,
+        useDefaultDataButton: false, // Set to true to use hard coded data
     });
     async function goAuthorize() {
-        const authUrlResponse = await axios.get(`/api/authorize/authurl`);
-        window.location.href = authUrlResponse.data || '/';
-    }    
+        const test_url = process.env.TEST_APP_API_URL ? process.env.TEST_APP_API_URL : ''
+        const authUrlResponseData = await axios.get(`${test_url}/api/authorize/authurl`)
+        .then(response => {
+            return response.data;
+        })
+        .then(data => {
+            window.location.href = data;
+        })
+        .catch(error => {
+            window.location.href = "/";
+        });
+        console.log(authUrlResponseData);
+    }
     async function goLoadDefaults() {
         const loadDefaultsData = await axios.get(`/api/bluebutton/loadDefaults`);
         window.location.href = loadDefaultsData.data || '/';
@@ -41,17 +52,12 @@ export default function PatientData() {
                     <h4>{ header }</h4>
                 </div>
                 <div className='ds-u-margin-top--2'>
-                    <Button id="auth_btn" variation="primary" onClick={goAuthorize}>Authorize</Button>
+                    <Button id="auth_btn" variation="solid" onClick={goAuthorize}>Authorize</Button>
                 </div>
                 {
                     settingsState.useDefaultDataButton ?
-                    <div>
-                        <div className='ds-u-margin-top--2'>
-                            <Button id="load_defaults_btn" variation="primary" onClick={goLoadDefaults}>Load default data 1</Button>
-                        </div>
-                        <div className='ds-u-margin-top--2'>
-                            <Button id="load_defaults_btn2" variation="primary" onClick={goLoadDefaults2}>Load default data 2</Button>
-                        </div>
+                    <div className='ds-u-margin-top--2'>
+                        <Button id="load_defaults_btn" variation="solid" onClick={goLoadDefaults}>Load default data</Button>
                     </div> :
                         null
                 }

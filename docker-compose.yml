@@ -7,6 +7,7 @@ services:
         BUILD_DEVELOPMENT: ${BUILD_DEVELOPMENT}
     environment:
       HOST_IP: "192.168.0.144"
+    command: bash -c "python -m debugpy --listen 0.0.0.0:10678 app.py"
     ports:
       - "3001:3001"
       - "10678:10678"
@@ -16,5 +17,7 @@ services:
     build:
       context: ./client
       dockerfile: ./Dockerfile
+    environment:
+      BB2_APP_LAUNCH: ${BB2_APP_LAUNCH:-start}
     ports:
       - "3000:3000"
