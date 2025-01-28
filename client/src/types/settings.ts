@@ -1,3 +1,3 @@
 export type SettingsType = {
-    useDefaultDataButton: boolean,
+    useDefaultDataButton: boolean
 }
