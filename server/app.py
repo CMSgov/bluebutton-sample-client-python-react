@@ -2,7 +2,6 @@ import os
 import json
 
 from flask import redirect, request, Flask
-from jsonpath_ng import jsonpath
 from jsonpath_ng.ext import parse as ext_parse
 from cms_bluebutton.cms_bluebutton import BlueButton
 from datetime import datetime
@@ -11,11 +10,13 @@ C4DIC_COLOR_PALETTE_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefini
 C4DIC_COLOR_BG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-BackgroundColor-extension"
 C4DIC_COLOR_FG = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-ForegroundColor-extension"
 C4DIC_COLOR_HI_LT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-HighlightColor-extension"
+C4DIC_PATIENT_PROFILE = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient"
+C4DIC_COVERAGE_PROFILE = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage"
 
 C4DIC_LOGO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Logo-extension"
 C4DIC_ADDL_CARD_INFO_EXT = "http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-AdditionalCardInformation-extension"
 CMS_VAR_CREC = "https://bluebutton.cms.gov/resources/variables/crec"
-CMS_VAR_REF_YR="https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
+CMS_VAR_REF_YR = "https://bluebutton.cms.gov/resources/variables/rfrnc_yr"
 
 BENE_DENIED_ACCESS = "access_denied"
 FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
@@ -23,7 +24,8 @@ ERR_QUERY_DATA = "Error when querying the patient's Data: EOB or Coverage or Pat
 ERR_MISSING_AUTH_CODE = "Response was missing access code!"
 ERR_MISSING_STATE = "State is required when using PKCE"
 
-## helper trouble shoot
+
+# helper trouble shoot
 def print_setting():
     print(f"URL::BlueButton->base_url: {bb.base_url}", flush=True)
     print(f"URL::BlueButton->auth_base_url: {bb.auth_base_url}", flush=True)
@@ -42,9 +44,9 @@ if host_ip:
     if str(bb.base_url).startswith("http://localhost"):
         bb.base_url = str(bb.base_url).replace("http://localhost", f"http://{host_ip}")
     if str(bb.auth_base_url).startswith("http://localhost"):
-        bb.auth_base_url = str(bb.auth_base_url).replace(f"http://localhost", f"http://{host_ip}")
+        bb.auth_base_url = str(bb.auth_base_url).replace("http://localhost", f"http://{host_ip}")
     if str(bb.auth_token_url).startswith("http://localhost"):
-        bb.auth_token_url = str(bb.auth_token_url).replace(f"http://localhost", f"http://{host_ip}")
+        bb.auth_token_url = str(bb.auth_token_url).replace("http://localhost", f"http://{host_ip}")
     print_setting()
 
 # This is where medicare.gov beneficiary associated
@@ -119,11 +121,11 @@ def authorization_callback():
         auth_token = patient_data['auth_token']
 
         config_clone = dict(config)
-        config_clone['url'] = f"{bb.base_url}/v2/fhir/Patient?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Patient"
+        config_clone['url'] = f"{bb.base_url}/v2/fhir/Patient?_profile={C4DIC_PATIENT_PROFILE}"
         dic_pt_data = bb.get_custom_data(config_clone)
         auth_token = dic_pt_data['auth_token']
 
-        config_clone['url'] = f"{bb.base_url}/v2/fhir/Coverage?_profile=http://hl7.org/fhir/us/insurance-card/StructureDefinition/C4DIC-Coverage"
+        config_clone['url'] = f"{bb.base_url}/v2/fhir/Coverage?_profile={C4DIC_COVERAGE_PROFILE}"
         dic_coverage_data = bb.get_custom_data(config_clone)
         auth_token = dic_coverage_data['auth_token']
 
@@ -149,20 +151,6 @@ def authorization_callback():
         print(ex)
 
     return redirect(get_fe_redirect_url())
-
-
-@app.route('/api/bluebutton/loadDefaults', methods=['GET'])
-def load_default_data():
-    # TODO: add config var or param to detemine dataset
-    logged_in_user['eobData'] = load_data_file("Dataset 1", "eobData")
-    return get_fe_redirect_url()
-
-
-def load_data_file(dataset_name, resource_file_name):
-    response_file = open("./default_datasets/{}/{}.json".format(dataset_name, resource_file_name), 'r')
-    resource = json.load(response_file)
-    response_file.close()
-    return resource
 
 
 @app.route('/api/data/benefit', methods=['GET'])
@@ -201,6 +189,7 @@ def load_data_file(dataset_name, resource_file_name):
     response_file.close()
     return resource
 
+
 @app.route('/api/data/insurance', methods=['GET'])
 def get_patient_insurance():
     """
@@ -208,37 +197,37 @@ def get_patient_insurance():
     * retrieve insurance data from the logged in user from within the mocked DB
     *
     * Insurance info of the bene is extracted from the C4DIC resources Patient,
-    * Coverage (fetched from the BB2 server and cached in logged_in_user), and 
+    * Coverage (fetched from the BB2 server and cached in logged_in_user), and
     * sent back to FE to render a CMS insurance 'card'
     """
     print_setting()
 
-    ## C4DIC patient and coverage where to extract PII and coverage plans & eligibilities
+    # C4DIC patient and coverage where to extract PII and coverage plans & eligibilities
     dic_patient = logged_in_user.get('dicPatientData')
     dic_coverage = logged_in_user.get('dicCoverageData')
-    ## a empty insurance response
+    # a empty insurance response
     coverages = []
     insurance = {'coverages': coverages}
-    ## a response
+    # a response
     resp = {'insData': insurance}
 
     if logged_in_user and dic_patient and dic_coverage:
-        ## extract info from C4DIC Patient and Coverage
-        ## and composite into insurance info and response to
-        ## FE for insurance card rendering
-        ## Note, Coverage could be paged, not iterate page here for POC purpose
+        # extract info from C4DIC Patient and Coverage
+        # and composite into insurance info and response to
+        # FE for insurance card rendering
+        # Note, Coverage could be paged, not iterate page here for POC purpose
 
-        ## From C4DIC Patient extract:
-        ## 1. identifier mbi, e.g. 1S00EU7JH47
-        ## 2. name, e.g. Johnie C
-        ## From C4DIC Coverage extract:
-        ## 1. coverage class: by Coverage resource 'class': "Part A"
-        ## 2. status: active or not active
-        ## 3. period, start date: e.g. 2014-02-06
-        ## 4. payor: CMS
-        ## 5. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
-        ## 6. reference year: e.g. Part A: 2025, Part B: 2025, etc.
-        ## 7. other info such as: DIB, ESRD etc. can be added as needed
+        # From C4DIC Patient extract:
+        # 1. identifier mbi, e.g. 1S00EU7JH47
+        # 2. name, e.g. Johnie C
+        # From C4DIC Coverage extract:
+        # 1. coverage class: by Coverage resource 'class': "Part A"
+        # 2. status: active or not active
+        # 3. period, start date: e.g. 2014-02-06
+        # 4. payor: CMS
+        # 5. contract number: e.g. Part D , Part C: ptc_cntrct_id_01...12
+        # 6. reference year: e.g. Part A: 2025, Part B: 2025, etc.
+        # 7. other info such as: DIB, ESRD etc. can be added as needed
         pt = dic_patient['entry']
         patient = pt[0]
         mbi = lookup_1_and_get("$.resource.identifier[?(@.system=='http://hl7.org/fhir/sid/us-mbi')]", "value", patient)
@@ -267,11 +256,11 @@ def get_patient_insurance():
             coverage['medicaidEligibility'] = c_medicaidEligibility
             c_period = c['resource'].get('period')
             c_start = c_period.get('start') if c_period else ""
-            try: 
+            try:
                 c_start_date = datetime.strptime(c_start, '%Y-%m-%d').date()
                 c_start = c_start_date.strftime("%b %d, %Y")
             except ValueError:
-                pass # Some room for improvement here, but for now, we'll just use the original value from FHIR
+                pass  # Some room for improvement here, but for now, we'll just use the original value from FHIR
             coverage['startDate'] = c_start if c_start else ""
             c_end = c_period.get('end') if c_period else ""
             coverage['endDate'] = c_end if c_end else ""
@@ -279,7 +268,7 @@ def get_patient_insurance():
             c_payer_org = "TO BE RESOLVED"
             c_contacts = []
             if c_payer:
-                ## BFD C4DIC Coverage response: payer is a reference to the contained Organization
+                # BFD C4DIC Coverage response: payer is a reference to the contained Organization
                 ref_payer_org = c_payer['reference']
                 if ref_payer_org:
                     ref_payer_org = ref_payer_org[1:] if ref_payer_org.startswith('#') else ref_payer_org
@@ -294,7 +283,7 @@ def get_patient_insurance():
 
             coverage['payer'] = c_payer_org
             coverage['contacts'] = c_contacts
-            c_contract_id = "" ## Part A and Part B does not have contract number
+            c_contract_id = ""  # Part A and Part B does not have contract number
             if c_coverageClass == "Part C":
                 c_contract_id = lookup_1_and_get("$.resource.class[?(@.type.coding[0].code=='plan')]", "value", c)
             if c_coverageClass == "Part D":
@@ -302,8 +291,8 @@ def get_patient_insurance():
             coverage['contractId'] = c_contract_id
             c_reference_year = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_REF_YR}')]", "valueDate", c)
             coverage['referenceYear'] = c_reference_year
-            c_entitlement_reason = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_CREC}')]", "valueCoding", c).get('display')
-            coverage['entitlementReason'] = c_entitlement_reason
+            c_entitlement_reason = lookup_1_and_get(f"$.resource.extension[?(@.url=='{CMS_VAR_CREC}')]", "valueCoding", c)
+            coverage['entitlementReason'] = c_entitlement_reason.get('display')
             # color palettes extension
             c_color_palette_ext = lookup_by_path(f"$.resource.extension[?(@.url=='{C4DIC_COLOR_PALETTE_EXT}')]", c)
             if c_color_palette_ext[0]:
@@ -328,13 +317,13 @@ def get_patient_insurance():
                 }
             c_logo_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_LOGO_EXT}')]", "valueString", c)
             coverage['logo'] = c_logo_ext
-            c_addl_card_info_ext = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_ADDL_CARD_INFO_EXT}')]", "valueAnnotation", c).get('text')
-            coverage['addlCardInfo'] = c_addl_card_info_ext
+            c_addl_info = lookup_1_and_get(f"$.resource.extension[?(@.url=='{C4DIC_ADDL_CARD_INFO_EXT}')]", "valueAnnotation", c)
+            coverage['addlCardInfo'] = c_addl_info.get('text')
 
             coverages.append(coverage)
 
         insurance['coverages'] = coverages
-    
+
     return resp
 
 
