@@ -9,7 +9,7 @@ export default function Header() {
             </h1>
             <div className="ds-u-text-align--center">
                 <Badge variation="info" size="big">
-                    Medicare Prescription Drug Claims Data
+                    Medicare Coverage and Prescription Drug Claims Data
                 </Badge>
             </div>
         </header>

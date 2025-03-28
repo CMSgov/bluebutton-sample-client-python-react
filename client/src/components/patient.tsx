@@ -11,7 +11,7 @@ export default function Patient() {
     return (
         <div>
             <h3>Clinic records</h3>
-            <div className='ds-u-display--flex ds-u-flex-direction--row ds-u-align-items--center'>
+            <div className='ds-u-display--flex ds-u-flex-direction--row ds-u-flex-direction--column ds-u-align-items--center'>
                 <img src={avatar} alt="Profile avatar"/>
                 <ul>
                     <li>John Doe</li>

@@ -5,6 +5,8 @@ services:
       dockerfile: ./Dockerfile
       args:
         BUILD_DEVELOPMENT: ${BUILD_DEVELOPMENT}
+    environment:
+      HOST_IP: "192.168.0.144"
     command: bash -c "python -m debugpy --listen 0.0.0.0:10678 app.py"
     ports:
       - "3001:3001"
