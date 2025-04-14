@@ -14,6 +14,30 @@ ERR_MISSING_STATE = "State is required when using PKCE"
 app = Flask(__name__)
 bb = BlueButton()
 
+## helper trouble shoot
+def print_setting():
+    print("URL::BlueButton->base_url: {}".format(bb.base_url), flush=True)
+    print("URL::BlueButton->auth_base_url: {}".format(bb.auth_base_url), flush=True)
+    print("URL::BlueButton->auth_token_url: {}".format(bb.auth_token_url), flush=True)
+    print("URL::BlueButton->callback_url: {}".format(bb.callback_url), flush=True)
+
+
+app = Flask(__name__)
+bb = BlueButton()
+
+host_ip = os.environ.get("HOST_IP")
+
+print_setting()
+
+if host_ip:
+    if str(bb.base_url).startswith("http://localhost"):
+        bb.base_url = str(bb.base_url).replace("http://localhost", "http://{}".format(host_ip))
+    if str(bb.auth_base_url).startswith("http://localhost"):
+        bb.auth_base_url = str(bb.auth_base_url).replace("http://localhost", "http://{}".format(host_ip))
+    if str(bb.auth_token_url).startswith("http://localhost"):
+        bb.auth_token_url = str(bb.auth_token_url).replace("http://localhost", "http://{}".format(host_ip))
+    print_setting()
+
 # This is where medicare.gov beneficiary associated
 # with the current logged in app user,
 # in real app, this could be the app specific
@@ -35,7 +59,11 @@ auth_token = None
 
 @app.route('/api/authorize/authurl', methods=['GET'])
 def get_auth_url():
-    redirect_url = bb.generate_authorize_url(auth_data)
+    # for SMART App v2 scopes usage: explicitly
+    # provide query parameter scope=<v2 scopes>
+    # where <v2 scopes> is space delimited v2 scope specs (url encoded)
+    # e.g. patient/ExplanationOfBenefit.rs
+    redirect_url = bb.generate_authorize_url(auth_data) + "&scope=patient%2FPatient.s%20patient%2FExplanationOfBenefit.rs"
     return redirect_url
 
 
