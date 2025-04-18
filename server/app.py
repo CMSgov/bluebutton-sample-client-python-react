@@ -14,10 +14,6 @@ ERR_MISSING_STATE = "State is required when using PKCE"
 app = Flask(__name__)
 bb = BlueButton()
 
-
-app = Flask(__name__)
-bb = BlueButton()
-
 # This is where medicare.gov beneficiary associated
 # with the current logged in app user,
 # in real app, this could be the app specific
