@@ -56,7 +56,7 @@ BB2 Sandbox User
 -----------
 To ensure data displays properly in the sample application please use a 
 Blue Button Sandbox user that has PDE (Part-D Events) EoBs (Explanation of Benefits).  An example of a user with this
-data would be:  BBUser29999 (PWD: PW29999!) or BBUser29998 (PWD: PW29998!)
+data would be:  BBUser10000 (PWD: PW10000!) or BBUser09999 (PWD: PW09999!)
 
 Development
 -----------
