@@ -40,7 +40,7 @@ def get_auth_url():
     # where <v2 scopes> is space delimited v2 scope specs (url encoded)
     # e.g. patient/ExplanationOfBenefit.rs
     redirect_url = (bb.generate_authorize_url(auth_data)
-                    + "&scope=patient%2FExplanationOfBenefit.rs")
+                    + "&scope=patient%2FExplanationOfBenefit.s")
     return redirect_url
 
 
