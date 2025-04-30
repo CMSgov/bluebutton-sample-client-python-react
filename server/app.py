@@ -35,7 +35,12 @@ auth_token = None
 
 @app.route('/api/authorize/authurl', methods=['GET'])
 def get_auth_url():
-    redirect_url = bb.generate_authorize_url(auth_data)
+    # for SMART App v2 scopes usage: explicitly
+    # provide query parameter scope=<v2 scopes>
+    # where <v2 scopes> is space delimited v2 scope specs (url encoded)
+    # e.g. patient/ExplanationOfBenefit.rs
+    redirect_url = (bb.generate_authorize_url(auth_data)
+                    + "&scope=patient%2FExplanationOfBenefit.s")
     return redirect_url
 
 
