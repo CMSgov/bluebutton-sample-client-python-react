@@ -19,5 +19,10 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
     pip install cms-bluebutton-sdk; \
   fi
 
+RUN pip install jsonpath-ng
 RUN pipenv lock
 RUN pipenv install --system --deploy --ignore-pipfile
+
+EXPOSE 3001
+
+CMD ["sh", "-c", "python -u -m debugpy --listen 0.0.0.0:10678 app.py"]

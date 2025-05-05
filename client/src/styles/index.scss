@@ -9,14 +9,254 @@ $image-path: "~@cmsgov/design-system/dist/images";
 @import "@cmsgov/design-system/dist/css/core-theme";
 @import "@cmsgov/design-system/dist/css/index";
 
+.ins-card {
+  border-radius: 6px;
+  width: 400px;
+  height: 250px;
+  margin: 0 auto;
+  position: relative;
+  transition: all .3s;
+  transform-style: preserve-3d;
+  box-shadow: 0 1px 0 #F6A440,
+              0 3px 0 -1px #F6A440,
+              0 4px 0 -2px #F6A440,
+              0 30px 50px -10px rgba(0,0,0,.2);
+}
+
+.ins-c4dic-card {
+  border-radius: 6px;
+  width: 480px;
+  margin: 0 auto;
+  position: relative;
+  transition: all .3s;
+  padding: 1rem;
+  background-color: var(--c4dic-backgroundColor);
+  color: var(--c4dic-textColor);
+  ::selection {
+    background: var(--c4dic-highlightColor);
+  }
+}
+
+.card-number {
+  width: 345px;
+  right: 20px;
+  left: 20px;
+  top: 36%;
+}
+
+.card-date-group {
+  position: absolute;
+  left: 20px;
+  bottom: 70px;
+}
+
+.card-date {
+  position: relative;
+  font-size: 1.375rem;
+  width: 70px;
+}
+
+.card-name-group {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+}
+
+.card-name {
+  position: relative;
+  width: 300px;
+  font-size: 1.25rem;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  color: #E4B0F3;
+  text-shadow: none;
+}
+::-moz-placeholder { /* Firefox 19+ */
+  color: #E4B0F3;
+  text-shadow: none;
+}
+:-ms-input-placeholder { /* IE 10+ */
+  color: #E4B0F3;
+  text-shadow: none;
+}
+
+.credit-card__front,
+.credit-card__back {
+  background-image:
+  radial-gradient(
+    circle at top center,
+    #D6A0E6,
+    #8241A9
+  );
+
+  border-radius: 6px;
+  overflow: hidden;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  backface-visibility: hidden;
+  transform:rotateY(0deg)
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number]::-webkit-input-placeholder {
+  color: #BBB;
+}
+
 .bb-c-card {
   background: #fff;
   border: 1px solid #d6d7d9;
   border-radius: 0.3rem;
 }
 
+.bb-c-c4dic-card {
+  background: #fff;
+  border: 1px solid #d6d7d9;
+  border-radius: 0.3rem;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  .field-label {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+  }
+
+  .field-value {
+    font-family: var(--theme-font-family-body, "Open Sans");
+    font-size: var(--theme-font-size-md, 16px);
+    font-style: normal;
+    font-weight: var(--theme-font-weight-body-md, 700);
+    line-height: 150%; /* 24px */
+  }
+
+  h6 {
+    font-family: var(--theme-font-family-body, "Open Sans");
+    font-size: var(--theme-font-size-sm, 14px);
+    font-style: normal;
+    font-weight: var(--theme-font-weight-body-sm, 700);
+    line-height: 150%; /* 21px */
+    margin: 0px
+  }
+
+  hr {
+    border: none;
+    background-color: var(--c4dic-textColor);
+    height: 4px;
+  }
+}
+
+.bb-c-c4dic-card-header {
+  display: grid;
+  grid-template-columns: 1fr 8fr;
+  align-items: center;
+  gap: 1rem;
+  text-wrap: pretty;
+}
+
+.bb-c-c4dic-badge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.bb-c-c4dic-badge {
+  display: flex;
+  width: fit-content;
+  padding: 4px 8px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 9999px;
+  border: 0.5px solid;
+
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 21px */
+}
+
+.bb-c-c4dic-card-pii-area {
+  background-color: transparent;
+  position: relative;
+
+  .patient-name {
+  }
+
+  .patient-info {
+    display: flex;
+    gap: 15px;
+  }
+}
+
+.bb-c-c4dic-card-coverages-area {
+  background-color: transparent;
+  position: relative;
+}
+
+.bb-c-c4dic-coverage-a {
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+}
+
+.bb-c-c4dic-coverage-b {
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+  border-top: 0.5px solid 
+}
+
+.bb-c-c4dic-coverage-c {
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+  border-top: 0.5px solid 
+}
+
+.bb-c-c4dic-coverage-d {
+  display: flex;
+  padding: 8px;
+  align-items: flex-start;
+  gap: 24px;
+  align-self: stretch;
+  border-top: 0.5px solid 
+}
+
+.bb-c-c4dic-card-org-contact {
+  .contact-list {
+    white-space: pre-line;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.bb-c-c4dic-card-additional-card-info {
+  white-space: pre-wrap;
+  font-size: 8px;
+}
+
 .bb-c-card.default-card {
-  color: #323a45;
   max-width: 700px;
   text-decoration: none;
   margin: 0.5rem;
@@ -24,7 +264,19 @@ $image-path: "~@cmsgov/design-system/dist/images";
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
+.bb-c-c4dic-card.default-card {
+  text-decoration: none;
+  margin: 0.5rem;
+  padding: 1rem 1rem 1rem 1rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
 .bb-c-card.default-card:hover {
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+  color: #000;
+}
+
+.bb-c-c4dic-card.default-card:hover {
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   color: #000;
 }
