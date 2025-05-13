@@ -20,4 +20,5 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
   fi
 
 RUN pipenv lock
+RUN pip install click
 RUN pipenv install --system --deploy --ignore-pipfile
