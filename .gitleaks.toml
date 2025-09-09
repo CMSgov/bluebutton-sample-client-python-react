@@ -11,7 +11,5 @@ useDefault = true
 regexTarget = "match"
 description = "whitelist public and test secrets"
 regexes = [
-  '''a''',
-  '''b''',
-  '''c''',
+  '''abcdefghijklmnoppleasechange''',
 ]

@@ -1,7 +1,7 @@
 {
     "environment": "SANDBOX",
-    "client_id": "LHi4TsBoXwwwslUUxYFkNjtuVPvar4rVn10A6xHv",
-    "client_secret": "devhlKuz9NQXjNIUr5WfE9v4u0b9HzJVqt4XBqtAxdrwlAwru9yYHvRtrhmEAh8Ll57V7aTmr78TI59hz6l2ABwvQfZ2ou5h8g4sGqLuQ7NHvG2dPfSTy4auThnCdX8e",
+    "client_id": "<client_id>",
+    "client_secret": "<client_secret>",
     "callback_url": "http://localhost:3001/api/bluebutton/callback/",
     "version": 2
 }

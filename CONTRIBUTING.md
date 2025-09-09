@@ -11,7 +11,7 @@ contributions.
 We encourage you to read this project's CONTRIBUTING policy (you are here), its
 [LICENSE](LICENSE.md), and its [README](README.md).
 
-### Workflow and Branhing
+### Workflow and Branching
 
 We follow standard GitHub Flow practices:
 
@@ -78,7 +78,7 @@ We welcome improvements to the project documentation. This includes:
 - Developer tutorials
 - Code comments and inline documentation
 
-Please file an [issue](https://github.com/CMSGov/ms-bb2-node-sdk/issues) for documentation improvements or submit a pull request with your changes.
+Please file an [issue](https://github.com/CMSGov/cms-bb2-python-sdk/issues) for documentation improvements or submit a pull request with your changes.
 
 **Documentation Resources:**
 - Developer documentation: https://cmsgov.github.io/bluebutton-developer-help/
