@@ -62,7 +62,7 @@
     "eslint-plugin-react": "^7.28.0",
     "jsdom": "^25.0.1",
     "react-error-overlay": "6.0.9",
-    "vite": "^6.0.9",
+    "vite": "^6.3.4",
     "vite-plugin-eslint": "^1.8.1",
     "vitest": "^3.1.2"
   },
