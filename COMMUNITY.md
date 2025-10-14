@@ -55,6 +55,13 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/sb-benohe">
+                    <img src="https://avatars.githubusercontent.com/u/71290292?v=4" width="100;" alt="sb-benohe"/>
+                    <br />
+                    <sub><b>sb-benohe</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/dtisza1">
                     <img src="https://avatars.githubusercontent.com/u/36048547?v=4" width="100;" alt="dtisza1"/>
                     <br />
@@ -66,13 +73,6 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                     <img src="https://avatars.githubusercontent.com/u/22204906?v=4" width="100;" alt="oragame"/>
                     <br />
                     <sub><b>Don Seymour</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/sb-benohe">
-                    <img src="https://avatars.githubusercontent.com/u/71290292?v=4" width="100;" alt="sb-benohe"/>
-                    <br />
-                    <sub><b>sb-benohe</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -96,6 +96,13 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                     <img src="https://avatars.githubusercontent.com/u/19733683?v=4" width="100;" alt="snyk-bot"/>
                     <br />
                     <sub><b>Snyk bot</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/bwang-icf">
+                    <img src="https://avatars.githubusercontent.com/u/178809349?v=4" width="100;" alt="bwang-icf"/>
+                    <br />
+                    <sub><b>bwang-icf</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -126,6 +133,8 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                     <sub><b>Connor Lewellyn</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/stiwarisemanticbits">
                     <img src="https://avatars.githubusercontent.com/u/57143602?v=4" width="100;" alt="stiwarisemanticbits"/>
