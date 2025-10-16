@@ -99,6 +99,13 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/JamesDemeryNava">
+                    <img src="https://avatars.githubusercontent.com/u/226581456?v=4" width="100;" alt="JamesDemeryNava"/>
+                    <br />
+                    <sub><b>James Demery</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/bwang-icf">
                     <img src="https://avatars.githubusercontent.com/u/178809349?v=4" width="100;" alt="bwang-icf"/>
                     <br />
@@ -126,6 +133,8 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                     <sub><b>Adrian Jones</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/clewellyn-nava">
                     <img src="https://avatars.githubusercontent.com/u/224594471?v=4" width="100;" alt="clewellyn-nava"/>
@@ -133,8 +142,6 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                     <sub><b>Connor Lewellyn</b></sub>
                 </a>
             </td>
-		</tr>
-		<tr>
             <td align="center">
                 <a href="https://github.com/stiwarisemanticbits">
                     <img src="https://avatars.githubusercontent.com/u/57143602?v=4" width="100;" alt="stiwarisemanticbits"/>
