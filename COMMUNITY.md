@@ -142,6 +142,13 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                     <sub><b>Shivam Tiwari</b></sub>
                 </a>
             </td>
+            <td align="center">
+                <a href="https://github.com/JamesDemeryNava">
+                    <img src="https://avatars.githubusercontent.com/u/226581456?v=4" width="100;" alt="JamesDemeryNava"/>
+                    <br />
+                    <sub><b>James Demery</b></sub>
+                </a>
+            </td>
 		</tr>
 	<tbody>
 </table>
