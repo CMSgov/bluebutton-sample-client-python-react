@@ -13,11 +13,11 @@ COPY . .
 RUN pip install pipenv debugpy
 
 # Install cms_bluebutton_sdk from pypi.org or test.pypi.org
-RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
-    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ cms-bluebutton-sdk; \
-  else \
-    pip install cms-bluebutton-sdk; \
-  fi
+# RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
+#     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ cms-bluebutton-sdk; \
+#   else \
+#     pip install cms-bluebutton-sdk; \
+#   fi
 
 RUN pipenv lock
 RUN pip install click
