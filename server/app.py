@@ -68,7 +68,6 @@ def authorization_callback():
         print(ERR_MISSING_STATE)
         return redirect(get_fe_redirect_url())
 
-    print(f'Received auth code: {code}, state: {state}')
     auth_token = bb.get_authorization_token(auth_data, code, state)
 
     # correlate app user with medicare bene
