@@ -19,6 +19,8 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
     pip install cms-bluebutton-sdk; \
   fi
 
+# If using a local version of the sdk, copy the wheel file and install it
+# RUN pip install cms_bluebutton_sdk-1.0.4-py3-none-any.whl
 RUN pipenv lock
 RUN pip install click
 RUN pipenv install --system --deploy --ignore-pipfile
