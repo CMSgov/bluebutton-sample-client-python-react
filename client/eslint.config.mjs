@@ -39,5 +39,23 @@ export default [
         version: "detect"
       }
     }
+  },
+  {
+    files: ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        expect: "readonly",
+        describe: "readonly",
+        it: "readonly",
+        test: "readonly",
+        beforeEach: "readonly",
+        afterEach: "readonly",
+        beforeAll: "readonly",
+        afterAll: "readonly",
+        vi: "readonly"
+      }
+    }
   }
 ];

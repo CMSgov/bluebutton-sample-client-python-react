@@ -17,6 +17,25 @@ export type ErrorResponse = {
 export default function Records() {
     const [records, setRecords] = useState<EOBRecord[]>([]);
     const [message, setMessage] = useState<ErrorResponse>();
+    
+        interface ResourceData {
+            resource: {
+                id: string;
+                item: Array<{
+                    productOrService?: {
+                        coding?: Array<{
+                            code?: string;
+                            display?: string;
+                        }>;
+                    };
+                    adjudication?: Array<{
+                        amount?: {
+                            value?: number | string;
+                        };
+                    }>;
+                }>;
+            };
+        }
     /*
     * DEVELOPER NOTES:
     *  Here we are parsing through the different PDE Claim records
@@ -40,7 +59,7 @@ export default function Records() {
                 return res.json();
             }).then(eobData => {
                 if (eobData.entry) {
-                    const records: EOBRecord[] = eobData.entry.map((resourceData: any) => {
+                    const records: EOBRecord[] = eobData.entry.map((resourceData: ResourceData) => {
                         const resource = resourceData.resource;
                         return {
                             id: resource.id,

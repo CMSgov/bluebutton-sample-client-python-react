@@ -19,7 +19,7 @@ export default function PatientData() {
         .then(data => {
             window.location.href = data;
         })
-        .catch(error => {
+        .catch(() => {
             window.location.href = "/";
         });
         console.log(authUrlResponseData);
