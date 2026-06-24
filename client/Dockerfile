@@ -12,9 +12,8 @@ WORKDIR /client
 COPY . .
 
 # In case machine is Mac M1 chip
-RUN apt-get update
-RUN apt-get install python3 -y
-RUN apt-get install python3-pip -y
+RUN apt-get update && \
+    apt-get install -y libcap2 python3 python3-pip
 
 RUN yarn install
 # comment build out if not going to use preview to save build time
