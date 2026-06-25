@@ -10,6 +10,10 @@ WORKDIR /server
 
 COPY . . 
 
+# Upgrade libgnutls30 to patched version (Debian 12 >= 3.7.9-2+deb12u7)
+RUN apt-get update && \
+    apt-get install -y libgnutls30
+
 RUN pip install pipenv debugpy
 
 # Install cms_bluebutton_sdk from pypi.org or test.pypi.org
