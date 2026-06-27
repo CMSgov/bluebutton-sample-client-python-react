@@ -69,17 +69,17 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/dtisza1">
-                    <img src="https://avatars.githubusercontent.com/u/36048547?v=4" width="100;" alt="dtisza1"/>
-                    <br />
-                    <sub><b>David Tisza</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/sb-benohe">
                     <img src="https://avatars.githubusercontent.com/u/71290292?v=4" width="100;" alt="sb-benohe"/>
                     <br />
                     <sub><b>sb-benohe</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/dtisza1">
+                    <img src="https://avatars.githubusercontent.com/u/36048547?v=4" width="100;" alt="dtisza1"/>
+                    <br />
+                    <sub><b>David Tisza</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -92,10 +92,10 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
 		</tr>
 		<tr>
             <td align="center">
-                <a href="https://github.com/bfausett77">
-                    <img src="https://avatars.githubusercontent.com/u/84479942?v=4" width="100;" alt="bfausett77"/>
+                <a href="https://github.com/snyk-bot">
+                    <img src="https://avatars.githubusercontent.com/u/19733683?v=4" width="100;" alt="snyk-bot"/>
                     <br />
-                    <sub><b>Brady Fausett</b></sub>
+                    <sub><b>Snyk bot</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -106,10 +106,10 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/snyk-bot">
-                    <img src="https://avatars.githubusercontent.com/u/19733683?v=4" width="100;" alt="snyk-bot"/>
+                <a href="https://github.com/bfausett77">
+                    <img src="https://avatars.githubusercontent.com/u/84479942?v=4" width="100;" alt="bfausett77"/>
                     <br />
-                    <sub><b>Snyk bot</b></sub>
+                    <sub><b>Brady Fausett</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -135,6 +135,13 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
             </td>
 		</tr>
 		<tr>
+            <td align="center">
+                <a href="https://github.com/ryan-morosa">
+                    <img src="https://avatars.githubusercontent.com/u/253099523?v=4" width="100;" alt="ryan-morosa"/>
+                    <br />
+                    <sub><b>ryan-morosa</b></sub>
+                </a>
+            </td>
             <td align="center">
                 <a href="https://github.com/ajshred">
                     <img src="https://avatars.githubusercontent.com/u/84713593?v=4" width="100;" alt="ajshred"/>
