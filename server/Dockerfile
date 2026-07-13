@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.11-slim-trixie
 
 ARG BUILD_DEVELOPMENT="False"
 
@@ -10,9 +10,10 @@ WORKDIR /server
 
 COPY . . 
 
-# Upgrade libgnutls30 to patched version (Debian 12 >= 3.7.9-2+deb12u7)
+
+# Upgrade libssh2-1 to patched version (Debian 13 >= 1.11.1-1+deb13u1)
 RUN apt-get update && \
-    apt-get install -y libgnutls30
+    apt-get install -y libgnutls30 libssh2-1
 
 RUN pip install pipenv debugpy
 

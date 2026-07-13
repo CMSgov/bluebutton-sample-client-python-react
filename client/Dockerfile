@@ -13,7 +13,7 @@ COPY . .
 
 # In case machine is Mac M1 chip
 RUN apt-get update && \
-    apt-get install -y libcap2 python3 python3-pip
+    apt-get install -y libcap2 python3 python3-pip libssh2-1
 
 RUN yarn install
 # comment build out if not going to use preview to save build time
