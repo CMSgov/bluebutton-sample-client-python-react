@@ -1,4 +1,4 @@
-FROM node:22.22.2-trixie-slim
+FROM node:22.23.0-trixie-slim
 
 ARG BB2-APP_LAUNCH
 
