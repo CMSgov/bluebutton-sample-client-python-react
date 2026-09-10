@@ -3,6 +3,7 @@ import Header from '../src/components/header';
 import Patient from '../src/components/patient';
 import PatientData from './components/patientData';
 import Records from './components/records';
+import InsuranceCard from './components/insuranceCard';
 import { BrowserRouter as Router} from "react-router-dom";
 import { TabPanel, Tabs } from '@cmsgov/design-system';
 
@@ -24,6 +25,7 @@ function App() {
           </div>
           {}
           <Records /> 
+          <InsuranceCard />
           {}
         <div>
           <div>

@@ -1,15 +1,22 @@
-import os
 import json
+import os
+import time
+from http import HTTPStatus
 
-from flask import redirect, request, Flask
+import requests
 from cms_bluebutton.cms_bluebutton import BlueButton
-
+from flask import Flask, redirect, request
 
 BENE_DENIED_ACCESS = "access_denied"
 FE_MSG_ACCESS_DENIED = "Beneficiary denied app access to their data"
 ERR_QUERY_EOB = "Error when querying the patient's EOB!"
+ERR_QUERY_INSURANCE_CARD = "Error when querying the patient's digital insurance card!"
 ERR_MISSING_AUTH_CODE = "Response was missing access code!"
 ERR_MISSING_STATE = "State is required when using PKCE"
+ERR_TOKEN_EXCHANGE = "Error when exchanging the authorization code for an access token!"
+TOKEN_RETRY_TOTAL = 3
+TOKEN_RETRY_BACKOFF_SECONDS = 2
+RETRY_ERROR_DENY = [HTTPStatus.TOO_MANY_REQUESTS, HTTPStatus.BAD_REQUEST]
 
 app = Flask(__name__)
 bb = BlueButton()
@@ -18,10 +25,7 @@ bb = BlueButton()
 # with the current logged in app user,
 # in real app, this could be the app specific
 # account management system
-logged_in_user = {
-    'authToken': None,
-    'eobData': None
-}
+logged_in_user = {"authToken": None, "eobData": None, "insuranceCardData": None}
 
 auth_data = bb.generate_auth_data()
 
@@ -33,51 +37,58 @@ auth_data = bb.generate_auth_data()
 auth_token = None
 
 
-@app.route('/api/authorize/authurl', methods=['GET'])
+@app.route("/api/authorize/authurl", methods=["GET"])
 def get_auth_url():
     # for SMART App v2 scopes usage: explicitly
     # provide query parameter scope=<v2 scopes>
     # where <v2 scopes> is space delimited v2 scope specs (url encoded)
     # e.g. patient/ExplanationOfBenefit.rs
-    redirect_url = (bb.generate_authorize_url(auth_data)
-                    + "&scope=patient%2FExplanationOfBenefit.s")
+    # patient/Patient.rs is required for the $generate-insurance-card
+    # operation (v3-only) used to retrieve the digital insurance card
+    redirect_url = (
+        bb.generate_authorize_url(auth_data)
+        + "&scope=patient%2FExplanationOfBenefit.rs+patient%2FPatient.rs+patient%2FCoverage.rs"
+    )
     return redirect_url
 
 
-@app.route('/api/bluebutton/callback/', methods=['GET'])
+@app.route("/api/bluebutton/callback/", methods=["GET"])
 def authorization_callback():
     request_query = request.args
 
-    if (request_query.get('error') == BENE_DENIED_ACCESS):
+    if request_query.get("error") == BENE_DENIED_ACCESS:
         # clear all cached claims eob data since the bene has denied access
         # for the application
         clear_bb2_data()
-        logged_in_user.update({'eobData': {'message': FE_MSG_ACCESS_DENIED}})
+        logged_in_user.update({"eobData": {"message": FE_MSG_ACCESS_DENIED}})
         print(FE_MSG_ACCESS_DENIED)
         return redirect(get_fe_redirect_url())
 
-    code = request_query.get('code')
+    code = request_query.get("code")
 
     if code is None:
         print(ERR_MISSING_AUTH_CODE)
         return redirect(get_fe_redirect_url())
 
-    state = request_query.get('state')
+    state = request_query.get("state")
 
     if state is None:
         print(ERR_MISSING_STATE)
         return redirect(get_fe_redirect_url())
 
-    auth_token = bb.get_authorization_token(auth_data, code, state)
+    try:
+        auth_token = get_authorization_token_with_retry(auth_data, code, state)
+    except Exception as ex:
+        clear_bb2_data()
+        logged_in_user.update({"eobData": {"message": ERR_TOKEN_EXCHANGE}})
+        print(ERR_TOKEN_EXCHANGE)
+        print(ex)
+        return redirect(get_fe_redirect_url())
 
     # correlate app user with medicare bene
-    logged_in_user['authToken'] = auth_token
+    logged_in_user["authToken"] = auth_token
 
-    config = {
-        "auth_token": auth_token,
-        "params": {},
-        "url": "to be overriden"
-    }
+    config = {"auth_token": auth_token, "params": {}, "url": "to be overriden"}
 
     try:
         # search eob (or other fhir resources: patient, coverage, etc.)
@@ -91,33 +102,67 @@ def authorization_callback():
         # 'previous' might present depending on the current page.
         # Use bb.get_pages(data, config) to get all the pages
 
-        auth_token = eob_data['auth_token']
-        logged_in_user['authToken'] = auth_token
-        logged_in_user['eobData'] = eob_data['response'].json()
+        auth_token = eob_data["auth_token"]
+        logged_in_user["authToken"] = auth_token
+        logged_in_user["eobData"] = eob_data["response"].json()
     except Exception as ex:
         clear_bb2_data()
-        logged_in_user.update({'eobData': {'message': ERR_QUERY_EOB}})
+        logged_in_user.update({"eobData": {"message": ERR_QUERY_EOB}})
         print(ERR_QUERY_EOB)
+        print(ex)
+        return redirect(get_fe_redirect_url())
+
+    try:
+        # fetch the CARIN Digital Insurance Card (C4DIC) FHIR bundle
+        insurance_card_data = bb.get_insurance_card_data(config)
+
+        auth_token = insurance_card_data["auth_token"]
+        logged_in_user["authToken"] = auth_token
+        logged_in_user["insuranceCardData"] = insurance_card_data["response"].json()
+        print(json.dumps(logged_in_user["insuranceCardData"], indent=2))
+    except Exception as ex:
+        logged_in_user.update(
+            {"insuranceCardData": {"message": ERR_QUERY_INSURANCE_CARD}}
+        )
+        print(ERR_QUERY_INSURANCE_CARD)
         print(ex)
 
     return redirect(get_fe_redirect_url())
 
 
-@app.route('/api/bluebutton/loadDefaults', methods=['GET'])
+def get_authorization_token_with_retry(auth_data, code, state):
+    for attempt in range(TOKEN_RETRY_TOTAL + 1):
+        try:
+            return bb.get_authorization_token(auth_data, code, state)
+        except requests.exceptions.HTTPError as ex:
+            status_code = ex.response.status_code if ex.response is not None else None
+            if attempt == TOKEN_RETRY_TOTAL and status_code not in RETRY_ERROR_DENY:
+                raise
+            wait_seconds = TOKEN_RETRY_BACKOFF_SECONDS * (2**attempt)
+            print(
+                f"Token endpoint returned {status_code}, retrying in "
+                f"{wait_seconds}s (attempt {attempt + 1}/{TOKEN_RETRY_TOTAL})"
+            )
+            time.sleep(wait_seconds)
+
+
+@app.route("/api/bluebutton/loadDefaults", methods=["GET"])
 def load_default_data():
     # TODO: add config var or param to detemine dataset
-    logged_in_user['eobData'] = load_data_file("Dataset 1", "eobData")
+    logged_in_user["eobData"] = load_data_file("Dataset 1", "eobData")
     return get_fe_redirect_url()
 
 
 def load_data_file(dataset_name, resource_file_name):
-    response_file = open("./default_datasets/{}/{}.json".format(dataset_name, resource_file_name), 'r')
+    response_file = open(
+        "./default_datasets/{}/{}.json".format(dataset_name, resource_file_name), "r"
+    )
     resource = json.load(response_file)
     response_file.close()
     return resource
 
 
-@app.route('/api/data/benefit', methods=['GET'])
+@app.route("/api/data/benefit", methods=["GET"])
 def get_patient_eob():
     """
     * this function is used directly by the front-end to
@@ -125,27 +170,41 @@ def get_patient_eob():
     * This would be replaced by a persistence service layer for whatever
     *  DB you would choose to use
     """
-    if logged_in_user and logged_in_user.get('eobData'):
-        return logged_in_user.get('eobData')
+    if logged_in_user and logged_in_user.get("eobData"):
+        return logged_in_user.get("eobData")
+    else:
+        return {}
+
+
+@app.route("/api/data/insuranceCard", methods=["GET"])
+def get_patient_insurance_card():
+    """
+    * this function is used directly by the front-end to
+    * retrieve the digital insurance card data for the logged in user
+    * from within the mocked DB
+    """
+    if logged_in_user and logged_in_user.get("insuranceCardData"):
+        return logged_in_user.get("insuranceCardData")
     else:
         return {}
 
 
 def get_fe_redirect_url():
-    '''
+    """
     helper to figure out the correct front end redirect url per context
-    '''
-    is_selenium = os.getenv('SELENIUM_TESTS', 'False').lower() in ('true')
-    return 'http://client:3000' if is_selenium else 'http://localhost:3000'
+    """
+    is_selenium = os.getenv("SELENIUM_TESTS", "False").lower() in ("true")
+    return "http://client:3000" if is_selenium else "http://localhost:3000"
 
 
 def clear_bb2_data():
-    '''
+    """
     helper to clean up cached result
-    '''
-    logged_in_user.update({'authToken': None})
-    logged_in_user.update({'eobData': {}})
+    """
+    logged_in_user.update({"authToken": None})
+    logged_in_user.update({"eobData": {}})
+    logged_in_user.update({"insuranceCardData": {}})
 
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=3001)
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=3001)
