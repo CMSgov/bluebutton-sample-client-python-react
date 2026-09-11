@@ -119,6 +119,7 @@ The overall goals are to:
       cd server
       unzip -l cms_bluebutton_sdk-1.0.4-py3-none-any.whl
       pip install cms_bluebutton_sdk-1.0.4-py3-none-any.whl
+      cd ..
       docker compose up
     ```
 
