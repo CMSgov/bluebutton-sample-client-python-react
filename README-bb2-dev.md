@@ -101,7 +101,17 @@ The overall goals are to:
 
   ### Run a local version of sample client that consumes a local version of the SDK
 
-    Ensure that in bluebutton-sample-client-python-react/server/Dockerfile, uncomment the following line. Replace the version number (1.0.4 in the example) of the .whl file with what has been generated from the previous build command.
+    Ensure that in bluebutton-sample-client-python-react/server/Dockerfile, comment out this block to not use the currently published SDK:
+    
+    ```
+    RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
+    pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ cms-bluebutton-sdk; \
+      else \
+        pip install cms-bluebutton-sdk; \
+      fi
+    ```
+    
+    then uncomment the following line. Replace the version number (1.0.4 in the example) of the .whl file with what has been generated from the previous build command.
 
     ```
       RUN pip install cms_bluebutton_sdk-1.0.4-py3-none-any.whl
@@ -119,6 +129,7 @@ The overall goals are to:
       cd server
       unzip -l cms_bluebutton_sdk-1.0.4-py3-none-any.whl
       pip install cms_bluebutton_sdk-1.0.4-py3-none-any.whl
+      cd ..
       docker compose up
     ```
 

@@ -18,14 +18,15 @@ RUN apt-get update && \
 RUN pip install pipenv debugpy
 
 # Install cms_bluebutton_sdk from pypi.org or test.pypi.org
+# Comment out this entire block when running a local version of the SDK
 RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
     pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ cms-bluebutton-sdk; \
   else \
     pip install cms-bluebutton-sdk; \
   fi
 
-# If using a local version of the sdk, copy the wheel file and install it
-# RUN pip install cms_bluebutton_sdk-1.0.4-py3-none-any.whl
+# If using a local version of the sdk, uncomment out this next line and add the proper version
+# RUN pip install cms_bluebutton_sdk-1.0.5-py3-none-any.whl
 RUN pipenv lock
 RUN pip install click
 RUN pipenv install --system --deploy --ignore-pipfile
