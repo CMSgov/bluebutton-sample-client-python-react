@@ -1,4 +1,4 @@
-FROM python:3.11-slim-trixie
+FROM python:3.12-slim-trixie
 
 ARG BUILD_DEVELOPMENT="False"
 

@@ -1,4 +1,4 @@
-FROM node:22.23.2-trixie-slim
+FROM node:22.23.2-alpine3.24
 
 ARG BB2-APP_LAUNCH
 
@@ -12,8 +12,8 @@ WORKDIR /client
 COPY . .
 
 # In case machine is Mac M1 chip
-RUN apt-get update && \
-    apt-get install -y libcap2 python3 python3-pip libssh2-1
+RUN apk update && \
+    apk add --no-cache libcap python3 py3-pip libssh2
 
 RUN yarn install
 # comment build out if not going to use preview to save build time
