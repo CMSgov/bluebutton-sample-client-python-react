@@ -83,19 +83,19 @@ Total number of contributors: <!--CONTRIBUTOR COUNT START--> <!--CONTRIBUTOR COU
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/oragame">
-                    <img src="https://avatars.githubusercontent.com/u/22204906?v=4" width="100;" alt="oragame"/>
+                <a href="https://github.com/ryan-morosa">
+                    <img src="https://avatars.githubusercontent.com/u/253099523?v=4" width="100;" alt="ryan-morosa"/>
                     <br />
-                    <sub><b>Don Seymour</b></sub>
+                    <sub><b>ryan-morosa</b></sub>
                 </a>
             </td>
 		</tr>
 		<tr>
             <td align="center">
-                <a href="https://github.com/ryan-morosa">
-                    <img src="https://avatars.githubusercontent.com/u/253099523?v=4" width="100;" alt="ryan-morosa"/>
+                <a href="https://github.com/oragame">
+                    <img src="https://avatars.githubusercontent.com/u/22204906?v=4" width="100;" alt="oragame"/>
                     <br />
-                    <sub><b>ryan-morosa</b></sub>
+                    <sub><b>Don Seymour</b></sub>
                 </a>
             </td>
             <td align="center">
