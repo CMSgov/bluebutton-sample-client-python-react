@@ -11,11 +11,13 @@ WORKDIR /server
 COPY . . 
 
 
-# Upgrade libssh2-1 to patched version (Debian 13 >= 1.11.1-1+deb13u1)
-# Upgrade perl-base to patched version (Debian 13 >= 5.40.1-6+deb13u1)
-# Upgrade libpcre2-8-0 to patched version (Debian 13 >= 10.46-1~deb13u2)
 RUN apt-get update && \
-    apt-get install -y libgnutls30 libssh2-1 perl-base libpcre2-8-0
+    apt-get install -y \
+      libgnutls30 \
+      libssh2-1=1.11.1-1+deb13u1 \
+      perl-base=5.40.1-6+deb13u1 \
+      libpcre2-8-0=10.46-1~deb13u2 \
+      gzip=1.13-1+deb13u1
 
 RUN pip install pipenv debugpy
 
