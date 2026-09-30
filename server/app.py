@@ -136,7 +136,7 @@ def get_authorization_token_with_retry(auth_data, code, state):
             return bb.get_authorization_token(auth_data, code, state)
         except requests.exceptions.HTTPError as ex:
             status_code = ex.response.status_code if ex.response is not None else None
-            if attempt == TOKEN_RETRY_TOTAL and status_code not in RETRY_ERROR_DENY:
+            if attempt == TOKEN_RETRY_TOTAL or status_code in RETRY_ERROR_DENY:
                 raise
             wait_seconds = TOKEN_RETRY_BACKOFF_SECONDS * (2**attempt)
             print(
