@@ -30,7 +30,7 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
   fi
 
 # If using a local version of the sdk, uncomment out this next line and add the proper version
-RUN pip install cms_bluebutton_sdk-1.0.6-py3-none-any.whl
+# RUN pip install cms_bluebutton_sdk-1.0.6-py3-none-any.whl
 RUN pipenv lock
 RUN pip install click
 RUN pipenv install --system --deploy --ignore-pipfile
