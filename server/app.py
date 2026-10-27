@@ -119,7 +119,6 @@ def authorization_callback():
         auth_token = insurance_card_data["auth_token"]
         logged_in_user["authToken"] = auth_token
         logged_in_user["insuranceCardData"] = insurance_card_data["response"].json()
-        print(json.dumps(logged_in_user["insuranceCardData"], indent=2))
     except Exception as ex:
         logged_in_user.update(
             {"insuranceCardData": {"message": ERR_QUERY_INSURANCE_CARD}}

@@ -13,10 +13,10 @@ COPY . .
 
 RUN apt-get update && \
     apt-get install -y \
-      libgnutls30 \
+      libgnutls30t64=3.8.9-3+deb13u4 \
       libssh2-1=1.11.1-1+deb13u1 \
       perl-base=5.40.1-6+deb13u1 \
-      libpcre2-8-0=10.46-1~deb13u2 \
+      libpcre2-8-0=10.46-1~deb13u3 \
       gzip=1.13-1+deb13u1
 
 RUN pip install pipenv debugpy
@@ -30,7 +30,7 @@ RUN if [ "$BUILD_DEVELOPMENT" = "True" ]; then \
   fi
 
 # If using a local version of the sdk, uncomment out this next line and add the proper version
-# RUN pip install cms_bluebutton_sdk-1.0.5-py3-none-any.whl
+# RUN pip install cms_bluebutton_sdk-1.0.6-py3-none-any.whl
 RUN pipenv lock
 RUN pip install click
 RUN pipenv install --system --deploy --ignore-pipfile
