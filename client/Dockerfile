@@ -1,4 +1,4 @@
-FROM node:22.23.2-alpine3.24
+FROM node:26.13.1-alpine3.24
 
 ARG BB2-APP_LAUNCH
 
